@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel = "stylesheet" href ="main.css">
+    <script src="https://kit.fontawesome.com/977c7777a4.js" crossorigin="anonymous"></script>
+    <title>Document</title>
+</head>
+<body>
+    <header>
+        <h4> Welcome new user!</h4>
+        <!--header da pagina-->
+    </header>
+    <section id = registrySection>
+        <div id = "registryValues"> 
+        </div>
+        <!-- corpo da pagina-->
+            
+            <div class ="inputs">
+                <label class = "labels-edit-profile">First name</label>
+                <input class="input-edit-profile" type ="text" id="userFirstName" placeholder = "insert your first Name">
+                <label class = "labels-edit-profile">Last name</label>
+                <input class="input-edit-profile" type ="text" id="userLastName" placeholder = "insert your last Name">
+                <label class = "labels-edit-profile">Email</label>
+                <input class="input-edit-profile" type="text" id="userEmail" placeholder ="Insert your email">
+                <label class = "labels-edit-profile">Username</label>
+                <input class="input-edit-profile" type ="text" id="userUsername" placeholder = "Insert your Username">
+                <label class = "labels-edit-profile">Contact</label>
+                <input class="input-edit-profile" type ="text" id="userNumber" placeholder = "Insert your phone number">
+                <label class = "labels-edit-profile">User Picture</label>
+                <input class="input-edit-profile" type = "text" id="userPhotoUrl" placeholder="Insert your photo-url here">
+            </div>
+            <!-- tipo password-->
+            <div id ="passwordDiv">
+                <div class="password">
+                    <label class = "labels-edit-profile">Password</label>
+                    <input class="input-edit-profile" type ="password" id="userPassword" placeholder = "Password">
+                    <i class="fa-regular" id="fa-eypass"></i>
+                </div>
+                <div class ="password">
+                    <label class = "labels-edit-profile">Re-write password</label>
+                    <input class="input-edit-profile" type ="password" id="userRewrittenPassword" placeholder = "Re-write password">
+                    <i class="fa-regular" id="fa-eyere"></i>
+                </div>
+            </div>
+            <div id ="registryButtons">
+                <!--botao submit-->
+                <button id="submitRegistryButton">submit</button>
+                <!--cncel-->
+                <button id ="cancelRegistryButton">cancel</button>
+            </div>
+    <!--campos centrais-->
+        
+
+        <!--botao submit e cncel-->
+    </section>
+    <footer>
+        <div class="footer-content">
+            <div class="label-left">&copy; José Alexandre Silva</div>
+            <div class="label-right">Programação Avançada em Java</div>
+            <div class="label-left">&copy; Pedro Monteiro</div>
+            <div class="label-right">Projeto 2</div>
+        </div>
+    </footer>
+    <script src="registry.js"></script>
+</body>
+</html>
