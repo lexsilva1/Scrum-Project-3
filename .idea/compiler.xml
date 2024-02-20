@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="creator" />
         <module name="lexsilva-pedromont-proj2" />
+        <module name="Scrum-Project-3" />
       </profile>
     </annotationProcessing>
   </component>
