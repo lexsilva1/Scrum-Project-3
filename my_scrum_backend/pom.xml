@@ -5,9 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>aor.paj</groupId>
-    <artifactId>lexsilva-pedromont-proj2</artifactId>
+    <artifactId>Scrum-Project-3</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>lexsilva-pedromont-proj2</name>
+    <name>lexsilva-incunha-proj3</name>
     <packaging>war</packaging>
 
     <properties>
