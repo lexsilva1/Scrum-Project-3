@@ -72,7 +72,7 @@ window.onload = async function(){
 
 async function getUserData(){
     try{
-        const response = await fetch(`http://localhost:8080/lexsilva-pedromont-proj2/rest/user/${sessionStorage.getItem('username')}`);
+        const response = await fetch(`http://localhost:8080/Scrum-Project-3/rest/user/${sessionStorage.getItem('username')}`);
         if (!response.ok){
         throw new Error ('failed to fetch user data');
         }
@@ -87,7 +87,7 @@ async function getUserData(){
 
 async function updateUserData(user){//chama o user aqui
     try{
-    await fetch(`http://localhost:8080/lexsilva-pedromont-proj2/rest/user/update`,{
+    await fetch(`http://localhost:8080/Scrum-Project-3/rest/user/update`,{
         method: 'PUT',
         headers:{
             'Accept':'*/*',
@@ -114,7 +114,7 @@ async function updateUserData(user){//chama o user aqui
 }
 async function getUserPhoto(){
     try {
-      const response = await fetch(`http://localhost:8080/lexsilva-pedromont-proj2/rest/user/${sessionStorage.getItem('username')}`);
+      const response = await fetch(`http://localhost:8080/Scrum-Project-3/rest/user/${sessionStorage.getItem('username')}`);
       if (!response.ok) {
         throw new Error('Failed to fetch user data');
       }

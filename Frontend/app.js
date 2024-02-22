@@ -20,7 +20,7 @@ document.getElementById('registerButton').addEventListener('click',()=>{
 async function login(loginValue, passwordValue) {
     // Send GET request with username and password as query parameters
     try {
-        await fetch(`http://localhost:8080/lexsilva-pedromont-proj2/rest/user/login?username=${loginValue}&password=${passwordValue}`, {
+        await fetch(`http://localhost:8080/Scrum-Project-3/rest/user/login?username=${loginValue}&password=${passwordValue}`, {
             method: 'GET',
             headers: {
                 'Accept': '*/*',
