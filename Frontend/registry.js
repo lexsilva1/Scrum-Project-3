@@ -71,5 +71,9 @@ document.getElementById('cancelRegistryButton').addEventListener('click',()=>{
     window.location.href='index.html'
 })
 
+document.getElementById('userPhotoUrl').addEventListener('input', function() {
+    document.getElementById('profileImage').src = this.value;
+  });
+
 
 
