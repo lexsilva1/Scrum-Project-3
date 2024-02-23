@@ -1,8 +1,8 @@
 window.onload = async function(){
-    document.getElementById('profileImageHome').src = await getUserPhoto();
+    document.getElementById('profileImageHomeReg').src = await getUserPhoto();
     let user = await getUserData();    
     let names = user.name.split(" ");
-    document.getElementById('login').textContent = names[0];
+    document.getElementById('loginReg').textContent = names[0];
     const confirmationDialog = document.getElementById('confirmChanges');
     document.getElementById('editFirstName').placeholder = names[0];
     document.getElementById('editLastName').placeholder = names[1];

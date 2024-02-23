@@ -1,6 +1,6 @@
 /*----------INDEX--------------*/
 /*
-**PARTE REGISTO A PARTIR LINHA 915 (PEDRO)
+**PARTE REGISTO A PARTIR LINHA 915 
 */
 :root {
   font-family: Arial, Helvetica, sans-serif;
@@ -24,6 +24,7 @@ body {
   padding: 0;
   background-color: var(--black);
   position: relative;
+  background-image: url('multimedia/imagem de fundo.png')
 }
 
 /* Video em background da página index (página index.html) */
@@ -85,17 +86,19 @@ body {
   border: var(--green3) 1px solid;
   border-top-right-radius: 5px;
   border-top-left-radius: 5px;
-  text-align: center;
+  text-align: left;;
   
 }
 #login {
   margin-top: 20px;
+  position: relative;
 }
-#login-home{
-margin-right: 5px;
-display: inline;
-font-size: large;
-
+#login-home {
+  margin-right: 5px;
+  display: inline;
+  font-size: large;
+  position: relative; 
+  left: 60px; 
 }
 .loginpanel ::placeholder {
   color: var(--green2);
@@ -195,6 +198,15 @@ h1 {
   transition: ease-in-out 0.1s;
   transition-property: background, box-shadow, color;
 }
+
+#profileImageHome{
+  width: 3.125rem;
+  height: 3.125rem;
+  border-radius: 50%;
+  position: relative;
+  left: 50px;
+}
+
 /* Username */
 .username {
   color: var(--green1);
@@ -388,7 +400,7 @@ main {
   padding-left: 30px;
   padding-right: 30px;
   height: 720px;
-  background-color: var(--white);
+  background-image: url ('multimedia/imagem de fundo.png');
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
@@ -956,125 +968,86 @@ footer {
     margin: 0;
   }
 }
-/*---------------------PAGINA REGISTO (PEDRO)---------------------------------*/
-#registrySection{
-  display: flex;
-  margin: .3125rem;
-  color:black;
-  color: var(--green3);
-  background-color: color-mix(in srgb, var(--light-grey), transparent 10%);
-  height: 24.50rem;
-}
-#registryValues input{
-  position: relative;
-  top: 4.6875rem;
-  left: 15.5625rem;
-
-}
-
-#profilePicDiv{
-  left: 15.625rem;
-  position:relative;
-  width: 12.5rem;
-  height: 12.5rem; 
-  overflow: hidden;
-  top: 4.375rem;
-  
-}
-#profilePicDiv input{
-  position:relative;
-}
-
-.inputs{
+/*---------------------PAGINA REGISTO---------------------------------*/
+#registrySection {
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
-  height: fit-content;
-  width: 15.625rem;
-  position:relative;
-  top: .625rem;
-  left: 30.625rem;
-  bottom: 3.125rem;
-  margin: .3125rem;
-  text-align: center;
-}
-.inputs input{
-  margin: .2813rem;
-}
-#profileImage{
-  width:100%;
-  height: 12.5rem; 
-  object-fit: cover;
-  align-self: center;
-  border-radius: 50%;
-}
-#registryButtons{
-  position: relative;
-  align-self: self-end;
-  height: fit-content;
-  width: fit-content;
-  left: 21.875rem;
-  display:flex;
-  flex-direction: column;
-  
+  align-items: flex-start;
+  padding-left: 3rem;
+  margin-top: 0.7rem;
+  position: relative; 
 }
 
-#registryButtons button{
-  font-size: larger;
-  position: relative;
-  text-transform: uppercase;
-  font-size: .75rem;
+#registrySection .inputs,
+#registrySection #passwordDiv {
+  margin-bottom: 1.1rem; /* Adiciona espaço entre os elementos */
+}
+
+#registrySection .inputs label,
+#registrySection #passwordDiv label {
+  font-size: 1rem; /* Aumenta o tamanho das labels */
   font-weight: bold;
-  background-color: var(--doing);
-  color: var(--green3);
-  border-radius: 5px;
-  transition: background-color 0.3s, color 0.3s;
-  cursor: pointer;
-  height: 3.125rem;
-  width: 5rem;
-  right: 3.4375rem;
-  
+ 
 }
-#registryButtons button:hover{
-  background-color: var(--green3);
-  color: var(--green1);
+
+#registrySection .inputs input,
+#registrySection #passwordDiv input {
+  font-size: 1rem; 
+  margin-bottom: 1rem;
 }
-#passwordDiv{
-  display: flex;
+
+
+#registrySection #passwordDiv {
+  display: flex; /* Faz com que os campos de password fiquem lado a lado */
+  justify-content: space-between; /* Adiciona espaço entre os campos de password */
+  width: 100%; /* Garante que os campos de password ocupem toda a largura disponível */
+  margin-bottom: 1.5rem; 
+  margin-top: -1.5rem;
+}
+
+#registrySection #passwordDiv .password:first-child {
+  margin-right: 2rem; /* Adiciona mais espaço entre os campos de password */
+}
+
+#registryButtons {
   position: relative;
-  left: 11.25rem;
-  align-self: self-end; 
-  align-items: center;
-  align-content: center;
-  font-size: large;
-  text-align: center;
-  height: fit-content;
-  width: fit-content;
-  
+  top: -5.5rem; /* Move os botões um pouco mais para cima */
+  right: -30rem; /* Move os botões um pouco mais para a direita */
 }
-.password{
-  margin:.3125rem;
-  display: flex;
-  flex-direction: column;
-  margin-right: 1.875rem;
-  border: 9.375rem;
+#submitRegistryButton, #cancelRegistryButton {
+  background-color: var(--green1); 
+  padding: 15px 32px; 
+  text-align: center; 
+  display: inline-block;
+  font-size: 16px;
+  margin: 2px 1px;
+  cursor: pointer;
+  border-radius: 5px; 
 }
 
-.fa-regular{
-  position:relative;
-  top: -1.125rem;
-  left: 5.75rem;
-
-}
-.fa-regular:hover{
-  color: var(--green3);
-  border: var(--green1)solid;
-  size: 1.5;
-  transition: 0.3s ease;
-  visibility: visible;
+#submitRegistryButton {
+  margin-right: 20px; /* Adiciona algum espaço à direita do botão submit */
 }
 
+#profileImageLabel {
+  position: absolute; 
+  right: 470px;
+  top: 30px; 
+  z-index: 1; 
+  font-weight: bold;
+}
 
-
+#profileImage {
+  width: 200px; 
+  height: 200px; 
+  border-radius: 50%; 
+  border: 1px solid black; 
+  object-fit: cover; 
+  position: absolute; 
+  left: 900px; 
+  top: 70px; 
+}
 
 
 /*----------------------------PAGINA DE EDIÇÃO----------------------*/
@@ -1093,26 +1066,40 @@ footer {
 }
 #editUserValues{
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: space-between;
   height: fit-content;
   width: fit-content;
   position:relative;
-  height: 25rem;
+  height: 20rem;
   top:1.25rem;
-  left:-47.5rem;
+  left: -30rem;
   font-size: large;
+  font-weight: bold;
 
 }
 .labels-edit-profile {
-  font-size: .75rem;
+  font-size: 20px;
   display: flex;
   text-align: left;
   margin-left: 0.5rem;
   color: var(--green3);
+  margin-top: 10px;
+  
 }
 .input-edit-profile {
 border-top-left-radius: 5px;
 border-top-right-radius: 5px;
+width: 300px;
+height: 30px;
+font-size: 18px;
+margin-bottom: 30px;
+}
+
+#left-edit-profile, #right-edit-profile {
+  display: flex;
+  flex-direction: column;
+  padding: 0 20px; /* Adiciona espaço à esquerda e à direita de cada coluna */
 }
 
 #editUserValues input{
@@ -1122,6 +1109,11 @@ border-top-right-radius: 5px;
   height: 1.25rem;
 
 }
+#editUserValues .column {
+  display: flex;
+  flex-direction: column;
+}
+
 #photoUpload{
   position:relative;
   left: -7rem;
@@ -1131,8 +1123,8 @@ border-top-right-radius: 5px;
 }
 #btnEditprofile{
   position:relative;
-  top:18.75rem;
-  left:-52.372rem;
+  top:28rem;
+  left:4rem;
   height: fit-content;
 }
 #btnEditprofile button:hover{
@@ -1153,20 +1145,39 @@ border-top-right-radius: 5px;
   height: 3.125rem;
   width: 5rem;
 }
+#buttonSubmitData {
+  margin-left: 40px; 
+}
+
 #profilePicEdit{
   position: relative;
   left:15.625rem;
   top:2.5rem;
 }
-#profileImageHome{
+#profileImageHomeReg{
   width: 3.125rem;
   height: 3.125rem;
   border-radius: 50%;
-margin-right: .625rem;
+  position: relative;
+  left: 150px;
 }
 #btnToEdit{
   position:relative;
   top: -2.1875rem;
   left: 8.75rem;
   cursor:pointer;
+}
+#profileImageEdit {
+  position: absolute;
+  left: 600px; 
+}
+
+#profileImageLabelEdit {
+  position: absolute;
+  left: 1020px;
+  top: 170px;
+}
+#loginReg {
+  position: relative;
+  left: 10rem;
 }
