@@ -14,6 +14,7 @@ public class Task {
     int priority;
     LocalDate startDate;
     LocalDate endDate;
+    String category;
 
     private static final int low = 100;
     private static final int medium = 200;
@@ -75,13 +76,12 @@ public class Task {
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
-    public void generateId() {
-        this.id = "task" + Math.random() * 1000;
+
+    public String getCategory() {
+        return category;
     }
-     public void setinitialStatus() {
-          this.status = todo;
-     }
 
-
-
+    public void setCategory(String category) {
+        this.category = category;
+    }
 }

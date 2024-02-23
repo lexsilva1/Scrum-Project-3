@@ -17,13 +17,14 @@ public class User {
 
     String password;
     String contactNumber;
-    ArrayList<Task> tasks = new ArrayList<Task>();
+    String role;
     String userPhoto;
+    String token;
 
     public User() {
     }
 
-    public User(String id, String username, String name, String email, String password, String contactNumber, String userPhoto) {
+    public User(String id, String username, String name, String email, String password, String contactNumber, String userPhoto, String role) {
         this.id = id;
         this.username = username;
         this.name = name;
@@ -31,6 +32,11 @@ public class User {
         this.password = password;
         this.contactNumber = contactNumber;
         this.userPhoto = userPhoto;
+        if(role == null){
+            this.role = "developer";
+        }else {
+            this.role = role;
+        }
     }
 
     @XmlElement
@@ -93,47 +99,15 @@ public class User {
         return userPhoto;
     }
     @XmlElement
-    public ArrayList<Task> getTasks() {
-        return tasks;
+    public String getRole() {
+        return role;
     }
-    public void setTasks(ArrayList<Task> tasks) {
-        this.tasks = tasks;
+    public void setRole(String role) {
+        this.role = role;
     }
-    public void addTask(Task task) {
-        tasks.add(task);
-    }
-    public void removeTask(Task task) {
-        tasks.remove(task);
-    }
-    public void removeTask(String id) {
-        Iterator<Task> iterator = tasks.iterator();
-        while (iterator.hasNext()) {
-            Task task = iterator.next();
-            if (task.getId().equals(id)) {
-                iterator.remove();
-            }
-        }
-    }
-    public Task getTask(String id) {
-        for (Task a : tasks) {
-            if (a.getId().equals(id))
-                return a;
-        }
-        return null;
-    }
-    public void updateTask(Task task) {
-        for (Task a : tasks) {
-            if (a.getId().equals(task.getId())) {
-                a.setTitle(task.getTitle());
-                a.setDescription(task.getDescription());
-                a.setStatus(task.getStatus());
-                a.setPriority(task.getPriority());
-                a.setEndDate(task.getEndDate());
-                a.setStartDate(task.getStartDate());
-            }
-        }
-    }
-    public ArrayList<Task> orderedtasks() {
+
+
+    /*public ArrayList<Task> orderedtasks() {
         ArrayList<Task> status10 = new ArrayList<Task>();
         ArrayList<Task> status20 = new ArrayList<Task>();
         ArrayList<Task> status30 = new ArrayList<Task>();
@@ -154,13 +128,17 @@ public class User {
         orderedTasks.addAll(status20);
         orderedTasks.addAll(status30);
         return orderedTasks;
+    }*/
+
+    public void setId(String id) {
+        this.id = id;
     }
-    public Task getTaskbyId(String id) {
-        for (Task a : tasks) {
-            if (a.getId().equals(id)) {
-                return a;
-            }
-        }
-        return null;
+    @XmlElement
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

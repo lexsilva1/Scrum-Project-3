@@ -5,149 +5,159 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
+import dao.UserDao;
 import dto.Task;
+import entities.UserEntity;
+import jakarta.ejb.EJB;
+import jakarta.ejb.Singleton;
+import jakarta.ejb.Startup;
+import jakarta.ejb.Stateless;
 import jakarta.enterprise.context.ApplicationScoped;
 import dto.User;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import jakarta.json.bind.JsonbConfig;
-@ApplicationScoped
+
+@Singleton
 public class UserBean {
-    final String filename = "users.json";
-    private ArrayList<User> users;
-
     public UserBean() {
-        File f = new File(filename);
-        if(f.exists()){
-            try {
-                FileReader filereader = new FileReader(f);
-                users = JsonbBuilder.create().fromJson(filereader, new ArrayList<User>() {}.getClass().getGenericSuperclass());
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-        }else
-            users = new ArrayList<User>();
+    }
 
-    }
+    @EJB
+    UserDao userDao;
+
     public void addUser(User a) {
-        users.add(a);
-        writeIntoJsonFile();
+        UserEntity userEntity = convertToEntity(a);
+        userDao.persist(userEntity);
     }
-    public User getUser(String i) {
-        for (User a : users) {
-            if (a.getUsername().equals(i))
-                return a;
-        }
-        return null;
+
+    public User getUser(String token) {
+        UserEntity userEntity = userDao.findUserByToken(token);
+        return convertToDto(userEntity);
     }
-    public ArrayList<User> getUsers() {
+
+
+    public List<UserEntity> getUsers() {
+        List<UserEntity> users = userDao.findAll();
         return users;
     }
+
     public boolean removeUser(String id) {
-        for (User a : users) {
-            if (a.getId().equals(id)) {
-                users.remove(a);
-                return true;
-            }
+        UserEntity a = userDao.findUserByUsername(id);
+        if (a != null) {
+            userDao.remove(a);
+            return true;
         }
         return false;
     }
-    public boolean updateUser(String username, User user) {
-        for (User a : users) {
-            if (a.getUsername().equals(username)) {
-                a.setName(user.getName());
-                a.setEmail(user.getEmail());
-                a.setPassword(user.getPassword());
-                a.setContactNumber(user.getContactNumber());
-                a.setUserPhoto(user.getUserPhoto());
-                writeIntoJsonFile();
-                return true;
-            }
 
+    public boolean updateUser(String token, User user) {
+        UserEntity a = userDao.findUserByToken(token);
+        if (a != null) {
+            a.setUsername(user.getUsername());
+            a.setName(user.getName());
+            a.setEmail(user.getEmail());
+            a.setPassword(user.getPassword());
+            a.setContactNumber(user.getContactNumber());
+            a.setUserPhoto(user.getUserPhoto());
+            a.setRole(user.getRole());
+            userDao.updateUser(a);
+            return true;
         }
         return false;
     }
-    private void writeIntoJsonFile() {
-        try {
-            JsonbConfig config = new JsonbConfig().withFormatting(true);
-            Jsonb jsonb = JsonbBuilder.create(config);
-            FileOutputStream fileOutputStream = new FileOutputStream(filename);
-            jsonb.toJson(users, fileOutputStream);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-    public void addTaskToUser(String username, Task task) {
-        for (User a : users) {
-            if (a.getUsername().equals(username)) {
-                a.addTask(task);
-                writeIntoJsonFile();
-            }
-        }
-    }
 
-    public User login(String username, String password) {
-        for (User a : users) {
-            if (a.getUsername().equals(username) && a.getPassword().equals(password)) {
-                return a;
-            }
+    public String login(String username, String password) {
+        UserEntity user = userDao.findUserByUsername(username);
+        if(user != null){
+            String token;
+        if (user.getPassword().equals(password)) {
+            do {
+                token = generateToken();
+            } while (tokenExists(token));
+        }else {
+            return null;
+        }
+            user.setToken(token);
+            userDao.updateToken(user);
+            return token;
         }
         return null;
     }
 
     public boolean userExists(String username) {
-        for (User a : users) {
-            if (a.getUsername().equals(username)) {
-                return true;
-            }
+        UserEntity a = userDao.findUserByUsername(username);
+        if (a != null) {
+            return true;
         }
         return false;
     }
-    public boolean isUserAuthorized(String username, String password){
-        for (User a : users) {
-            if (a.getUsername().equals(username) && a.getPassword().equals(password)) {
-                return true;
-            }
+
+    public boolean isUserAuthorized(String token) {
+        UserEntity a = userDao.findUserByToken(token);
+        if (a != null) {
+            return true;
         }
         return false;
 
     }
-    public void removeTaskFromUser(String username, String id) {
-        for (User a : users) {
-            if (a.getUsername().equals(username)) {
-                a.removeTask(id);
-                writeIntoJsonFile();
-                return;
-            }
-        }
-    }
-    public boolean updateTask(String username, Task task) {
-        for (User a : users) {
-            if (a.getUsername().equals(username)) {
-                a.updateTask(task);
-                writeIntoJsonFile();
-                return true;
-            }
-        }
-        return false;
-    }
+
     public boolean isUserValid(User user) {
-        if (user.getUsername().isBlank() || user.getPassword().isBlank() || user.getName().isBlank() || user.getEmail().isBlank() || user.getContactNumber().isBlank() || user.getUserPhoto().isBlank()){
+        if (user.getUsername().isBlank() || user.getPassword().isBlank() || user.getName().isBlank() || user.getEmail().isBlank() || user.getContactNumber().isBlank() || user.getUserPhoto().isBlank()) {
             return false;
-        } else if(user.getUsername()==null || user.getPassword()==null || user.getName()==null || user.getEmail()==null || user.getContactNumber()==null || user.getUserPhoto()==null){
+        } else if (user.getUsername() == null || user.getPassword() == null || user.getName() == null || user.getEmail() == null || user.getContactNumber() == null || user.getUserPhoto() == null) {
             return false;
         }
         return true;
     }
-    public boolean isTaskValid(Task task) {
-        if (task.getTitle().isBlank() || task.getDescription().isBlank() || task.getStartDate() == null || task.getEndDate() == null) {
-            return false;
-        } else {
-            return task.getTitle() != null && task.getDescription() != null && task.getStartDate() != null && task.getEndDate() != null;
-        }
+
+    public UserEntity convertToEntity(User user) {
+        UserEntity userEntity = new UserEntity();
+        userEntity.setUsername(user.getUsername());
+        userEntity.setName(user.getName());
+        userEntity.setEmail(user.getEmail());
+        userEntity.setPassword(user.getPassword());
+        userEntity.setContactNumber(user.getContactNumber());
+        userEntity.setUserPhoto(user.getUserPhoto());
+        userEntity.setToken(user.getToken());
+        return userEntity;
     }
 
+    public User convertToDto(UserEntity userEntity) {
+        User user = new User();
+        user.setUsername(userEntity.getUsername());
+        user.setName(userEntity.getName());
+        user.setEmail(userEntity.getEmail());
+        user.setPassword(userEntity.getPassword());
+        user.setContactNumber(userEntity.getContactNumber());
+        user.setUserPhoto(userEntity.getUserPhoto());
+        user.setToken(userEntity.getToken());
+        return user;
+    }
 
-
+    public boolean tokenExists(String token) {
+        UserEntity a = userDao.findUserByToken(token);
+        if (a != null) {
+            return true;
+        }
+        return false;
+    }
+    public String generateToken() {
+        String token = "";
+        for (int i = 0; i < 10; i++) {
+            token += (char) (Math.random() * 26 + 'a');
+        }
+        return token;
+    }
+    public void logout(String token) {
+        UserEntity user = userDao.findUserByToken(token);
+        user.setToken(null);
+        userDao.updateToken(user);
+    }
 }
+
+
+
+
