@@ -4,17 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel = "stylesheet" href ="main.css">
-    <title>Document</title>
+    <title>Scrum</title>
 </head>
 <body>
     <header>
         <h1>Welcome to Scrum</h1>
+        <div class="container clock"></div>
         <div class="username">
-            <label>Hi </label>
-            <label id="login"> </label>
+            <div class="profileImageHomeReg">
+            <img id="profileImageHomeReg" src ="" alt="Avatar">
         </div>
-        <div class="profileImageHome">
-            <img id="profileImageHome" src ="" alt="Avatar">
+         <label id="loginReg"> </label>
         </div>
         <button class="logout-button" onclick="location.href='index.html'">
             <img src="multimedia/logout.png" alt="Logout Icon">
@@ -23,10 +23,10 @@
     </header>
     <section id ="editSection">
         <div id = "profilePicEdit">
-            <img id="profileImage" alt="Avatar">
+            <img id="profileImageEdit" alt="Avatar">
         </div>
         <div>
-            <input class="input-edit-profile" id="photoUpload" type="text" name ="profilePhoto" placeholder="photo" required ="" capture>
+            <label id="profileImageLabelEdit" for="photoUpload">Profile Image</label>
         </div>
         
         <!-- aqui À frente ficar os outros detalhes do header-->
@@ -40,10 +40,12 @@
             <input class="input-edit-profile" id = "username"type="text" placeholder ="Username" disabled>
             <label class="labels-edit-profile">email</label>
             <input class="input-edit-profile" id = editUserEmail type = "text" placeholder ="">
-            </div>
-            <div id="right-edit-profile">
             <label class="labels-edit-profile">contact</label>
             <input class="input-edit-profile" id ="editUserContact" type="text" placeholder="">
+            <label class="labels-edit-profile">User Picture</label>
+            <input class="input-edit-profile" id="editUserPhotoUrl" type="text" placeholder="Insert your photo-url here">
+            </div>
+            <div id="right-edit-profile">
             <label class="labels-edit-profile">Old password</label>
             <input class="input-edit-profile" id = "oldPassword" type="password" placeholder ="Old password">
             <!--botões para ver password-->
@@ -54,9 +56,9 @@
             </div>
         </div>
         <div id ="btnEditprofile">
-            <button id = "buttonSubmitData" type="button">submit</button>
             <!--abrir modal para concordar se altera ou nao as alterações-->
             <button type = "button" id ="buttonCancelEdition">cancel</button>
+            <button id = "buttonSubmitData" type="button">submit</button>
         </div>
         <!--modal para validação das alterações-->   
         <dialog id="confirmChanges">
@@ -71,8 +73,8 @@
         <div class="footer-content">
             <div class="label-left">&copy; José Alexandre Silva</div>
             <div class="label-right">Programação Avançada em Java</div>
-            <div class="label-left">&copy; Pedro Monteiro</div>
-            <div class="label-right">Projeto 2</div>
+            <div class="label-left">&copy; Inês Cunha</div>
+            <div class="label-right">Projeto 3</div>
     </footer>
 </body>
 <script src ="profileEdition.js"></script>
