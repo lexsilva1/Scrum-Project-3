@@ -18,13 +18,13 @@ public class UserEntity implements Serializable{
     String email;
     @Column (name="password", nullable = false, unique = false)
     String password;
-    @Column (name="contactNumber", nullable = false, unique = true)
+    @Column (name="contactNumber", nullable = false, unique = false)
     String contactNumber;
     @Column (name="userPhoto", nullable = true, unique = false)
     String userPhoto;
     @Column (name="token", nullable = true, unique = true)
     String token;
-    @Column (name="role", nullable = false, unique = false)
+    @Column (name="role", nullable = true, unique = false)
     String role;
     public String getUsername() {
         return username;

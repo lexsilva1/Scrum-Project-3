@@ -1,5 +1,6 @@
 package dao;
 
+import entities.CategoryEntity;
 import entities.TaskEntity;
 import entities.UserEntity;
 import jakarta.ejb.Stateless;
@@ -57,6 +58,17 @@ public class TaskDao extends AbstractDao<TaskEntity>{
         } catch (Exception e) {
             return null;
         }
+    }
+    public CategoryEntity findCategoryByName(String name){
+        try {
+            return (CategoryEntity) em.createNamedQuery("Category.findCategoryByName").setParameter("name", name)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+    public void createCategory(CategoryEntity categoryEntity) {
+        em.persist(categoryEntity);
     }
 
 }

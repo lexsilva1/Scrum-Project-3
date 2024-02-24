@@ -79,4 +79,24 @@ public class TaskService {
             return Response.status(201).entity(taskBean.convertToDto(taskEntity)).build();
         }
     }
+    @POST
+    @Path("/createCategory")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response createCategory(String name, @HeaderParam("token") String token) {
+        System.out.println(token);
+        boolean authorized = userBean.isUserAuthorized(token);
+        if (!authorized) {
+            return Response.status(401).entity("Unauthorized").build();
+        } else {
+            boolean valid = taskBean.categoryExists(name);
+            if (!valid) {
+                return Response.status(400).entity("All elements are required").build();
+            }
+            CategoryEntity categoryEntity = new CategoryEntity();
+            taskBean.createCategory(name,token);
+            return Response.status(201).entity(taskBean.convertCatToDto(categoryEntity)).build();
+        }
+    }
+
 }

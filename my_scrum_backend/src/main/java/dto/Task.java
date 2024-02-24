@@ -27,6 +27,7 @@ public class Task {
     public Task() {
         this.status = todo;
         this.priority = low;
+        setInitialId();
     }
 
     @XmlElement
@@ -75,6 +76,9 @@ public class Task {
     }
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
+    }
+    public void setInitialId(){
+        this.id = "Task" + System.currentTimeMillis();
     }
 
     public String getCategory() {

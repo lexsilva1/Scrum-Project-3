@@ -32,7 +32,7 @@ public class User {
         this.password = password;
         this.contactNumber = contactNumber;
         this.userPhoto = userPhoto;
-        if(role == null){
+        if(role == null || role.isEmpty()){
             this.role = "developer";
         }else {
             this.role = role;

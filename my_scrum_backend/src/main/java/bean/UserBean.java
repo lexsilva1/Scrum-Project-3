@@ -122,6 +122,7 @@ public class UserBean {
         userEntity.setContactNumber(user.getContactNumber());
         userEntity.setUserPhoto(user.getUserPhoto());
         userEntity.setToken(user.getToken());
+        userEntity.setRole(user.getRole());
         return userEntity;
     }
 
@@ -134,6 +135,7 @@ public class UserBean {
         user.setContactNumber(userEntity.getContactNumber());
         user.setUserPhoto(userEntity.getUserPhoto());
         user.setToken(userEntity.getToken());
+        user.setRole(userEntity.getRole());
         return user;
     }
 

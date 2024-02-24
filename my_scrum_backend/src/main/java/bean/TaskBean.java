@@ -24,6 +24,8 @@ public class TaskBean {
     }
     @EJB
     TaskDao taskDao;
+    @EJB
+    UserDao userDao;
     public boolean isTaskValid(Task task) {
         if (task.getTitle().isBlank() || task.getDescription().isBlank() || task.getStartDate() == null || task.getEndDate() == null) {
             return false;
@@ -82,5 +84,14 @@ public class TaskBean {
             tasks.add(convertToDto(taskEntity));
         }
         return tasks;
+    }
+    public boolean categoryExists(String name) {
+        return taskDao.findCategoryByName(name) != null;
+    }
+    public void createCategory(String name, String token) {
+        CategoryEntity categoryEntity = new CategoryEntity();
+        categoryEntity.setName(name);
+        categoryEntity.setCreator(userDao.findUserByToken(token).getUsername());
+        taskDao.createCategory(categoryEntity);
     }
 }

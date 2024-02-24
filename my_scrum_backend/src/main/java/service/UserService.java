@@ -34,7 +34,7 @@ public class UserService {
         }
     }
     @POST
-    @Path("/add")
+    @Path("/register")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response addUser(User a) {
@@ -48,6 +48,9 @@ public class UserService {
 
             return Response.status(409).entity("User with this username is already exists").build();
         } else {
+            if(a.getRole() == null || a.getRole().isEmpty()){
+                a.setRole("developer");
+            }
             userBean.addUser(a);
             return Response.status(201).entity("A new user is created").build();
         }
