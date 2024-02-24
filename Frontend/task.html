@@ -16,10 +16,9 @@
         </div>
     </div>
     <header>
-        <h1>Welcome to Scrum</h1>
+        <h1>Edit task</h1>
         <div class="username">
-            <label>Hi </label>
-            <label id="login"> </label>
+            <label id="usernameTask"> </label>
         </div>
         <div class="profileImageHome">
             <img id="profileImageHome" src ="" alt="Avatar">
@@ -37,15 +36,23 @@
                   <li id="task-bc">Task</li>
                 </ul>
               </div>
-            <div>
+              <div>
+                <label for="titulo-task">Title</label> <!-- Adicionado -->
                 <textarea id="titulo-task">Task 1</textarea>
             </div>
             <div>
+                <label for="descricao-task">Description</label> <!-- Adicionado -->
                 <textarea class="text-task" id="descricao-task"></textarea>
             </div>
             <div id="taskDate">
-                <input class = "dateinput" id ="startdate" type ="date" placeholder="Start-date">
-                <input class = "dateinput" id ="enddate" type ="date" placeholder="End-date">
+                <div>
+                    <label for="startdate">Initial Date</label>
+                    <input class = "dateinput" id ="startdate" type ="date" placeholder="Start-date">
+                </div>
+                <div>
+                    <label for="enddate">Final Date</label>
+                    <input class = "dateinput" id ="enddate" type ="date" placeholder="End-date">
+                </div>
             </div>
             <p id="warningMessage3"></p>
             <div class="task-save">
@@ -78,7 +85,7 @@
         <div class="footer-content">
             <div class="label-left">&copy; José Alexandre Silva</div>
             <div class="label-right">Programação Avançada em Java</div>
-            <div class="label-left">&copy; Pedro Monteiro</div>
+            <div class="label-left">&copy; Inês Cunha</div>
             <div class="label-right">Projeto 2</div>
         </div>
     </footer>
