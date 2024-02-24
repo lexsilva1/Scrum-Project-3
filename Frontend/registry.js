@@ -46,7 +46,7 @@ document.getElementById('submitRegistryButton').addEventListener('click',(e)=>{
 async function postUser(newUser){
     // Send POST request with newUser data
      try {
-         await fetch('http://localhost:8080/Scrum-Project-3/rest/user/add',{
+         await fetch('http://localhost:8080/Scrum-Project-3/rest/user/register',{
             method: 'POST',
             headers: {
                 'Accept': '*/*',

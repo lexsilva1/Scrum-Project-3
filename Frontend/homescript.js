@@ -8,7 +8,7 @@ window.onload = async function () {
     document.getElementById('login-home').textContent = names[0];
   };
 
-  if(sessionStorage.getItem('username') === null || sessionStorage.getItem('username') === ''){
+  if(sessionStorage.getItem('token') === null){
     window.location.href = 'index.html';
   }
 let tasks = document.querySelectorAll('.task');
@@ -68,8 +68,6 @@ function removeSelectedPriorityButton() {
   const buttons = [lowButton, mediumButton, highButton];
   buttons.forEach(btn => btn.classList.remove("selected"));
 }
-
-
 
 // Event listeners para os botões priority
 lowButton.addEventListener("click", () => setPriorityButtonSelected(lowButton, 100));
@@ -453,8 +451,7 @@ async function logout() {
     headers: {
       'Accept': '*/*',
       'Content-Type': 'application/json',
-      username: sessionStorage.getItem('username'),
-      password: sessionStorage.getItem('password'),
+      token: sessionStorage.getItem('token'),
     }
   }).then(function(response) {
     if (response.status === 200) {

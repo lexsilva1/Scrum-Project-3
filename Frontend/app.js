@@ -20,7 +20,7 @@ document.getElementById('registerButton').addEventListener('click',()=>{
 async function login(loginValue, passwordValue) {
     // Send GET request with username and password as query parameters
     try {
-        await fetch(`http://localhost:8080/Scrum-Project-3/rest/user/login?username=${loginValue}&password=${passwordValue}`, {
+        await fetch(`http://localhost:8080/Scrum-Project-3/rest/user/login`, {
             method: 'GET',
             headers: {
                 'Accept': '*/*',
@@ -31,11 +31,10 @@ async function login(loginValue, passwordValue) {
         }).then(async function(response) {
             if (response.status === 200) {
                 // User is logged in successfully
-                const userData = await response.json();
+                const token = await response.text();
                 
                 // Store user data in sessionStorage
-                sessionStorage.setItem('password', userData.password);
-                sessionStorage.setItem('username', userData.username);
+                sessionStorage.setItem('token', token);
                 // Add other user properties as needed
                 
                 // Redirect to index.html after successful login
