@@ -36,7 +36,6 @@ public class UserService {
     @POST
     @Path("/add")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
     public Response addUser(User a) {
         System.out.println(a.getName());
        boolean valid = userBean.isUserValid(a);
