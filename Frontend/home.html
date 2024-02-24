@@ -30,21 +30,26 @@
         </button>
     </header>
     <div class="container"> <!--Container para o aside e o main-->
-    <aside>
+        <aside>
         <div class="logo">
             <img src="multimedia/logo_scrum_01.png" alt="Logo" height="150">
         </div>
         <div class="add-task-container">
             <h3>Add task</h3>
+            <label for="taskName">Title</label> 
             <input type="text" id="taskName" placeholder="Title (required)" maxlength="15">
+            <label for="taskDescription">Description</label> 
             <textarea id="taskDescription" placeholder="Description (required)"></textarea>
-                <div class="priority-buttons-home">
-                    <button class="priority-button-home low" id="low-button-home">Low</button>
-                    <button class="priority-button-home medium" id="medium-button-home">Medium</button>
-                    <button class="priority-button-home high" id="high-button-home">High</button>
-                </div>
+            <label class="priority-label">Priority</label> 
+            <div class="priority-buttons-home">
+                <button class="priority-button-home low" id="low-button-home">Low</button>
+                <button class="priority-button-home medium" id="medium-button-home">Medium</button>
+                <button class="priority-button-home high" id="high-button-home">High</button>
+            </div>
             <div id="taskDate">
+                <label for="startdate">Initial Date</label> 
                 <input class = "dateinput" id ="startdate" type ="date" placeholder="Start-date">
+                <label for="enddate">Final Date</label> 
                 <input class = "dateinput" id ="enddate" type ="date" placeholder="End-date">
             </div>
             <button id="addTask">Add task</button>

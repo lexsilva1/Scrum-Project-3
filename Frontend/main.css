@@ -271,7 +271,7 @@ aside {
 /* Logo */
 .logo img {
   padding-block: 25px;
-  max-height: 150px;
+  max-height: 100px;
   width: auto;
 }
 /* Título */
@@ -279,7 +279,8 @@ aside h3 {
   text-align: center;
   color: var(--green3);
   text-transform: uppercase;
-  font-size: 20px;
+  font-size: 15px;
+  margin-top: -10px;
 }
 /* Campos para adicionar task */
 #taskName,
@@ -322,6 +323,7 @@ aside h3 {
     justify-content: center;
     display: flex;
     gap: 8px;
+    margin-bottom: 15px;
   }
   .priority-button-home {
     --button-shadow-color: #c3c3c3;
@@ -369,7 +371,7 @@ aside h3 {
 /* Botão add task */
 #addTask {
   text-align: center;
-  margin-top: 26px;
+  margin-top: 15px;
   width: 120px;
   height: 32px;
   text-transform: uppercase;
@@ -389,7 +391,7 @@ aside h3 {
 #warningMessage2 {
   color: var(--green3);
   font-size: 14px;
-  margin-top: 17px;
+  margin-top: 5px;
   text-align: center;
 }
 
@@ -446,8 +448,22 @@ main {
 #done {
   background-color: var(--done);
 }
+
 /* Estilos da scroll bar (painéis da home.html e da task no task.html) */
 /* Tamanho da barra */
+
+label {
+  display: block;
+  font-size: 12px;
+}
+.priority-label {
+  display: block;
+  font-size: 12px;
+  position: relative;
+  margin-top: 20px; 
+  margin-bottom: -10px;
+}
+
 .panel::-webkit-scrollbar,
 .text-task::-webkit-scrollbar {
   width: 13px;
@@ -636,6 +652,12 @@ match ao arredondamento do painel (home.html) */
   }
 }
 
+#usernameTask {
+  position: relative;
+  left: 500px;
+  font-size: 15px;
+}
+
 /* Definições do main na task.html */
 .main-task {
   width: auto;
@@ -732,8 +754,8 @@ match ao arredondamento do painel (home.html) */
 /* Definições dos botões save e cancel */
 .task-save {
   justify-content: center;
-  margin-left: 80px;
-  margin-top: 50px;
+  margin-left: 100px; 
+  margin-top: 30px; 
   display: flex;
   gap: 30px;
   text-transform: uppercase;
@@ -742,11 +764,33 @@ match ao arredondamento do painel (home.html) */
   cursor: pointer;
 }
 
+#taskDate {
+  display: flex;
+  justify-content: flex-start;
+  margin-left: 200px;
+  margin-top: 20px;
+}
+
+#taskDate div {
+  display: flex;
+  flex-direction: column;
+}
+#startdate {
+  margin-right: 20px; 
+}
+
+label {
+  display: block;
+  font-size: 12px; 
+}
+
+
 #taskDate input{
   height: fit-content;
   width: fit-content;
   align-self: center;
-  margin-top:23.5px;
+  margin-top:2px;
+  margin-bottom: 10px;
   
 .dateinput{
   margin: 5px;
@@ -1159,7 +1203,7 @@ margin-bottom: 30px;
   height: 3.125rem;
   border-radius: 50%;
   position: relative;
-  left: 150px;
+  left: 8rem;
 }
 #btnToEdit{
   position:relative;
@@ -1169,15 +1213,23 @@ margin-bottom: 30px;
 }
 #profileImageEdit {
   position: absolute;
-  left: 600px; 
+  left: 600px;
+  border-radius: 50%;
+  width: 250px; 
+  height: 250px;
+  top: 80px;
 }
 
 #profileImageLabelEdit {
   position: absolute;
   left: 1020px;
-  top: 170px;
+  top: 165px;
+  font-size: 20px; 
+  text-align: left; 
+  color: var(--green3);
+  font-weight: bold;
 }
 #loginReg {
   position: relative;
-  left: 10rem;
+  left: 9.5rem;
 }

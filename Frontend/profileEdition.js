@@ -6,7 +6,7 @@ window.onload = async function(){
     const confirmationDialog = document.getElementById('confirmChanges');
     document.getElementById('editFirstName').placeholder = names[0];
     document.getElementById('editLastName').placeholder = names[1];
-    document.getElementById('profileImage').src = user.userPhoto;
+    document.getElementById('profileImageEdit').src = user.userPhoto;
     document.getElementById('photoUpload').placeholder = user.userPhoto;
     document.getElementById('editUserEmail').placeholder = user.email;
     document.getElementById('editUserContact').placeholder= user.contactNumber;
@@ -34,8 +34,8 @@ window.onload = async function(){
         document.getElementById('photoUpload').value = user.userPhoto;
        }
        //photo input source
-       if(document.getElementById('profileImage').src === "" || document.getElementById('profileImage').src === user.userPhoto){
-        document.getElementById('profileImage').src = user.userPhoto;
+       if(document.getElementById('profileImageEdit').src === "" || document.getElementById('profileImage').src === user.userPhoto){
+        document.getElementById('profileImageEdit').src = user.userPhoto;
        }
        //new password must match new password else if
        if(document.getElementById('editNewPassword').value === ''){
@@ -58,7 +58,7 @@ window.onload = async function(){
             email: document.getElementById('editUserEmail').value.trim(),
             password : document.getElementById('editNewPassword').value.trim(),
             contactNumber : document.getElementById('editUserContact').value.trim(),
-            userPhoto : document.getElementById("profileImage").src = document.getElementById('photoUpload').value.trim(),
+            userPhoto : document.getElementById("profileImageEdit").src = document.getElementById('photoUpload').value.trim(),
             }
         confirmationDialog.close();
         updateUserData(user);
