@@ -63,6 +63,7 @@ public class TaskService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response addTask(Task task, @HeaderParam("token") String token) {
+        System.out.println("intro do addTask "+ task.getCategory());
         boolean authorized = userBean.isUserAuthorized(token);
         if (!authorized) {
             return Response.status(401).entity("Unauthorized").build();
@@ -73,8 +74,8 @@ public class TaskService {
             }
             User user = userBean.getUser(token);
             TaskEntity taskEntity = taskBean.convertToEntity(task);
-            taskEntity.setCategory(taskBean.convertCatToEntity(task.getCategory()));
             taskEntity.setUser(userBean.convertToEntity(user));
+
             taskBean.addTask(taskEntity);
             return Response.status(201).entity(taskBean.convertToDto(taskEntity)).build();
         }
@@ -84,7 +85,6 @@ public class TaskService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createCategory(String name, @HeaderParam("token") String token) {
-        System.out.println(token);
         boolean authorized = userBean.isUserAuthorized(token);
         if (!authorized) {
             return Response.status(401).entity("Unauthorized").build();

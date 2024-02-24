@@ -40,7 +40,8 @@ public class TaskBean {
         taskEntity.setTitle(task.getTitle());
         taskEntity.setDescription(task.getDescription());
         taskEntity.setStatus(task.getStatus());
-        taskEntity.setCategory(convertCatToEntity(task.getCategory()));
+        taskEntity.setCategory(taskDao.findCategoryByName(task.getCategory()));
+        System.out.println(taskDao.findCategoryByName(task.getCategory()));
         taskEntity.setStartDate(task.getStartDate());
         taskEntity.setPriority(task.getPriority());
         taskEntity.setEndDate(task.getEndDate());
@@ -86,7 +87,10 @@ public class TaskBean {
         return tasks;
     }
     public boolean categoryExists(String name) {
-        return taskDao.findCategoryByName(name) != null;
+        if(taskDao.findCategoryByName(name) != null) {
+            return false;
+        }
+        return true;
     }
     public void createCategory(String name, String token) {
         CategoryEntity categoryEntity = new CategoryEntity();

@@ -28,7 +28,7 @@ public class TaskEntity implements Serializable {
     @ManyToOne
     private UserEntity user;
     @JoinColumn  (name="category", nullable = false, unique = false)
-      @ManyToOne
+    @ManyToOne
     private CategoryEntity category;
 
     public String getId() {
