@@ -64,7 +64,6 @@ public class TaskService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response addTask(Task task, @HeaderParam("token") String token) {
-        System.out.println("intro do addTask "+ task.getCategory());
         boolean authorized = userBean.isUserAuthorized(token);
         if (!authorized) {
             return Response.status(401).entity("Unauthorized").build();
@@ -73,13 +72,12 @@ public class TaskService {
             boolean categoryExists = taskBean.categoryExists(task.getCategory().getName());
             if (!valid) {
                 return Response.status(400).entity("All elements are required").build();
-            }
-                
+            }else if (!categoryExists){
+                return Response.status(400).entity("Category does not exist").build();
             }
             User user = userBean.getUser(token);
             Category category = task.getCategory();
             CategoryEntity categoryEntity = taskBean.findCategoryByName(category.getName());
-            System.out.println("categoryEntity "+ categoryEntity.getName());
             TaskEntity taskEntity = taskBean.convertToEntity(task);
             taskEntity.setCategory(categoryEntity);
             taskEntity.setUser(userBean.convertToEntity(user));

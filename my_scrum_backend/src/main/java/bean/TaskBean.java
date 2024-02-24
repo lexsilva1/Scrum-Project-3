@@ -1,4 +1,5 @@
 package bean;
+import dto.Category;
 import entities.UserEntity;
 import entities.CategoryEntity;
 import entities.TaskEntity;
@@ -27,7 +28,7 @@ public class TaskBean {
     @EJB
     UserDao userDao;
     public boolean isTaskValid(Task task) {
-        if (task.getTitle().isBlank() || task.getDescription().isBlank() || task.getStartDate() == null || task.getEndDate() == null) {
+        if (task.getTitle().isBlank() || task.getDescription().isBlank() || task.getStartDate() == null || task.getEndDate() == null || task.getCategory() == null) {
             return false;
         } else {
             return task.getTitle() != null && task.getDescription() != null && task.getStartDate() != null && task.getEndDate() != null;
@@ -40,22 +41,24 @@ public class TaskBean {
         taskEntity.setTitle(task.getTitle());
         taskEntity.setDescription(task.getDescription());
         taskEntity.setStatus(task.getStatus());
-        taskEntity.setCategory(taskDao.findCategoryByName(task.getCategory()));
-        System.out.println(taskDao.findCategoryByName(task.getCategory()));
+        //taskEntity.setCategory(taskDao.findCategoryByName(task.getCategory()));
         taskEntity.setStartDate(task.getStartDate());
         taskEntity.setPriority(task.getPriority());
         taskEntity.setEndDate(task.getEndDate());
         return taskEntity;
 
     }
-    public CategoryEntity convertCatToEntity(String name) {
+    public CategoryEntity convertCatToEntity(Category category) {
         CategoryEntity categoryEntity = new CategoryEntity();
-        categoryEntity.setCreator(taskDao.findCreatorByName(name));
-        categoryEntity.setName(name);
+        categoryEntity.setCreator(category.getCreator());
+        categoryEntity.setName(category.getName());
         return categoryEntity;
     }
-    public String convertCatToDto(CategoryEntity categoryEntity) {
-        return categoryEntity.getName();
+    public Category convertCatToDto(CategoryEntity categoryEntity) {
+        Category category = new Category();
+        category.setCreator(categoryEntity.getCreator());
+        category.setName(categoryEntity.getName());
+        return category;
     }
     public dto.Task convertToDto(TaskEntity taskEntity) {
         dto.Task task = new dto.Task();
@@ -92,10 +95,13 @@ public class TaskBean {
         }
         return true;
     }
-    public void createCategory(String name, String token) {
+    public void createCategory(Category category) {
         CategoryEntity categoryEntity = new CategoryEntity();
-        categoryEntity.setName(name);
-        categoryEntity.setCreator(userDao.findUserByToken(token).getUsername());
+        categoryEntity.setName(category.getName());
+        categoryEntity.setCreator(category.getCreator());
         taskDao.createCategory(categoryEntity);
+    }
+    public CategoryEntity findCategoryByName(String name) {
+        return taskDao.findCategoryByName(name);
     }
 }

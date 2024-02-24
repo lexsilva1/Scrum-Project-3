@@ -37,7 +37,6 @@ public class UserService {
     @Path("/register")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addUser(User a) {
-        System.out.println(a.getName());
        boolean valid = userBean.isUserValid(a);
         if (!valid) {
             return Response.status(400).entity("All elements are required are required").build();
@@ -85,10 +84,14 @@ public class UserService {
     @GET
     @Path("/{username}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUser(@PathParam("username")String username) {
+    public Response getUser(@HeaderParam("token")String token, @PathParam("username")String username) {
+        boolean authorized = userBean.isUserAuthorized(token);
         boolean exists = userBean.userExists(username);
-        if (!exists)
+        if (!exists){
             return Response.status(404).entity("User with this username is not found").build();
+        }else if (!authorized) {
+            return Response.status(403).entity("Forbidden").build();
+        }
         User user = userBean.getUser(username);
         return Response.status(200).entity(user).build();
     }
@@ -97,20 +100,29 @@ public class UserService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateUser(@HeaderParam("token") String token, User a) {
-        boolean user = userBean.userExists(token);
+        boolean user = userBean.userExists(a.getUsername());
         boolean authorized = userBean.isUserAuthorized(token);
         boolean valid = userBean.isUserValid(a);
         if (!user) {
             return Response.status(404).entity("User with this username is not found").build();
-        }else if (!authorized) {
-            return Response.status(405).entity("Forbidden").build();
-        }else if (!valid) {
+        } else if (!valid) {
             return Response.status(401).entity("All elements are required").build();
         }
-        boolean updated = userBean.updateUser(token, a);
-        if (!updated)
-            return Response.status(400).entity("Failed. User not updated").build();
-        return Response.status(200).entity("updated").build();
+        if (!userBean.getUser(token).getRole().equals("Owner") && a.getUsername().equals(userBean.getUser(token).getUsername()) && (a.getRole() == null)) {
+            a.setRole(userBean.getUser(token).getRole());
+            boolean updated = userBean.updateUser(token, a);
+            if (!updated) {
+                return Response.status(400).entity("Failed. User not updated").build();
+            }
+            return Response.status(200).entity("User updated").build();
+        }else if (userBean.getUser(token).getRole().equals("Owner") && a.getRole() != null) {
+            boolean updated = userBean.updateUser(token, a);
+            if (!updated) {
+                return Response.status(400).entity("Failed. User not updated").build();
+            }
+            return Response.status(200).entity("User updated").build();
+        }
+            return Response.status(403).entity("Forbidden").build();
     }
 
     @GET

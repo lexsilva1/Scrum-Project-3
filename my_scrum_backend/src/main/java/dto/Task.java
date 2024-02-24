@@ -1,4 +1,5 @@
 package dto;
+import entities.CategoryEntity;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
@@ -14,7 +15,7 @@ public class Task {
     int priority;
     LocalDate startDate;
     LocalDate endDate;
-    String category;
+    Category category;
 
     private static final int low = 100;
     private static final int medium = 200;
@@ -81,11 +82,11 @@ public class Task {
         this.id = "Task" + System.currentTimeMillis();
     }
 
-    public String getCategory() {
+    public Category getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(Category category) {
         this.category = category;
     }
 }
