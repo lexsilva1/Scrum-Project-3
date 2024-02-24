@@ -2,6 +2,7 @@ package service;
 
 import bean.TaskBean;
 import bean.UserBean;
+import dto.Category;
 import dto.Task;
 import dto.User;
 import entities.TaskEntity;
@@ -69,13 +70,19 @@ public class TaskService {
             return Response.status(401).entity("Unauthorized").build();
         } else {
             boolean valid = taskBean.isTaskValid(task);
+            boolean categoryExists = taskBean.categoryExists(task.getCategory().getName());
             if (!valid) {
                 return Response.status(400).entity("All elements are required").build();
             }
+                
+            }
             User user = userBean.getUser(token);
+            Category category = task.getCategory();
+            CategoryEntity categoryEntity = taskBean.findCategoryByName(category.getName());
+            System.out.println("categoryEntity "+ categoryEntity.getName());
             TaskEntity taskEntity = taskBean.convertToEntity(task);
+            taskEntity.setCategory(categoryEntity);
             taskEntity.setUser(userBean.convertToEntity(user));
-
             taskBean.addTask(taskEntity);
             return Response.status(201).entity(taskBean.convertToDto(taskEntity)).build();
         }
@@ -84,17 +91,19 @@ public class TaskService {
     @Path("/createCategory")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createCategory(String name, @HeaderParam("token") String token) {
+    public Response createCategory(Category category, @HeaderParam("token") String token) {
         boolean authorized = userBean.isUserAuthorized(token);
         if (!authorized) {
             return Response.status(401).entity("Unauthorized").build();
         } else {
-            boolean valid = taskBean.categoryExists(name);
+            boolean valid = taskBean.categoryExists(category.getName());
             if (!valid) {
                 return Response.status(400).entity("All elements are required").build();
             }
+            User user = userBean.getUser(token);
+            category.setCreator(user.getUsername());
             CategoryEntity categoryEntity = new CategoryEntity();
-            taskBean.createCategory(name,token);
+            taskBean.createCategory(category);
             return Response.status(201).entity(taskBean.convertCatToDto(categoryEntity)).build();
         }
     }
