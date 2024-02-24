@@ -33,10 +33,25 @@ public class TaskService {
         if (!authorized) {
             return Response.status(401).entity("Unauthorized").build();
         } else {
-            User user1 = userBean.getUser(token);
-            UserEntity user = userBean.convertToEntity(user1);
             ArrayList<Task> taskList = new ArrayList<>();
-            for (TaskEntity taskEntity : taskBean.getTasksByUser(user)) {
+            for (TaskEntity taskEntity : taskBean.getTasks()) {
+                taskList.add(taskBean.convertToDto(taskEntity));
+            }
+            taskList.sort(Comparator.comparing(Task::getPriority, Comparator.reverseOrder()).thenComparing(Comparator.comparing(Task::getStartDate).thenComparing(Task::getEndDate)));
+            return Response.status(200).entity(taskList).build();
+        }
+    }
+    @GET
+    @Path("/byUser")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getTasksByUser(@HeaderParam("token") String token) {
+        boolean authorized = userBean.isUserAuthorized(token);
+        if (!authorized) {
+            return Response.status(401).entity("Unauthorized").build();
+        } else {
+            User user = userBean.getUser(token);
+            ArrayList<Task> taskList = new ArrayList<>();
+            for (TaskEntity taskEntity : taskBean.getTasksByUser(userBean.convertToEntity(user))) {
                 taskList.add(taskBean.convertToDto(taskEntity));
             }
             taskList.sort(Comparator.comparing(Task::getPriority, Comparator.reverseOrder()).thenComparing(Comparator.comparing(Task::getStartDate).thenComparing(Task::getEndDate)));

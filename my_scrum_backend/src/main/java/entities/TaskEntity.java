@@ -10,7 +10,6 @@ import jakarta.persistence.*;
 @NamedQuery(name="Task.findTaskByUser", query="SELECT a FROM TaskEntity a WHERE a.user = :user")
 public class TaskEntity implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column (name="id", nullable = false, unique = true, updatable = false)
     private String id;
     @Column (name="title", nullable = false, unique = true)
