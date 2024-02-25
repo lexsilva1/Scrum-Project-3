@@ -70,7 +70,9 @@ public class TaskService {
         } else {
             ArrayList<Task> taskList = new ArrayList<>();
             for (TaskEntity taskEntity : taskBean.getTasksByCategory(category)) {
-                taskList.add(taskBean.convertToDto(taskEntity));
+                if(taskEntity.isActive()) {
+                    taskList.add(taskBean.convertToDto(taskEntity));
+                }
             }
             taskList.sort(Comparator.comparing(Task::getPriority, Comparator.reverseOrder()).thenComparing(Comparator.comparing(Task::getStartDate).thenComparing(Task::getEndDate)));
             return Response.status(200).entity(taskList).build();
@@ -217,6 +219,22 @@ public class TaskService {
                 return Response.status(400).entity("Failed. Task not removed").build();
             } else {
                 return Response.status(200).entity("Task removed").build();
+            }
+        }
+    }
+    @PATCH
+    @Path("/block/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response blockTask(@HeaderParam("token") String token, @PathParam("id") String id) {
+        boolean authorized = userBean.isUserAuthorized(token);
+        if (!authorized) {
+            return Response.status(401).entity("Unauthorized").build();
+        } else {
+            boolean blocked = taskBean.blockTask(id);
+            if (!blocked) {
+                return Response.status(400).entity("Failed. Task not blocked").build();
+            } else {
+                return Response.status(200).entity("Task blocked").build();
             }
         }
     }
