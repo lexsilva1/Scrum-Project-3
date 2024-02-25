@@ -3,12 +3,11 @@ window.onload = async function () {
     updateDate();
     showTime();
     document.getElementById('profileImageHome').src = await getUserPhoto();
-    let user = await getUserData();    
     let names = user.name.split(" ");
     document.getElementById('login-home').textContent = names[0];
   };
 
-  if(sessionStorage.getItem('token') === null){
+  if(sessionStorage.getItem('token') === null || sessionStorage.getItem('token') === ''){
     window.location.href = 'index.html';
   }
 let tasks = document.querySelectorAll('.task');
@@ -68,6 +67,8 @@ function removeSelectedPriorityButton() {
   const buttons = [lowButton, mediumButton, highButton];
   buttons.forEach(btn => btn.classList.remove("selected"));
 }
+
+
 
 // Event listeners para os bot√µes priority
 lowButton.addEventListener("click", () => setPriorityButtonSelected(lowButton, 100));
@@ -131,12 +132,11 @@ function createTask(name, description, priority,startdate,enddate) { // Cria uma
   return task;
 }
 async function postTask(task) {
-    await fetch('http://localhost:8080/Scrum-Project-3/rest/user/addtask', {
+    await fetch('http://localhost:8080/Scrum-Project-3/rest/task/add', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'username': sessionStorage.getItem('username'),
-      'password': sessionStorage.getItem('password')
+      'token': sessionStorage.getItem('token')
     },
     body: JSON.stringify(task)
   }).then(async function(response){
@@ -278,13 +278,11 @@ async function loadTasks() {
   }
   async function deleteTask(id) {
     try {
-      const response = await fetch('http://localhost:8080/Scrum-Project-3/rest/user/removetask', {
+      const response = await fetch(`http://localhost:8080/Scrum-Project-3/rest/task/delete/${id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
-          'username': sessionStorage.getItem('username'),
-          'password': sessionStorage.getItem('password'),
-          'id': id
+          'token': sessionStorage.getItem('token')
         }
       });
   
@@ -324,12 +322,11 @@ async function loadTasks() {
     };
   
     try {
-      const response = await fetch('http://localhost:8080/Scrum-Project-3/rest/user/updatetask', {
+      const response = await fetch('http://localhost:8080/Scrum-Project-3/rest/task/update', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'username': sessionStorage.getItem('username'),
-          'password': sessionStorage.getItem('password')
+          'token': sessionStorage.getItem('token')
         },
         body: JSON.stringify(task)
       });
@@ -415,7 +412,7 @@ window.onclose = function () { // Guarda as tarefas na local storage quando a p√
 //fazer fetch ao ficheiro do backend
 async function getUserPhoto(){
   try {
-    const response = await fetch(`http://localhost:8080/Scrum-Project-3/rest/user/${sessionStorage.getItem('username')}`);
+    const response = await fetch(`http://localhost:8080/Scrum-Project-3/rest/user/photo`);
     if (!response.ok) {
       throw new Error('Failed to fetch user data');
     }
@@ -432,26 +429,15 @@ async function getUserPhoto(){
     throw error;
   }
 }
-async function getUserData(){
-  try{
-      const response = await fetch(`http://localhost:8080/Scrum-Project-3/rest/user/${sessionStorage.getItem('username')}`);
-      if (!response.ok){
-      throw new Error ('failed to fetch user data');
-      }
-      const obj = await response.json();
-      return obj;
-  } catch (error){
-      console.error('something went wrong', error);
-      throw error;
-  }
-}
+
 async function logout() {
   await fetch('http://localhost:8080/Scrum-Project-3/rest/user/logout', {
     method: 'GET',
     headers: {
       'Accept': '*/*',
       'Content-Type': 'application/json',
-      token: sessionStorage.getItem('token'),
+      username: sessionStorage.getItem('username'),
+      password: sessionStorage.getItem('password'),
     }
   }).then(function(response) {
     if (response.status === 200) {
