@@ -85,23 +85,23 @@ public class UserService {
     @Path("/{username}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUser(@HeaderParam("token")String token, @PathParam("username")String username) {
-        boolean authorized = userBean.isUserAuthorized(token);
         boolean exists = userBean.userExists(username);
         if (!exists){
             return Response.status(404).entity("User with this username is not found").build();
-        }else if (!authorized) {
+        }else if(userBean.getUser(token).getRole().equals("developer") && !userBean.getUser(token).getUsername().equals(username)){
             return Response.status(403).entity("Forbidden").build();
         }
-        User user = userBean.getUser(username);
-        return Response.status(200).entity(user).build();
+        User user = userBean.getUserByUsername(username);
+        UserEntity userEntity = userBean.convertToEntity(user);
+        return Response.status(200).entity(userEntity).build();
     }
     @PUT
     @Path("/update")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateUser(@HeaderParam("token") String token, User a) {
+        System.out.println("username "+a.getUsername());
         boolean user = userBean.userExists(a.getUsername());
-        boolean authorized = userBean.isUserAuthorized(token);
         boolean valid = userBean.isUserValid(a);
         if (!user) {
             return Response.status(404).entity("User with this username is not found").build();
@@ -147,6 +147,18 @@ public class UserService {
         }else {
             userBean.logout(token);
             return Response.status(200).entity("Logged out").build();
+        }
+    }
+    @DELETE
+    @Path("/delete")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteUser(@HeaderParam("token") String token) {
+        boolean authorized = userBean.isUserAuthorized(token);
+        if (!authorized) {
+            return Response.status(405).entity("Forbidden").build();
+        }else {
+            userBean.deleteUser(token);
+            return Response.status(200).entity("User deleted").build();
         }
     }
 }

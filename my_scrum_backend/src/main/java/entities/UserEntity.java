@@ -26,6 +26,8 @@ public class UserEntity implements Serializable{
     String token;
     @Column (name="role", nullable = true, unique = false)
     String role;
+    @Column (name="active", nullable = false, unique = false)
+    boolean active;
     public String getUsername() {
         return username;
     }
@@ -86,6 +88,12 @@ public class UserEntity implements Serializable{
     }
     public void setRole(String role) {
         this.role = role;
+    }
+    public boolean isActive() {
+        return active;
+    }
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }
 

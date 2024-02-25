@@ -8,6 +8,10 @@ import jakarta.persistence.*;
 @Table(name="Tasks")
 @NamedQuery(name="Task.findTaskById", query="SELECT a FROM TaskEntity a WHERE a.id = :id")
 @NamedQuery(name="Task.findTaskByUser", query="SELECT a FROM TaskEntity a WHERE a.user = :user")
+@NamedQuery(name="Task.findTaskByCategory", query="SELECT a FROM TaskEntity a WHERE a.category = :category")
+@NamedQuery(name="Task.findTaskByStatus", query="SELECT a FROM TaskEntity a WHERE a.status = :status")
+@NamedQuery(name="Task.findTaskByPriority", query="SELECT a FROM TaskEntity a WHERE a.priority = :priority")
+@NamedQuery(name="Task.findBlockedTasks", query="SELECT a FROM TaskEntity a WHERE a.active = false")
 public class TaskEntity implements Serializable {
     @Id
     @Column (name="id", nullable = false, unique = true, updatable = false)
@@ -30,6 +34,8 @@ public class TaskEntity implements Serializable {
     @JoinColumn  (name="category", nullable = false, unique = false)
     @ManyToOne
     private CategoryEntity category;
+    @Column (name="active", nullable = false, unique = false)
+    private boolean active;
 
     public String getId() {
         return id;
@@ -101,6 +107,12 @@ public class TaskEntity implements Serializable {
 
     public void setCategory(CategoryEntity category) {
         this.category = category;
+    }
+    public boolean isActive() {
+        return active;
+    }
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }
 

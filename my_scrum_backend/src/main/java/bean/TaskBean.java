@@ -104,4 +104,60 @@ public class TaskBean {
     public CategoryEntity findCategoryByName(String name) {
         return taskDao.findCategoryByName(name);
     }
+    public boolean blockTask(String id) {
+        TaskEntity a = taskDao.findTaskById(id);
+        if (a != null) {
+            a.setActive(false);
+            taskDao.updateTask(a);
+            return true;
+        }
+        return false;
+    }
+    public boolean removeTask(String id) {
+        TaskEntity a = taskDao.findTaskById(id);
+        if (a != null) {
+            taskDao.remove(a);
+            return true;
+        }
+        return false;
+    }
+    public List<TaskEntity> getTasksByCategory(String category) {
+        return taskDao.findTasksByCategory(category);
+    }
+    public boolean unblockTask(String id) {
+        TaskEntity a = taskDao.findTaskById(id);
+        if (a != null) {
+            a.setActive(true);
+            taskDao.updateTask(a);
+            return true;
+        }
+        return false;
+    }
+    public List <TaskEntity> getBlockedTasks() {
+        return taskDao.findBlockedTasks();
+    }
+    public boolean updateTask(TaskEntity task) {
+        TaskEntity a = taskDao.findTaskById(task.getId());
+        if (a != null) {
+            a.setTitle(task.getTitle());
+            a.setDescription(task.getDescription());
+            a.setPriority(task.getPriority());
+            a.setStatus(task.getStatus());
+            a.setStartDate(task.getStartDate());
+            a.setEndDate(task.getEndDate());
+            taskDao.updateTask(a);
+            return true;
+        }
+        return false;
+    }
+    public boolean changeStatus(String id, int status) {
+        TaskEntity a = taskDao.findTaskById(id);
+        if (a != null) {
+            a.setStatus(status);
+            taskDao.updateTask(a);
+            return true;
+        }
+        return false;
+    }
+
 }

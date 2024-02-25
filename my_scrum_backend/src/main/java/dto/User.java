@@ -20,6 +20,7 @@ public class User {
     String role;
     String userPhoto;
     String token;
+    boolean active;
 
     public User() {
     }
@@ -37,6 +38,7 @@ public class User {
         }else {
             this.role = role;
         }
+        this.active = true;
     }
 
     @XmlElement
@@ -140,5 +142,12 @@ public class User {
 
     public void setToken(String token) {
         this.token = token;
+    }
+    @XmlElement
+    public boolean isActive() {
+        return active;
+    }
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

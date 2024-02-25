@@ -16,6 +16,7 @@ public class Task {
     LocalDate startDate;
     LocalDate endDate;
     Category category;
+    boolean active;
 
     private static final int low = 100;
     private static final int medium = 200;
@@ -29,6 +30,7 @@ public class Task {
         this.status = todo;
         this.priority = low;
         setInitialId();
+        this.active = true;
     }
 
     @XmlElement
@@ -88,5 +90,12 @@ public class Task {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+    @XmlElement
+    public boolean isActive() {
+        return active;
+    }
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

@@ -43,9 +43,18 @@ public class UserBean {
         List<UserEntity> users = userDao.findAll();
         return users;
     }
+    public boolean blockUser(String username) {
+        UserEntity a = userDao.findUserByUsername(username);
+        if (a != null) {
+            a.setActive(false);
+            userDao.updateUser(a);
+            return true;
+        }
+        return false;
+    }
 
-    public boolean removeUser(String id) {
-        UserEntity a = userDao.findUserByUsername(id);
+    public boolean removeUser(String username) {
+        UserEntity a = userDao.findUserByUsername(username);
         if (a != null) {
             userDao.remove(a);
             return true;
@@ -63,6 +72,7 @@ public class UserBean {
             a.setContactNumber(user.getContactNumber());
             a.setUserPhoto(user.getUserPhoto());
             a.setRole(user.getRole());
+            a.setActive(user.isActive());
             userDao.updateUser(a);
             return true;
         }
@@ -71,7 +81,7 @@ public class UserBean {
 
     public String login(String username, String password) {
         UserEntity user = userDao.findUserByUsername(username);
-        if(user != null){
+        if(user != null && user.isActive()){
             String token;
         if (user.getPassword().equals(password)) {
             do {
@@ -111,6 +121,10 @@ public class UserBean {
             return false;
         }
         return true;
+    }
+    public User getUserByUsername(String username) {
+        UserEntity userEntity = userDao.findUserByUsername(username);
+        return convertToDto(userEntity);
     }
 
     public UserEntity convertToEntity(User user) {
@@ -152,6 +166,13 @@ public class UserBean {
             token += (char) (Math.random() * 26 + 'a');
         }
         return token;
+    }
+    public void deleteUser(String token) {
+        UserEntity user = userDao.findUserByToken(token);
+        if(userDao.findUserByToken(token).getRole().equals("Owner")){
+            userDao.remove(user);
+        }
+        userDao.remove(user);
     }
     public void logout(String token) {
         UserEntity user = userDao.findUserByToken(token);
