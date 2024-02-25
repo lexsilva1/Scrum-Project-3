@@ -8,7 +8,6 @@ import java.util.Iterator;
 
 @XmlRootElement
 public class User {
-    String id;
     String username;
 
     String name;
@@ -20,13 +19,13 @@ public class User {
     String role;
     String userPhoto;
     String token;
-    boolean active;
+    boolean active = true;
 
     public User() {
     }
 
-    public User(String id, String username, String name, String email, String password, String contactNumber, String userPhoto, String role) {
-        this.id = id;
+    public User( String username, String name, String email, String password, String contactNumber, String userPhoto, String role) {
+
         this.username = username;
         this.name = name;
         this.email = email;
@@ -41,14 +40,7 @@ public class User {
         this.active = true;
     }
 
-    @XmlElement
-    public String getId() {
-        return id;
-    }
 
-    public void setId() {
-        this.id = "user".concat(String.valueOf(Double.parseDouble(Math.floor(Math.random() * 1000) + "")));
-    }
 
     @XmlElement
     public String getName() {
@@ -132,9 +124,6 @@ public class User {
         return orderedTasks;
     }*/
 
-    public void setId(String id) {
-        this.id = id;
-    }
     @XmlElement
     public String getToken() {
         return token;

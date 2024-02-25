@@ -137,6 +137,7 @@ public class UserBean {
         userEntity.setUserPhoto(user.getUserPhoto());
         userEntity.setToken(user.getToken());
         userEntity.setRole(user.getRole());
+        userEntity.setActive(user.isActive());
         return userEntity;
     }
 
