@@ -15,7 +15,7 @@ public class Task {
     int priority;
     LocalDate startDate;
     LocalDate endDate;
-    Category category;
+    String category;
     boolean active;
 
     private static final int low = 100;
@@ -84,11 +84,11 @@ public class Task {
         this.id = "Task" + System.currentTimeMillis();
     }
 
-    public Category getCategory() {
+    public String getCategory() {
         return category;
     }
 
-    public void setCategory(Category category) {
+    public void setCategory(String category) {
         this.category = category;
     }
     @XmlElement
