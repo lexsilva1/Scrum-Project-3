@@ -65,7 +65,7 @@ public class TaskBean {
         task.setTitle(taskEntity.getTitle());
         task.setDescription(taskEntity.getDescription());
         task.setStatus(taskEntity.getStatus());
-        task.setCategory(convertCatToDto(taskEntity.getCategory()));
+        task.setCategory(convertCatToDto(taskEntity.getCategory()).getName());
         task.setStartDate(taskEntity.getStartDate());
         task.setPriority(taskEntity.getPriority());
         task.setEndDate(taskEntity.getEndDate());
