@@ -2,7 +2,10 @@ window.onload = async function () {
     loadTasks();
     updateDate();
     showTime();
-    document.getElementById('profileImageHome').src = await getUserPhoto();
+    const user = await getUserDTO();
+    const names = user.name.split(" ");
+    document.getElementById('profileImageHome').src = user.userPhoto;
+    document.getElementById('login-home').innerHTML = names[0];
   };
 
   if(sessionStorage.getItem('token') === null || sessionStorage.getItem('token') === ''){
@@ -120,7 +123,7 @@ document.getElementById('addTask').addEventListener('click', function() {
   var priority = taskPriority;
   var startdate = document.getElementById('startdate').value;
   var enddate = document.getElementById('enddate').value;
-  if (Name === '' || Description === '' || category === null || priority === null || startdate === '') {
+  if (Name === '' || Description === '' || category === '' || priority === null || startdate === '') {
     document.getElementById('warningMessage2').innerText = 'Fill in all fields and define a priority';
   }else if(enddate !== ''){
     if (startdate > enddate) {
@@ -525,6 +528,31 @@ async function getCategories() {
     }
   } catch (error) {
     console.error('Something went wrong:', error);
+    throw error;
+  }
+}
+
+async function getUserDTO(){
+  try {
+    const response = await fetch('http://localhost:8080/Scrum-Project-3/rest/user/myUserDto', {
+    method: 'GET',
+    headers: {
+      'Accept': '*/*',
+      'Content-Type': 'application/json',
+      'token': sessionStorage.getItem('token')
+    }
+  });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch user data');
+    }
+    
+    const obj = await response.json();
+    return obj;
+    
+  } catch (error) {
+    console.error('Something went wrong:', error);
+    // Re-throw the error or return a rejected promise
     throw error;
   }
 }

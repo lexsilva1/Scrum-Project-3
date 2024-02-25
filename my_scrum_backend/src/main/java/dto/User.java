@@ -33,7 +33,7 @@ public class User {
         this.contactNumber = contactNumber;
         this.userPhoto = userPhoto;
         if(role == null || role.isEmpty()){
-            this.role = "developer";
+            this.role = "Developer";
         }else {
             this.role = role;
         }
