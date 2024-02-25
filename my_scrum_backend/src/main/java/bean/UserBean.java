@@ -9,6 +9,7 @@ import java.util.List;
 
 import dao.UserDao;
 import dto.Task;
+import dto.UserDto;
 import entities.UserEntity;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Singleton;
@@ -180,6 +181,15 @@ public class UserBean {
         UserEntity user = userDao.findUserByToken(token);
         user.setToken(null);
         userDao.updateToken(user);
+    }
+    public UserDto convertUsertoUserDto(User user){
+        UserDto userDto = new UserDto();
+        userDto.setName(user.getName());
+        userDto.setEmail(user.getEmail());
+        userDto.setContactNumber(user.getContactNumber());
+        userDto.setRole(user.getRole());
+        userDto.setUserPhoto(user.getUserPhoto());
+        return userDto;
     }
 }
 

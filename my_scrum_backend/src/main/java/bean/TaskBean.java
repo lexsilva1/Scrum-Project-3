@@ -70,6 +70,7 @@ public class TaskBean {
         task.setStartDate(taskEntity.getStartDate());
         task.setPriority(taskEntity.getPriority());
         task.setEndDate(taskEntity.getEndDate());
+        task.setActive(taskEntity.isActive());
         return task;
     }
 
