@@ -116,10 +116,8 @@ public class TaskService {
                 return Response.status(400).entity("All elements are required").build();
             }
             User user = userBean.getUser(token);
-            category.setCreator(user.getUsername());
-            CategoryEntity categoryEntity = new CategoryEntity();
-            taskBean.createCategory(category);
-            return Response.status(201).entity(taskBean.convertCatToDto(categoryEntity)).build();
+            taskBean.createCategory(category.getName(), user.getUsername());
+            return Response.status(201).entity("Category created").build();
         }
     }
     @PUT
@@ -184,5 +182,19 @@ public class TaskService {
             }
         }
     }
-
+    @GET
+    @Path("/allCategories")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllCategories(@HeaderParam("token") String token) {
+        boolean authorized = userBean.isUserAuthorized(token);
+        if (!authorized) {
+            return Response.status(401).entity("Unauthorized").build();
+        } else {
+            ArrayList<Category> categoryList = new ArrayList<>();
+            for (CategoryEntity categoryEntity : taskBean.getAllCategories()) {
+                categoryList.add(taskBean.convertCatToDto(categoryEntity));
+            }
+            return Response.status(200).entity(categoryList).build();
+        }
+    }
 }
