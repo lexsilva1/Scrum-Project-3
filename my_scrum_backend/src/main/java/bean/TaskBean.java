@@ -91,9 +91,9 @@ public class TaskBean {
     }
     public boolean categoryExists(String name) {
         if(taskDao.findCategoryByName(name) != null) {
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
     public void createCategory(Category category) {
         CategoryEntity categoryEntity = new CategoryEntity();

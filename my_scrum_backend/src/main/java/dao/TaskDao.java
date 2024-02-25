@@ -60,9 +60,9 @@ public class TaskDao extends AbstractDao<TaskEntity>{
         }
     }
     public CategoryEntity findCategoryByName(String name){
+        System.out.println("nome da categoria: " + name);
         try {
-            return (CategoryEntity) em.createNamedQuery("Category.findCategoryByName").setParameter("name", name)
-                    .getSingleResult();
+            return (CategoryEntity) em.createNamedQuery("Category.findCategoryByName").setParameter("name", name).getSingleResult();
         } catch (NoResultException e) {
             return null;
         }
