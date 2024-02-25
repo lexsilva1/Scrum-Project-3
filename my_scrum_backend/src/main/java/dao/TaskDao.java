@@ -67,6 +67,9 @@ public class TaskDao extends AbstractDao<TaskEntity>{
             return null;
         }
     }
+    public void removeCategory(CategoryEntity categoryEntity) {
+        em.remove(categoryEntity);
+    }
     public void createCategory(CategoryEntity categoryEntity) {
         em.persist(categoryEntity);
     }
@@ -99,7 +102,7 @@ public class TaskDao extends AbstractDao<TaskEntity>{
     }
     public List<CategoryEntity> findAllCategories() {
         try {
-            List<CategoryEntity> categoryEntities = (List<CategoryEntity>) em.createNamedQuery("Category.findAllCategories").getResultList();
+            List<CategoryEntity> categoryEntities = (List<CategoryEntity>) em.createNamedQuery("Category.findAll").getResultList();
             return categoryEntities;
         } catch (Exception e) {
             return null;

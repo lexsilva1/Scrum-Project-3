@@ -100,6 +100,14 @@ public class TaskBean {
         categoryEntity.setCreator(creator);
         taskDao.createCategory(categoryEntity);
     }
+    public boolean removeCategory(String name) {
+        CategoryEntity a = taskDao.findCategoryByName(name);
+        if (a != null) {
+            taskDao.removeCategory(a);
+            return true;
+        }
+        return false;
+    }
     public CategoryEntity findCategoryByName(String name) {
         return taskDao.findCategoryByName(name);
     }
