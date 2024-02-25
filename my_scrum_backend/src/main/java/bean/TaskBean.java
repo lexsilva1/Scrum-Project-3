@@ -48,15 +48,14 @@ public class TaskBean {
         return taskEntity;
 
     }
-    public CategoryEntity convertCatToEntity(Category category) {
+    public CategoryEntity convertCatToEntity(String name) {
         CategoryEntity categoryEntity = new CategoryEntity();
-        categoryEntity.setCreator(category.getCreator());
-        categoryEntity.setName(category.getName());
+        categoryEntity.setCreator(taskDao.findCategoryByName(name).getCreator());
+        categoryEntity.setName(name);
         return categoryEntity;
     }
     public Category convertCatToDto(CategoryEntity categoryEntity) {
         Category category = new Category();
-        category.setCreator(categoryEntity.getCreator());
         category.setName(categoryEntity.getName());
         return category;
     }
@@ -95,10 +94,10 @@ public class TaskBean {
         }
         return false;
     }
-    public void createCategory(Category category) {
+    public void createCategory(String name, String creator) {
         CategoryEntity categoryEntity = new CategoryEntity();
-        categoryEntity.setName(category.getName());
-        categoryEntity.setCreator(category.getCreator());
+        categoryEntity.setName(name);
+        categoryEntity.setCreator(creator);
         taskDao.createCategory(categoryEntity);
     }
     public CategoryEntity findCategoryByName(String name) {
@@ -158,6 +157,9 @@ public class TaskBean {
             return true;
         }
         return false;
+    }
+    public List<CategoryEntity> getAllCategories() {
+        return taskDao.findAllCategories();
     }
 
 }

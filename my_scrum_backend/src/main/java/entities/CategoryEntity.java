@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 @NamedQuery(name="Category.findCategoryByName", query="SELECT a FROM CategoryEntity a WHERE a.name = :name")
 @NamedQuery(name="Category.findCategoryByCreator", query="SELECT a FROM CategoryEntity a WHERE a.creator = :creator")
 @NamedQuery(name="Category.findCreatorByName", query="SELECT a FROM CategoryEntity a WHERE a.name = :name")
+@NamedQuery(name="Category.findAll", query="SELECT a FROM CategoryEntity a")
 public class CategoryEntity {
     @Id
     @Column(name="name", nullable = false, unique = true)
