@@ -111,8 +111,8 @@ public class TaskService {
         if (!authorized) {
             return Response.status(401).entity("Unauthorized").build();
         } else {
-            boolean valid = taskBean.categoryExists(category.getName());
-            if (!valid) {
+            boolean available = taskBean.categoryExists(category.getName());
+            if (available) {
                 return Response.status(400).entity("All elements are required").build();
             }
             User user = userBean.getUser(token);

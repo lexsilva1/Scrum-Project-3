@@ -99,7 +99,7 @@ public class TaskDao extends AbstractDao<TaskEntity>{
     }
     public List<CategoryEntity> findAllCategories() {
         try {
-            List<CategoryEntity> categoryEntities = (List<CategoryEntity>) em.createNamedQuery("Category.findAllCategories").getResultList();
+            List<CategoryEntity> categoryEntities = (List<CategoryEntity>) em.createNamedQuery("Category.findAll").getResultList();
             return categoryEntities;
         } catch (Exception e) {
             return null;

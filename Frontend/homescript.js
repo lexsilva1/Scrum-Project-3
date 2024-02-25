@@ -20,6 +20,32 @@ function attachDragAndDropListeners(task) { // Adiciona os listeners de drag and
       updateTask(task);
   });
 }
+
+document.addEventListener('DOMContentLoaded', async function() {
+  try {
+    // Agora estamos usando await para esperar a promessa ser resolvida
+    var categories = await getCategories();
+
+    var select = document.getElementById('taskCategory');
+
+    // Limpa opções existentes
+    select.innerHTML = '';
+
+    // Cria uma nova opção para cada categoria e adiciona à combobox
+    for (var i = 0; i < categories.length; i++) {
+      var option = document.createElement('option');
+      option.value = categories[i];
+      option.text = categories[i];
+      select.appendChild(option);
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    // Handle fetch errors
+    alert('Error fetching categories. Please try again.');
+  }
+});
+
+
 // Adiciona os listeners de drag and drop a um painel
 panels.forEach(panel => { 
   panel.addEventListener('dragover', e => {
@@ -467,3 +493,39 @@ async function logout() {
   sessionStorage.clear();
   window.location.href = 'index.html';
 }
+
+async function getCategories() {
+  try {
+    const response = await fetch('http://localhost:8080/Scrum-Project-3/rest/task/allCategories', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'token': sessionStorage.getItem('token')
+      }
+    });
+
+    if (response.status === 200) {
+      const categoriesArray = await response.json();
+      console.log(categoriesArray);
+      if(categoriesArray.length === 0){
+        alert('Categories not found');
+      } else {
+        const Array = [];
+        for (var i = 0; i < categoriesArray.length; i++) {
+          Array.push(categoriesArray[i].name);
+        }
+        return Array;
+      }
+    
+    } else if (response.status === 404) {
+      alert('Categories not found');
+    }
+  } catch (error) {
+    console.error('Something went wrong:', error);
+    throw error;
+  }
+}
+
+
+
+
