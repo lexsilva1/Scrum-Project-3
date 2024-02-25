@@ -16,7 +16,7 @@ public class Task {
     LocalDate startDate;
     LocalDate endDate;
     String category;
-    boolean active;
+    boolean active = true;
 
     private static final int low = 100;
     private static final int medium = 200;
