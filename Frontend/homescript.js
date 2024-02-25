@@ -115,10 +115,12 @@ function getDragAfterElement(panel, y) {
 document.getElementById('addTask').addEventListener('click', function() {
   var Description = taskDescription.value.trim();
   var Name = taskName.value.trim();
+  var category = document.getElementById('taskCategory').value;
+  console.log(category);
   var priority = taskPriority;
   var startdate = document.getElementById('startdate').value;
   var enddate = document.getElementById('enddate').value;
-  if (Name === '' || Description === '' || priority === null || startdate === '') {
+  if (Name === '' || Description === '' || category === null || priority === null || startdate === '') {
     document.getElementById('warningMessage2').innerText = 'Fill in all fields and define a priority';
   }else if(enddate !== ''){
     if (startdate > enddate) {
@@ -127,17 +129,16 @@ document.getElementById('addTask').addEventListener('click', function() {
   } else {
     document.getElementById('warningMessage2').innerText = '';
   }
-  if (Name.trim() !== '' && Description.trim() !== '' && priority !== null && startdate !== ''){
+  if (Name.trim() !== '' && Description.trim() !== '' && category !== null && priority !== null && startdate !== ''){
     if(enddate === ''){
       enddate = '2199-12-31';
     }
-    console.log('startdate',startdate);
-    console.log('enddate',enddate);
-      const task = createTask(Name, Description, priority,startdate,enddate);
+      const task = createTask(Name, Description, category, priority,startdate,enddate);
       postTask(task);
       // Limpar os input fields depois de adicionar a task
       document.getElementById('taskName').value = '';
       document.getElementById('taskDescription').value = '';
+      document.getElementById('taskCategory').value = '';
       document.getElementById('startdate').value = '';
       document.getElementById('enddate').value = '';
       removeSelectedPriorityButton();
@@ -145,10 +146,11 @@ document.getElementById('addTask').addEventListener('click', function() {
   }
 });
 
-function createTask(name, description, priority,startdate,enddate) { // Cria uma tarefa com o nome, a descrição e a priority passados como argumentos 
+function createTask(name, description, category, priority,startdate,enddate) { // Cria uma tarefa com o nome, a descrição e a priority passados como argumentos 
   const task = {
   title :name,
   description: description,
+  category: category,
   priority: priority,
   startDate: startdate,
   endDate: enddate,
@@ -170,6 +172,7 @@ async function postTask(task) {
         id: taskData.id,
         title: taskData.title,
         description: taskData.description,
+        category: taskData.category,
         priority: taskData.priority,
         startDate: taskData.startDate,
         endDate: taskData.endDate,
@@ -301,8 +304,8 @@ async function loadTasks() {
   }
   async function deleteTask(id) {
     try {
-      const response = await fetch(`http://localhost:8080/Scrum-Project-3/rest/task/delete/${id}`, {
-        method: 'DELETE',
+      const response = await fetch(`http://localhost:8080/Scrum-Project-3/rest/task/block/${id}`, {
+        method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
           'token': sessionStorage.getItem('token')

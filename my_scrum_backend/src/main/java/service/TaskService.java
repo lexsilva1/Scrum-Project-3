@@ -81,20 +81,21 @@ public class TaskService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response addTask(Task task, @HeaderParam("token") String token) {
+        System.out.println("token "+token);
         boolean authorized = userBean.isUserAuthorized(token);
         if (!authorized) {
             return Response.status(401).entity("Unauthorized").build();
         } else {
             boolean valid = taskBean.isTaskValid(task);
-            boolean categoryExists = taskBean.categoryExists(task.getCategory().getName());
+            boolean categoryExists = taskBean.categoryExists(task.getCategory());
             if (!valid) {
                 return Response.status(400).entity("All elements are required").build();
             }else if (!categoryExists){
                 return Response.status(400).entity("Category does not exist").build();
             }
             User user = userBean.getUser(token);
-            Category category = task.getCategory();
-            CategoryEntity categoryEntity = taskBean.findCategoryByName(category.getName());
+            String category = task.getCategory();
+            CategoryEntity categoryEntity = taskBean.findCategoryByName(category);
             TaskEntity taskEntity = taskBean.convertToEntity(task);
             taskEntity.setCategory(categoryEntity);
             taskEntity.setUser(userBean.convertToEntity(user));
@@ -167,15 +168,15 @@ public class TaskService {
             return Response.status(401).entity("Unauthorized").build();
         } else {
             boolean valid = taskBean.isTaskValid(task);
-            boolean categoryExists = taskBean.categoryExists(task.getCategory().getName());
+            boolean categoryExists = taskBean.categoryExists(task.getCategory());
             if (!valid) {
                 return Response.status(400).entity("All elements are required").build();
             }else if (!categoryExists){
                 return Response.status(400).entity("Category does not exist").build();
             }
             User user = userBean.getUser(token);
-            Category category = task.getCategory();
-            CategoryEntity categoryEntity = taskBean.findCategoryByName(category.getName());
+            String category = task.getCategory();
+            CategoryEntity categoryEntity = taskBean.findCategoryByName(category);
             TaskEntity taskEntity = taskBean.convertToEntity(task);
             taskEntity.setCategory(categoryEntity);
             taskEntity.setUser(userBean.convertToEntity(user));
