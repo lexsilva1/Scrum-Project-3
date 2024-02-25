@@ -324,12 +324,11 @@ async function loadTasks() {
     };
   
     try {
-      const response = await fetch('http://localhost:8080/Scrum-Project-3/rest/user/updatetask', {
+      const response = await fetch('http://localhost:8080/Scrum-Project-3/rest/task/update', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'username': sessionStorage.getItem('username'),
-          'password': sessionStorage.getItem('password')
+          'token': sessionStorage.getItem('token'),
         },
         body: JSON.stringify(task)
       });
@@ -415,7 +414,7 @@ window.onclose = function () { // Guarda as tarefas na local storage quando a p√
 //fazer fetch ao ficheiro do backend
 async function getUserPhoto(){
   try {
-    const response = await fetch(`http://localhost:8080/Scrum-Project-3/rest/user/${sessionStorage.getItem('username')}`);
+    const response = await fetch(`http://localhost:8080/Scrum-Project-3/rest/user/photo`);
     if (!response.ok) {
       throw new Error('Failed to fetch user data');
     }
