@@ -6,6 +6,7 @@ import java.util.List;
 import bean.UserBean;
 import dto.Task;
 import dto.User;
+import dto.UserDto;
 import entities.UserEntity;
 import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpServletRequest;
@@ -161,5 +162,19 @@ public class UserService {
             return Response.status(200).entity("User deleted").build();
         }
     }
+    @GET
+    @Path("/myUserDto")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response myProfile(@HeaderParam("token") String token) {
+        boolean authorized = userBean.isUserAuthorized(token);
+        if (!authorized) {
+            return Response.status(405).entity("Forbidden").build();
+        }else {
+            User user = userBean.getUser(token);
+            UserDto userDto = userBean.convertUsertoUserDto(user);
+            return Response.status(200).entity(userDto).build();
+        }
+    }
+
 }
 
