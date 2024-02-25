@@ -67,6 +67,9 @@ public class TaskDao extends AbstractDao<TaskEntity>{
             return null;
         }
     }
+    public void removeCategory(CategoryEntity categoryEntity) {
+        em.remove(categoryEntity);
+    }
     public void createCategory(CategoryEntity categoryEntity) {
         em.persist(categoryEntity);
     }
