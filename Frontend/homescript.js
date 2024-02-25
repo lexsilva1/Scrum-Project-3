@@ -3,8 +3,6 @@ window.onload = async function () {
     updateDate();
     showTime();
     document.getElementById('profileImageHome').src = await getUserPhoto();
-    let names = user.name.split(" ");
-    document.getElementById('login-home').textContent = names[0];
   };
 
   if(sessionStorage.getItem('token') === null || sessionStorage.getItem('token') === ''){
@@ -244,12 +242,11 @@ function createTaskElement(task) {
 
 async function loadTasks() {
 
-     await fetch('http://localhost:8080/Scrum-Project-3/rest/user/tasks', {
+     await fetch('http://localhost:8080/Scrum-Project-3/rest/task/byUser', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'username': sessionStorage.getItem('username'),
-        'password': sessionStorage.getItem('password')
+        'token': sessionStorage.getItem('token')
       }
     }).then(async function(response){
       if (response.status === 200){
@@ -412,16 +409,21 @@ window.onclose = function () { // Guarda as tarefas na local storage quando a p√
 //fazer fetch ao ficheiro do backend
 async function getUserPhoto(){
   try {
-    const response = await fetch(`http://localhost:8080/Scrum-Project-3/rest/user/photo`);
+    const response = await fetch('http://localhost:8080/Scrum-Project-3/rest/user/photo', {
+    method: 'GET',
+    headers: {
+      'Accept': '*/*',
+      'Content-Type': 'application/json',
+      'token': sessionStorage.getItem('token')
+    }
+  });
+
     if (!response.ok) {
       throw new Error('Failed to fetch user data');
     }
     
-    const obj = await response.json();
-    console.log(obj);
-    console.log(obj.userPhoto);
-    sessionStorage.setItem('photo', obj.userPhoto);
-    return obj.userPhoto;
+    const obj = await response.text();
+    return obj;
     
   } catch (error) {
     console.error('Something went wrong:', error);
@@ -436,8 +438,7 @@ async function logout() {
     headers: {
       'Accept': '*/*',
       'Content-Type': 'application/json',
-      username: sessionStorage.getItem('username'),
-      password: sessionStorage.getItem('password'),
+      token: sessionStorage.getItem('token'),
     }
   }).then(function(response) {
     if (response.status === 200) {
