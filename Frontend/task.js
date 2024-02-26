@@ -7,6 +7,8 @@ window.onload =async function () {
 
     const taskCreator = await getTaskCreator();
     sessionStorage.setItem('taskCreator', taskCreator.username);
+    sessionStorage.setItem('role', user.role);
+    sessionStorage.setItem('username', user.username);
     document.getElementById('usernameTask').textContent = names[0];
     let username = sessionStorage.getItem("username"); // Obter o user da session storage
     let descricao = sessionStorage.getItem("taskDescription"); // Obter a descrição da session storage
@@ -89,7 +91,10 @@ highButton.addEventListener("click", () => setPriorityButtonSelected(highButton,
     lowButton.disabled = true;
     mediumButton.disabled = true;
     highButton.disabled = true;
-    document.getElementById('save-button').disabled = true;
+    document.getElementById('save-button').remove();
+    document.getElementById('cancel-button').remove();
+    document.getElementById('descricao-task').disabled = true;
+    document.getElementById('titulo-task').disabled = true;
 }
 
 
