@@ -21,6 +21,9 @@ function attachDragAndDropListeners(task) { // Adiciona os listeners de drag and
   task.addEventListener('dragend', () => {
       task.classList.remove('dragging')
       updateStatus(task);
+      clearTaskPanels();
+      loadTasks();
+
   });
 }
 
@@ -138,6 +141,8 @@ document.getElementById('addTask').addEventListener('click', function() {
     }
       const task = createTask(Name, Description, category, priority,startdate,enddate);
       postTask(task);
+      clearTaskPanels();
+      loadTasks();
       // Limpar os input fields depois de adicionar a task
       document.getElementById('taskName').value = '';
       document.getElementById('taskDescription').value = '';
@@ -594,6 +599,12 @@ async function getUserDTO(){
     // Re-throw the error or return a rejected promise
     throw error;
   }
+}
+
+function clearTaskPanels() {
+  document.getElementById('todo').innerHTML = '';
+  document.getElementById('doing').innerHTML = '';
+  document.getElementById('done').innerHTML = '';
 }
 
 
