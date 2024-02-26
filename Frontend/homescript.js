@@ -279,7 +279,7 @@ function createTaskElement(task) {
 
 async function loadTasks() {
 
-     await fetch('http://localhost:8080/Scrum-Project-3/rest/task/byUser', {
+     await fetch('http://localhost:8080/Scrum-Project-3/rest/task/all', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -481,32 +481,6 @@ window.onclose = function () { // Guarda as tarefas na local storage quando a p√
   localStorage.clear();
 }
 
-
-//fazer fetch ao ficheiro do backend
-/*async function getUserPhoto(){
-  try {
-    const response = await fetch('http://localhost:8080/Scrum-Project-3/rest/user/photo', {
-    method: 'GET',
-    headers: {
-      'Accept': '*/ /*',
-      'Content-Type': 'application/json',
-      'token': sessionStorage.getItem('token')
-    }
-  });
-
-    if (!response.ok) {
-      throw new Error('Failed to fetch user data');
-    }
-    
-    const obj = await response.text();
-    return obj;
-    
-  } catch (error) {
-    console.error('Something went wrong:', error);
-    // Re-throw the error or return a rejected promise
-    throw error;
-  }
-}*/
 
 async function logout() {
   await fetch('http://localhost:8080/Scrum-Project-3/rest/user/logout', {
