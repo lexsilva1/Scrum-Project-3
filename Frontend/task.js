@@ -74,6 +74,72 @@ function setPriorityButtonSelected(button, priority) {
     button.classList.add("selected");
     sessionStorage.setItem("taskPriority", priority);
 }
+const savebutton = document.getElementById("save-button");
+savebutton.addEventListener("click", () => {
+    let taskDescription = document.getElementById("descricao-task").value.trim();
+    let taskTitle = document.getElementById("titulo-task").value.trim();
+    
+    if (taskDescription === "" || taskTitle === "") {
+        document.getElementById('warningMessage3').innerText = 'Your task must have a title and a description';
+            return;
+    } else if (document.getElementById('startdate').value === "" ) {
+        document.getElementById('warningMessage3').innerText = 'Your task must have a start date';
+            return;
+    }else if (document.getElementById('enddate').value !== "") {
+            if(document.getElementById('startdate').value > document.getElementById('enddate').value){
+            document.getElementById('warningMessage3').innerText = 'The start date must be before the end date';
+            return;
+    } 
+    }
+    else {
+        let enddate = document.getElementById('enddate').value;
+        if(enddate === ""){
+            document.getElementById('enddate').value = "2199-12-31";
+        }
+        updateTask();
+        // Limpa mensagem de erro
+        document.getElementById('warningMessage3').innerText = '';
+
+    sessionStorage.removeItem("taskDescription");
+    sessionStorage.removeItem("taskTitle");
+    sessionStorage.removeItem("taskid");
+    sessionStorage.removeItem("taskStatus");
+    sessionStorage.removeItem("taskPriority");
+    sessionStorage.removeItem("taskStartdate");
+    sessionStorage.removeItem("taskEnddate");
+    window.location.href = 'home.html';
+    }
+});
+const cancelbutton = document.getElementById("cancel-button");
+cancelbutton.addEventListener("click", () => {
+    // Abrir o modal de cancel
+    const cancelModal = document.getElementById("cancel-modal");
+    cancelModal.style.display = "block";
+
+
+    const cancelButton = document.getElementById("continue-editing-button");
+    cancelButton.addEventListener("click", () => {
+        window.location.href = 'task.html';
+    });
+
+    // Event listener para o botão de confirmação
+    const confirmButton = document.getElementById("confirm-cancel-button");
+    confirmButton.addEventListener("click", () => {
+        sessionStorage.removeItem("taskDescription");
+        sessionStorage.removeItem("taskTitle");
+        sessionStorage.removeItem("taskid");
+        sessionStorage.removeItem("taskStatus");
+        sessionStorage.removeItem("taskPriority");
+        sessionStorage.removeItem("taskStartdate");
+        sessionStorage.removeItem("taskEnddate");
+        sessionStorage.removeItem("taskCreator");
+        sessionStorage.removeItem("role");
+        sessionStorage.removeItem("username");
+        window.location.href = 'home.html';    
+    });
+    cancelModal.style.display = "grid";
+});
+
 if (sessionStorage.getItem('taskCreator') === sessionStorage.getItem('username') || !sessionStorage.getItem('role') === 'Developer') {
 // Event listeners para os botões status
 todoButton.addEventListener("click", () => setStatusButtonSelected(todoButton, "todo"));
@@ -100,32 +166,7 @@ highButton.addEventListener("click", () => setPriorityButtonSelected(highButton,
 }
 
 
-const cancelbutton = document.getElementById("cancel-button");
-cancelbutton.addEventListener("click", () => {
-    // Abrir o modal de cancel
-    const cancelModal = document.getElementById("cancel-modal");
-    cancelModal.style.display = "block";
 
-
-    const cancelButton = document.getElementById("continue-editing-button");
-    cancelButton.addEventListener("click", () => {
-        window.location.href = 'task.html';
-    });
-
-    // Event listener para o botão de confirmação
-    const confirmButton = document.getElementById("confirm-cancel-button");
-    confirmButton.addEventListener("click", () => {
-        sessionStorage.removeItem("taskDescription");
-        sessionStorage.removeItem("taskTitle");
-        sessionStorage.removeItem("taskid");
-        sessionStorage.removeItem("taskStatus");
-        sessionStorage.removeItem("taskPriority");
-        sessionStorage.removeItem("taskStartdate");
-        sessionStorage.removeItem("taskEnddate");
-        window.location.href = 'home.html';    
-    });
-    cancelModal.style.display = "grid";
-});
 
 // funçaõ de update das tasks
 async function updateTask() {
@@ -176,42 +217,7 @@ async function updateTask() {
      }
    }
 // Event listener para o botão save
-const savebutton = document.getElementById("save-button");
-savebutton.addEventListener("click", () => {
-    let taskDescription = document.getElementById("descricao-task").value.trim();
-    let taskTitle = document.getElementById("titulo-task").value.trim();
-    
-    if (taskDescription === "" || taskTitle === "") {
-        document.getElementById('warningMessage3').innerText = 'Your task must have a title and a description';
-            return;
-    } else if (document.getElementById('startdate').value === "" ) {
-        document.getElementById('warningMessage3').innerText = 'Your task must have a start date';
-            return;
-    }else if (document.getElementById('enddate').value !== "") {
-            if(document.getElementById('startdate').value > document.getElementById('enddate').value){
-            document.getElementById('warningMessage3').innerText = 'The start date must be before the end date';
-            return;
-    } 
-    }
-    else {
-        let enddate = document.getElementById('enddate').value;
-        if(enddate === ""){
-            document.getElementById('enddate').value = "2199-12-31";
-        }
-        updateTask();
-        // Limpa mensagem de erro
-        document.getElementById('warningMessage3').innerText = '';
 
-    sessionStorage.removeItem("taskDescription");
-    sessionStorage.removeItem("taskTitle");
-    sessionStorage.removeItem("taskid");
-    sessionStorage.removeItem("taskStatus");
-    sessionStorage.removeItem("taskPriority");
-    sessionStorage.removeItem("taskStartdate");
-    sessionStorage.removeItem("taskEnddate");
-    window.location.href = 'home.html';
-    }
-});
 async function getUserDTO(){
   try {
     const response = await fetch('http://localhost:8080/Scrum-Project-3/rest/user/myUserDto', {
