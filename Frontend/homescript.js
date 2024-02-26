@@ -279,7 +279,7 @@ function createTaskElement(task) {
 
 async function loadTasks() {
 
-     await fetch('http://localhost:8080/Scrum-Project-3/rest/task/byUser', {
+     await fetch('http://localhost:8080/Scrum-Project-3/rest/task/all', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

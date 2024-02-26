@@ -1,8 +1,10 @@
 
 window.onload =async function () {
-    document.getElementById('profileImageHome').src = await getUserPhoto();
-    let user = await getUserData();    
-    let names = user.name.split(" ");
+  const user = await getUserDTO();
+  let names = user.name.split(" ");
+  document.getElementById('profileImageHome').src = user.userPhoto;
+  document.getElementById('usernameTask').innerHTML = names[0];
+
     const taskCreator = await getTaskCreator();
     sessionStorage.setItem('taskCreator', taskCreator.username);
     document.getElementById('usernameTask').textContent = names[0];
@@ -202,28 +204,33 @@ savebutton.addEventListener("click", () => {
     window.location.href = 'home.html';
     }
 });
-  async function getUserData(){
-    try{
-        const response = await fetch(`http://localhost:8080/Scrum-Project-3/rest/user/${sessionStorage.getItem('username')}`, {
-          headers: {
-            'Accept': '*/*',
-            'Content-Type': 'application/json',
-            'token': sessionStorage.getItem('token')
-          }
-        });
-        if (!response.ok){
-        throw new Error ('failed to fetch user data');
-        }
-        const obj = await response.json();
-        return obj;
-    } catch (error){
-        console.error('something went wrong', error);
-        throw error;
+async function getUserDTO(){
+  try {
+    const response = await fetch('http://localhost:8080/Scrum-Project-3/rest/user/myUserDto', {
+    method: 'GET',
+    headers: {
+      'Accept': '*/*',
+      'Content-Type': 'application/json',
+      'token': sessionStorage.getItem('token')
     }
+  });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch user data');
+    }
+    
+    const obj = await response.json();
+    return obj;
+    
+  } catch (error) {
+    console.error('Something went wrong:', error);
+    // Re-throw the error or return a rejected promise
+    throw error;
   }
+}
   async function getTaskCreator(){
     try{
-        const response = await fetch(`http://localhost:8080/Scrum-Project-3/rest/user/task/creator/${sessionStorage.getItem('taskid')}`, {
+        const response = await fetch(`http://localhost:8080/Scrum-Project-3/rest/task/creator/${sessionStorage.getItem('taskid')}`, {
           headers: {
             'Accept': '*/*',
             'Content-Type': 'application/json',
