@@ -1,5 +1,6 @@
 package bean;
 import dto.Category;
+import dto.TaskCreator;
 import entities.UserEntity;
 import entities.CategoryEntity;
 import entities.TaskEntity;
@@ -89,6 +90,15 @@ public class TaskBean {
             tasks.add(convertToDto(taskEntity));
         }
         return tasks;
+    }
+    public Task findTaskById(String id) {
+        return convertToDto(taskDao.findTaskById(id));
+    }
+    public TaskCreator findUserById(String id) {
+    TaskEntity taskEntity = taskDao.findTaskById(id);
+        TaskCreator taskCreator = new TaskCreator();
+        taskCreator.setUsername(taskEntity.getUser().getUsername());
+        return taskCreator;
     }
     public boolean categoryExists(String name) {
         if(taskDao.findCategoryByName(name) != null) {

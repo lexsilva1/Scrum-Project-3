@@ -18,6 +18,7 @@ public class Task {
     String category;
     boolean active = true;
 
+
     private static final int low = 100;
     private static final int medium = 200;
     private static final int high = 300;

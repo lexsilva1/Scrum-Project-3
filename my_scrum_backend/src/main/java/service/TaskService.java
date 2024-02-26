@@ -4,6 +4,7 @@ import bean.TaskBean;
 import bean.UserBean;
 import dto.Category;
 import dto.Task;
+import dto.TaskCreator;
 import dto.User;
 import entities.TaskEntity;
 import entities.UserEntity;
@@ -114,14 +115,14 @@ public class TaskService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response createCategory(Category category, @HeaderParam("token") String token) {
         boolean authorized = userBean.isUserAuthorized(token);
-        if (!authorized) {
+        User user = userBean.getUser(token);
+        if (!authorized  || !user.getRole().equals("Owner")) {
             return Response.status(401).entity("Unauthorized").build();
         } else {
             boolean available = taskBean.categoryExists(category.getName());
             if (available) {
                 return Response.status(400).entity("All elements are required").build();
             }
-            User user = userBean.getUser(token);
             taskBean.createCategory(category.getName(), user.getUsername());
             return Response.status(201).entity("Category created").build();
         }
@@ -132,27 +133,26 @@ public class TaskService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateCategory(Category category, @HeaderParam("token") String token) {
         boolean authorized = userBean.isUserAuthorized(token);
-        if (!authorized) {
+        User user = userBean.getUser(token);
+        if (!authorized || !user.getRole().equals("Owner")) {
             return Response.status(401).entity("Unauthorized").build();
         } else {
             boolean available = taskBean.categoryExists(category.getName());
             if (!available) {
                 return Response.status(400).entity("Category does not exist").build();
-            }
-            User user = userBean.getUser(token);
-            if(!user.getRole().equals("Owner")){
-                return Response.status(403).entity("Forbidden").build();
+                }
             }
             taskBean.createCategory(category.getName(), user.getUsername());
             return Response.status(201).entity("Category updated").build();
         }
-    }
+
     @DELETE
     @Path("/deleteCategory/{name}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response removeCategory(@HeaderParam("token") String token, @PathParam("name") String name) {
         boolean authorized = userBean.isUserAuthorized(token);
-        if (!authorized) {
+        User user = userBean.getUser(token);
+        if (!authorized || !user.getRole().equals("Owner")) {
             return Response.status(401).entity("Unauthorized").build();
         } else {
             boolean removed = taskBean.removeCategory(name);
@@ -169,6 +169,8 @@ public class TaskService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateTask(Task task, @HeaderParam("token") String token) {
         boolean authorized = userBean.isUserAuthorized(token);
+    User user = userBean.getUser(token);
+        TaskEntity taskEntity = taskBean.convertToEntity(task);
         if (!authorized) {
             return Response.status(401).entity("Unauthorized").build();
         } else {
@@ -178,11 +180,11 @@ public class TaskService {
                 return Response.status(400).entity("All elements are required").build();
             }else if (!categoryExists){
                 return Response.status(400).entity("Category does not exist").build();
+            }else if(!user.getUsername().equals(taskEntity.getUser().getUsername()) && user.getRole().equals("Developer")){
+                return Response.status(403).entity("Forbidden").build();
             }
-            User user = userBean.getUser(token);
             String category = task.getCategory();
             CategoryEntity categoryEntity = taskBean.findCategoryByName(category);
-            TaskEntity taskEntity = taskBean.convertToEntity(task);
             taskEntity.setCategory(categoryEntity);
             taskEntity.setUser(userBean.convertToEntity(user));
             boolean updated = taskBean.updateTask(taskEntity);
@@ -256,6 +258,30 @@ public class TaskService {
                 categoryList.add(taskBean.convertCatToDto(categoryEntity));
             }
             return Response.status(200).entity(categoryList).build();
+        }
+    }
+    @GET
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getTaskById(@HeaderParam("token") String token, @PathParam("id") String id) {
+        boolean authorized = userBean.isUserAuthorized(token);
+        if (!authorized) {
+            return Response.status(401).entity("Unauthorized").build();
+        } else {
+            Task task = taskBean.findTaskById(id);
+            return Response.status(200).entity(task).build();
+        }
+    }
+    @GET
+    @Path("/creator/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getCreatorByName(@HeaderParam("token") String token, @PathParam("id") String id) {
+        boolean authorized = userBean.isUserAuthorized(token);
+        if (!authorized) {
+            return Response.status(401).entity("Unauthorized").build();
+        } else {
+            TaskCreator username = taskBean.findUserById(id);
+            return Response.status(200).entity(username).build();
         }
     }
 }

@@ -12,6 +12,7 @@ import jakarta.persistence.*;
 @NamedQuery(name="Task.findTaskByStatus", query="SELECT a FROM TaskEntity a WHERE a.status = :status")
 @NamedQuery(name="Task.findTaskByPriority", query="SELECT a FROM TaskEntity a WHERE a.priority = :priority")
 @NamedQuery(name="Task.findBlockedTasks", query="SELECT a FROM TaskEntity a WHERE a.active = false")
+@NamedQuery(name="Task.findUserById", query="SELECT a FROM TaskEntity a WHERE a.user = :user")
 public class TaskEntity implements Serializable {
     @Id
     @Column (name="id", nullable = false, unique = true, updatable = false)

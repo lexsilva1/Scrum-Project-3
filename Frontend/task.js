@@ -3,6 +3,8 @@ window.onload =async function () {
     document.getElementById('profileImageHome').src = await getUserPhoto();
     let user = await getUserData();    
     let names = user.name.split(" ");
+    const taskCreator = await getTaskCreator();
+    sessionStorage.setItem('taskCreator', taskCreator.username);
     document.getElementById('usernameTask').textContent = names[0];
     let username = sessionStorage.getItem("username"); // Obter o user da session storage
     let descricao = sessionStorage.getItem("taskDescription"); // Obter a descrição da session storage
@@ -78,6 +80,15 @@ doneButton.addEventListener("click", () => setStatusButtonSelected(doneButton, "
 lowButton.addEventListener("click", () => setPriorityButtonSelected(lowButton, 100));
 mediumButton.addEventListener("click", () => setPriorityButtonSelected(mediumButton, 200));
 highButton.addEventListener("click", () => setPriorityButtonSelected(highButton, 300));
+if (sessionStorage.getItem('taskCreator') !== sessionStorage.getItem('username') && sessionStorage.getItem('role') === 'Developer') {
+    document.getElementById('save-button').style.display = 'none';
+    todoButton.removeEventListener("click", () => setStatusButtonSelected(todoButton, "todo"));
+    doingButton.removeEventListener("click", () => setStatusButtonSelected(doingButton, "doing"));
+    doneButton.removeEventListener("click", () => setStatusButtonSelected(doneButton, "done"));
+    lowButton.removeEventListener("click", () => setPriorityButtonSelected(lowButton, 100));
+    mediumButton.removeEventListener("click", () => setPriorityButtonSelected(mediumButton, 200));
+    highButton.removeEventListener("click", () => setPriorityButtonSelected(highButton, 300));
+}
 
 const cancelbutton = document.getElementById("cancel-button");
 cancelbutton.addEventListener("click", () => {
@@ -191,30 +202,36 @@ savebutton.addEventListener("click", () => {
     window.location.href = 'home.html';
     }
 });
-async function getUserPhoto(){
-    try {
-      const response = await fetch(`http://localhost:8080/Scrum-Project-3/rest/user/${sessionStorage.getItem('username')}`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch user data');
-      }
-      
-      const obj = await response.json();
-      console.log(obj);
-      console.log(obj.userPhoto);
-      sessionStorage.setItem('photo', obj.userPhoto);
-      return obj.userPhoto;
-      
-    } catch (error) {
-      console.error('Something went wrong:', error);
-      // Re-throw the error or return a rejected promise
-      throw error;
-    }
-  }
   async function getUserData(){
     try{
-        const response = await fetch(`http://localhost:8080/Scrum-Project-3/rest/user/${sessionStorage.getItem('username')}`);
+        const response = await fetch(`http://localhost:8080/Scrum-Project-3/rest/user/${sessionStorage.getItem('username')}`, {
+          headers: {
+            'Accept': '*/*',
+            'Content-Type': 'application/json',
+            'token': sessionStorage.getItem('token')
+          }
+        });
         if (!response.ok){
         throw new Error ('failed to fetch user data');
+        }
+        const obj = await response.json();
+        return obj;
+    } catch (error){
+        console.error('something went wrong', error);
+        throw error;
+    }
+  }
+  async function getTaskCreator(){
+    try{
+        const response = await fetch(`http://localhost:8080/Scrum-Project-3/rest/user/task/creator/${sessionStorage.getItem('taskid')}`, {
+          headers: {
+            'Accept': '*/*',
+            'Content-Type': 'application/json',
+            'token': sessionStorage.getItem('token')
+          }
+        });
+        if (!response.ok){
+        throw new Error ('failed to fetch task data');
         }
         const obj = await response.json();
         return obj;

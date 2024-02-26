@@ -108,5 +108,12 @@ public class TaskDao extends AbstractDao<TaskEntity>{
             return null;
         }
     }
+    public UserEntity findUserbyId(int id) {
+        try {
+            return (UserEntity) em.createNamedQuery("Task.findUserById").setParameter("id", id).getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
 
 }
