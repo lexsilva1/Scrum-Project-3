@@ -226,7 +226,7 @@ h1 {
 }
 /* Logout button */
 .logout-button {
-  margin-right: 100px;
+  margin-right: 0.5rem;
   background-color: var(--green3);
   color: var(--light-grey);
   border: none;
@@ -1237,14 +1237,22 @@ margin-bottom: 30px;
 }
 
 /*---------------------PAGINA DE USERS-----------------------------*/
+.main-container {
+  display: flex;
+}
+
+aside {
+  flex: 1;
+}
+
 .column-container {
+  flex: 3;
   display: flex;
   justify-content: flex-start;
-  margin-left: 0; /* Ajuste o valor conforme necessário */
 }
 
 .column {
-  flex: 0.6; /* Ajuste o valor conforme necessário */
+  flex: 1;
   margin: 1rem;
   padding: 1rem;
   border: 3px solid #ddd;

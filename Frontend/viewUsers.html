@@ -4,36 +4,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Roles</title>
-    <style>
-        .container {
-            display: flex;
-            justify-content: space-between;
-        }
-        .column {
-            flex: 1;
-            margin: 1rem;
-            padding: 1rem;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        .column h2 {
-            text-align: center;
-        }
-    </style>
+    <link rel="stylesheet" href="main.css">
 </head>
 <body>
-    <div class="container">
-        <div class="column">
-            <h2>Developer</h2>
-            <!-- Lista de Developers aqui -->
+    <header>
+        <h1>Welcome to Scrum</h1>
+        <div class="container clock">
+            <div class="display-date">
+              <span id="day">day</span>,
+              <span id="daynum">00</span>
+              <span id="month">month</span>
+              <span id="year">0000</span>
+            </div>
+            <div class="display-time">
+            </div>
         </div>
-        <div class="column">
-            <h2>Scrum Master</h2>
-            <!-- Lista de Scrum Masters aqui -->
+        <div class="username">
+            <img id="profileImageHome" src ="" alt="Avatar">
+            <label class="logout-button" id="login-home"></label>
         </div>
-        <div class="column">
-            <h2>Product Owner</h2>
-            <!-- Lista de Product Owners aqui -->
+        <button class="logout-button" id="logout">
+            <img src="multimedia/logout.png" alt="Logout Icon">
+            Logout
+        </button>
+    </header>
+    
+    <div class="main-container">
+        <aside>
+            <div class="add-task-container">
+                <button id="addUser">Add User</button>
+                <button id="backButton"><<</button>
+            </div>
+        </aside>
+
+        <div class="column-container">
+            <div class="column" id="developerColumn">
+                <h2>Developer</h2>
+                <!-- Lista de Developers aqui -->
+            </div>
+            <div class="column" id="scrumMasterColumn">
+                <h2>Scrum Master</h2>
+                <!-- Lista de Scrum Masters aqui -->
+            </div>
+            <div class="column" id="productOwnerColumn">
+                <h2>Product Owner</h2>
+                <!-- Lista de Product Owners aqui -->
+            </div>
         </div>
     </div>
 </body>
