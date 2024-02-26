@@ -70,7 +70,7 @@ function setPriorityButtonSelected(button, priority) {
     button.classList.add("selected");
     sessionStorage.setItem("taskPriority", priority);
 }
-
+if (sessionStorage.getItem('taskCreator') === sessionStorage.getItem('username') || !sessionStorage.getItem('role') === 'Developer') {
 // Event listeners para os botões status
 todoButton.addEventListener("click", () => setStatusButtonSelected(todoButton, "todo"));
 doingButton.addEventListener("click", () => setStatusButtonSelected(doingButton, "doing"));
@@ -80,15 +80,16 @@ doneButton.addEventListener("click", () => setStatusButtonSelected(doneButton, "
 lowButton.addEventListener("click", () => setPriorityButtonSelected(lowButton, 100));
 mediumButton.addEventListener("click", () => setPriorityButtonSelected(mediumButton, 200));
 highButton.addEventListener("click", () => setPriorityButtonSelected(highButton, 300));
-if (sessionStorage.getItem('taskCreator') !== sessionStorage.getItem('username') && sessionStorage.getItem('role') === 'Developer') {
-    document.getElementById('save-button').style.display = 'none';
-    todoButton.removeEventListener("click", () => setStatusButtonSelected(todoButton, "todo"));
-    doingButton.removeEventListener("click", () => setStatusButtonSelected(doingButton, "doing"));
-    doneButton.removeEventListener("click", () => setStatusButtonSelected(doneButton, "done"));
-    lowButton.removeEventListener("click", () => setPriorityButtonSelected(lowButton, 100));
-    mediumButton.removeEventListener("click", () => setPriorityButtonSelected(mediumButton, 200));
-    highButton.removeEventListener("click", () => setPriorityButtonSelected(highButton, 300));
+} else {
+    todoButton.disabled = true;
+    doingButton.disabled = true;
+    doneButton.disabled = true;
+    lowButton.disabled = true;
+    mediumButton.disabled = true;
+    highButton.disabled = true;
+    document.getElementById('save-button').disabled = true;
 }
+
 
 const cancelbutton = document.getElementById("cancel-button");
 cancelbutton.addEventListener("click", () => {
