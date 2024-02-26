@@ -1,18 +1,29 @@
 window.onload = async function(){
-    document.getElementById('profileImageHomeReg').src = await getUserPhoto();
-    let user = await getUserData();    
-    let names = user.name.split(" ");
-    document.getElementById('loginReg').textContent = names[0];
-    const confirmationDialog = document.getElementById('confirmChanges');
+    const user = await getUserDTO();
+    const names = user.name.split(" ");
+    document.getElementById('profileImageHomeReg').src = user.userPhoto;
+    document.getElementById('loginReg').innerHTML = names[0];
+    console.log(user);
+
+    
+    
     document.getElementById('editFirstName').placeholder = names[0];
     document.getElementById('editLastName').placeholder = names[1];
-    document.getElementById('profileImage').src = user.userPhoto;
-    document.getElementById('photoUpload').placeholder = user.userPhoto;
+    document.getElementById('profileImageEdit').src = user.userPhoto;
+    document.getElementById('editUserPhotoUrl').placeholder = user.userPhoto;
     document.getElementById('editUserEmail').placeholder = user.email;
     document.getElementById('editUserContact').placeholder= user.contactNumber;
     document.getElementById('username').placeholder = user.username;
 
+}
+
+if(sessionStorage.getItem('token') === null || sessionStorage.getItem('token') === ''){
+    window.location.href = 'index.html';
+}
+
     document.getElementById('buttonSubmitData').addEventListener('click',()=>{
+
+        const confirmationDialog = document.getElementById('confirmChanges');
         //primeiro nome
         if(document.getElementById('editFirstName').value.trim() === "" || document.getElementById('editFirstName').value.trim() === names[0]){
             document.getElementById('editFirstName').value = names[0];
@@ -68,21 +79,8 @@ window.onload = async function(){
     document.getElementById('declineChangesButton').addEventListener('click',()=>{
         confirmationDialog.close();
     })
-}
 
-async function getUserData(){
-    try{
-        const response = await fetch(`http://localhost:8080/Scrum-Project-3/rest/user/${sessionStorage.getItem('username')}`);
-        if (!response.ok){
-        throw new Error ('failed to fetch user data');
-        }
-        const obj = await response.json();
-        return obj;
-    } catch (error){
-        console.error('something went wrong', error);
-        throw error;
-    }
-}
+
 
 
 async function updateUserData(user){//chama o user aqui
@@ -112,15 +110,29 @@ async function updateUserData(user){//chama o user aqui
         console.error('error',error);
     }
 }
-async function getUserPhoto(){
+
+//abrir modal para confirmar alterações 
+document.getElementById('buttonCancelEdition').addEventListener('click',()=>{
+    window.location.href='home.html';
+})
+
+async function getUserDTO(){
     try {
-      const response = await fetch(`http://localhost:8080/Scrum-Project-3/rest/user/${sessionStorage.getItem('username')}`);
+      const response = await fetch('http://localhost:8080/Scrum-Project-3/rest/user/myUserDto', {
+      method: 'GET',
+      headers: {
+        'Accept': '*/*',
+        'Content-Type': 'application/json',
+        'token': sessionStorage.getItem('token')
+      }
+    });
+  
       if (!response.ok) {
         throw new Error('Failed to fetch user data');
       }
+      
       const obj = await response.json();
-      sessionStorage.setItem('photo', obj.userPhoto);
-      return obj.userPhoto;
+      return obj;
       
     } catch (error) {
       console.error('Something went wrong:', error);
@@ -128,8 +140,11 @@ async function getUserPhoto(){
       throw error;
     }
   }
-//abrir modal para confirmar alterações 
-document.getElementById('buttonCancelEdition').addEventListener('click',()=>{
-    window.location.href='home.html';
-})
 
+  document.getElementById('editUserPhotoUrl').addEventListener('input', function() {
+    // Obtenha o novo URL do campo de entrada
+    var newUrl = document.getElementById('editUserPhotoUrl').value;
+
+    // Atualize a fonte da imagem para o novo URL
+    document.getElementById('profileImageEdit').src = newUrl;
+});

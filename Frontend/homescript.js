@@ -439,12 +439,12 @@ window.onclose = function () { // Guarda as tarefas na local storage quando a p√
 
 
 //fazer fetch ao ficheiro do backend
-async function getUserPhoto(){
+/*async function getUserPhoto(){
   try {
     const response = await fetch('http://localhost:8080/Scrum-Project-3/rest/user/photo', {
     method: 'GET',
     headers: {
-      'Accept': '*/*',
+      'Accept': '*/ /*',
       'Content-Type': 'application/json',
       'token': sessionStorage.getItem('token')
     }
@@ -462,7 +462,7 @@ async function getUserPhoto(){
     // Re-throw the error or return a rejected promise
     throw error;
   }
-}
+}*/
 
 async function logout() {
   await fetch('http://localhost:8080/Scrum-Project-3/rest/user/logout', {

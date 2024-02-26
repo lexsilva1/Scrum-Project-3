@@ -189,6 +189,7 @@ public class UserBean {
         userDto.setContactNumber(user.getContactNumber());
         userDto.setRole(user.getRole());
         userDto.setUserPhoto(user.getUserPhoto());
+        userDto.setUsername(user.getUsername());
         return userDto;
     }
 }
