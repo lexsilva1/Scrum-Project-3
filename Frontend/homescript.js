@@ -20,7 +20,7 @@ function attachDragAndDropListeners(task) { // Adiciona os listeners de drag and
   });
   task.addEventListener('dragend', () => {
       task.classList.remove('dragging')
-      updateTask(task);
+      updateStatus(task);
   });
 }
 
@@ -331,6 +331,45 @@ async function loadTasks() {
       alert('Error deleting task. Please try again.');
     }
   }
+  async function updateStatus(taskElement) {
+    let taskElementstatus;
+    if(taskElement.status === "todo"){
+      taskElementstatus = 10
+    }else if(taskElement.status === "doing"){
+      taskElementstatus = 20
+    }else if(taskElement.status === "done"){
+      taskElementstatus = 30
+    }
+let taskStatus = {
+  id: taskElement.id,
+  status: taskElementstatus
+};
+    try {
+      const response = await fetch(`http://localhost:8080/Scrum-Project-3/rest/task/changeStatus/${taskStatus.id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'token': sessionStorage.getItem('token')
+        },
+        body: JSON.stringify(taskStatus)
+      });
+  
+      if (response.ok) {
+        console.log('Task updated');
+      } else if (response.status === 404) {
+        console.log('Task not found');
+      } else if (response.status === 401) {
+        console.log('Unauthorized');
+      } else {
+        // Handle other response status codes
+        console.error('Unexpected response:', response.status);
+      }
+    } catch (error) {
+      console.error('Error updating task:', error);
+      // Handle fetch errors
+      alert('Error updating task. Please try again.');
+    }
+  }
   async function updateTask(taskElement) {
    let taskElementstatus;
     if(taskElement.status === "todo"){
@@ -351,8 +390,8 @@ async function loadTasks() {
     };
   
     try {
-      const response = await fetch('http://localhost:8080/Scrum-Project-3/rest/task/update', {
-        method: 'PUT',
+      const response = await fetch(`http://localhost:8080/Scrum-Project-3/rest/task/changeStatus/${task.id}`, {
+        method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
           'token': sessionStorage.getItem('token')

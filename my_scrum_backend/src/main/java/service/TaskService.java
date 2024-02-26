@@ -9,12 +9,15 @@ import entities.TaskEntity;
 import entities.UserEntity;
 import entities.CategoryEntity;
 import jakarta.inject.Inject;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+import java.io.StringReader;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -193,12 +196,14 @@ public class TaskService {
     @PATCH
     @Path("/changeStatus/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response changeStatus(@HeaderParam("token") String token, @PathParam("id") String id, @QueryParam("status") int status) {
+    public Response changeStatus(@HeaderParam("token") String token, @PathParam("id") String id,  String status) {
         boolean authorized = userBean.isUserAuthorized(token);
         if (!authorized) {
             return Response.status(401).entity("Unauthorized").build();
         } else {
-            boolean changed = taskBean.changeStatus(id, status);
+            JsonObject jsonObject = Json.createReader(new StringReader(status)).readObject();
+            int newActiveStatus = jsonObject.getInt("status");
+            boolean changed = taskBean.changeStatus(id, newActiveStatus);
             if (!changed) {
                 return Response.status(400).entity("Failed. Status not changed").build();
             } else {
