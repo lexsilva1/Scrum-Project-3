@@ -181,5 +181,11 @@ public class TaskBean {
     public List<CategoryEntity> getAllCategories() {
         return taskDao.findAllCategories();
     }
+    public void setTaskDao(TaskDao taskDao) {
+        this.taskDao = taskDao;
+    }
+    public void setUserDao(UserDao userDao) {
+        this.userDao = userDao;
+    }
 
 }
