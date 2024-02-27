@@ -188,7 +188,7 @@ h1 {
   -webkit-box-reflect: below 2px
   linear-gradient(transparent, rgba(255, 255, 255, 0.05));
   color: var(--light-grey);
-  margin-left: -270px; 
+  margin-left: -260px; 
 }
 .display-date {
   text-align: center;
@@ -434,6 +434,16 @@ main {
   align-items: center;
   flex: 1;
 }
+#viewUsersButton {
+  min-width: 100px;
+  float: right;
+  margin-left: 800px; 
+  color: white;
+  background-color: var(--green3);
+  border-radius: 10px;
+}
+
+
 /* Definições gerais dos painéis To do, Doing e Done */
 .panel {
   flex: 1;
