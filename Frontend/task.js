@@ -103,8 +103,10 @@ function setPriorityButtonSelected(button, priority) {
     button.classList.add("selected");
     sessionStorage.setItem("taskPriority", priority);
 }
+// Event listener para o botão de guardar
 const savebutton = document.getElementById("save-button");
 savebutton.addEventListener("click", () => {
+  console.log('save button clicked');
     let taskDescription = document.getElementById("descricao-task").value.trim();
     let taskTitle = document.getElementById("titulo-task").value.trim();
     
@@ -118,9 +120,7 @@ savebutton.addEventListener("click", () => {
             if(document.getElementById('startdate').value > document.getElementById('enddate').value){
             document.getElementById('warningMessage3').innerText = 'The start date must be before the end date';
             return;
-    } 
-    }
-    else {
+            }
         let enddate = document.getElementById('enddate').value;
         if(enddate === ""){
             document.getElementById('enddate').value = "2199-12-31";
@@ -140,9 +140,11 @@ savebutton.addEventListener("click", () => {
     sessionStorage.removeItem("role");
     sessionStorage.removeItem("username");
     sessionStorage.removeItem("taskCategory");
+
     window.location.href = 'home.html';
     }
 });
+
 const cancelbutton = document.getElementById("cancel-button");
 cancelbutton.addEventListener("click", () => {
     // Abrir o modal de cancel
@@ -202,6 +204,7 @@ highButton.addEventListener("click", () => setPriorityButtonSelected(highButton,
 
 // funçaõ de update das tasks
 async function updateTask() {
+  console.log('updateTask');
     let taskElementstatus=sessionStorage.getItem("taskStatus");
 
     if(taskElementstatus === "todo"){
@@ -223,12 +226,12 @@ async function updateTask() {
         };
    
      try {
-       const response = await fetch('http://localhost:8080/Scrum-Project-3/rest/user/updatetask', {
+       const response = await fetch('http://localhost:8080/Scrum-Project-3/rest/task/update', {
          method: 'PUT',
          headers: {
            'Content-Type': 'application/json',
-           'username': sessionStorage.getItem('username'),
-           'password': sessionStorage.getItem('password')
+           'token': sessionStorage.getItem('token'),
+           
          },
          body: JSON.stringify(task)
        });
@@ -249,7 +252,7 @@ async function updateTask() {
        alert('Error updating task. Please try again.');
      }
    }
-// Event listener para o botão save
+
 
 async function getUserDTO(){
   try {
