@@ -46,6 +46,7 @@ public class TaskBean {
         taskEntity.setStartDate(task.getStartDate());
         taskEntity.setPriority(task.getPriority());
         taskEntity.setEndDate(task.getEndDate());
+        taskEntity.setUser(taskDao.findTaskById(task.getId()).getUser());
         taskEntity.setActive(true);
         return taskEntity;
 
