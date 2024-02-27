@@ -42,7 +42,7 @@ public class TaskBean {
         taskEntity.setTitle(task.getTitle());
         taskEntity.setDescription(task.getDescription());
         taskEntity.setStatus(task.getStatus());
-        //taskEntity.setCategory(taskDao.findCategoryByName(task.getCategory()));
+        taskEntity.setCategory(taskDao.findCategoryByName(task.getCategory()));
         taskEntity.setStartDate(task.getStartDate());
         taskEntity.setPriority(task.getPriority());
         taskEntity.setEndDate(task.getEndDate());
