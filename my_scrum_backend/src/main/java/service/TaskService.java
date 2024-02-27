@@ -47,14 +47,14 @@ public class TaskService {
         }
     }
     @GET
-    @Path("/byUser")
+    @Path("/byUser/{username}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getTasksByUser(@HeaderParam("token") String token) {
+    public Response getTasksByUser(@HeaderParam("token") String token,@PathParam("username") String username) {
         boolean authorized = userBean.isUserAuthorized(token);
         if (!authorized) {
             return Response.status(401).entity("Unauthorized").build();
         } else {
-            User user = userBean.getUser(token);
+            User user = userBean.getUserByUsername(username);
             ArrayList<Task> taskList = new ArrayList<>();
             for (TaskEntity taskEntity : taskBean.getTasksByUser(userBean.convertToEntity(user))) {
                 if(taskEntity.isActive()) {
@@ -65,17 +65,19 @@ public class TaskService {
             return Response.status(200).entity(taskList).build();
         }
     }@GET
-    @Path("/byCategory")
+    @Path("/byCategory/{category}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getTasksByCategory(@HeaderParam("token") String token, @QueryParam("category") String category) {
+    public Response getTasksByCategory(@HeaderParam("token") String token, @PathParam("category") String category) {
         boolean authorized = userBean.isUserAuthorized(token);
         if (!authorized) {
             return Response.status(401).entity("Unauthorized").build();
         } else {
             ArrayList<Task> taskList = new ArrayList<>();
-            for (TaskEntity taskEntity : taskBean.getTasksByCategory(category)) {
+            for (TaskEntity taskEntity : taskBean.getTasks()) {
                 if(taskEntity.isActive()) {
-                    taskList.add(taskBean.convertToDto(taskEntity));
+                    if(taskEntity.getCategory().getName().equals(category)) {
+                        taskList.add(taskBean.convertToDto(taskEntity));
+                    }
                 }
             }
             taskList.sort(Comparator.comparing(Task::getPriority, Comparator.reverseOrder()).thenComparing(Comparator.comparing(Task::getStartDate).thenComparing(Task::getEndDate)));

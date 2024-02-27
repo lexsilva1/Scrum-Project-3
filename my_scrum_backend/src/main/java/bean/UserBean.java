@@ -38,6 +38,10 @@ public class UserBean {
         UserEntity userEntity = userDao.findUserByToken(token);
         return convertToDto(userEntity);
     }
+    public User findUserByUsername(String username) {
+        UserEntity userEntity = userDao.findUserByUsername(username);
+        return convertToDto(userEntity);
+    }
 
 
     public List<UserEntity> getUsers() {
