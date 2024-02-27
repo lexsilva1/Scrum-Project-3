@@ -27,8 +27,7 @@ function attachDragAndDropListeners(task) { // Adiciona os listeners de drag and
   task.addEventListener('dragend', () => {
       task.classList.remove('dragging')
       updateStatus(task);
-      clearTaskPanels();
-      loadTasks();
+      
 
   });
 }
@@ -454,6 +453,8 @@ let taskStatus = {
   
       if (response.ok) {
         console.log('Task updated');
+        clearTaskPanels();
+        loadTasks();
       } else if (response.status === 404) {
         console.log('Task not found');
       } else if (response.status === 401) {

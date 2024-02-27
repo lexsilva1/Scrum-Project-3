@@ -171,7 +171,9 @@ public class TaskService {
     public Response updateTask(Task task, @HeaderParam("token") String token) {
         boolean authorized = userBean.isUserAuthorized(token);
     User user = userBean.getUser(token);
+        System.out.println("username do token "+user.getUsername());
         TaskEntity taskEntity = taskBean.convertToEntity(task);
+        System.out.println("username da taskEntity "+ taskEntity.getUser().getUsername());
         if (!authorized) {
             return Response.status(401).entity("Unauthorized").build();
         } else {
@@ -187,7 +189,6 @@ public class TaskService {
             String category = task.getCategory();
             CategoryEntity categoryEntity = taskBean.findCategoryByName(category);
             taskEntity.setCategory(categoryEntity);
-            taskEntity.setUser(userBean.convertToEntity(user));
             boolean updated = taskBean.updateTask(taskEntity);
             if(!updated){
                 return Response.status(400).entity("Failed. Task not updated").build();

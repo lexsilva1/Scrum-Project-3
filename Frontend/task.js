@@ -56,7 +56,20 @@ document.addEventListener('DOMContentLoaded', async function() {
   }
 });
 
-
+document.getElementById('link-bc').addEventListener('click', function() {
+  sessionStorage.removeItem("taskDescription");
+  sessionStorage.removeItem("taskTitle");
+  sessionStorage.removeItem("taskid");
+  sessionStorage.removeItem("taskStatus");
+  sessionStorage.removeItem("taskPriority");
+  sessionStorage.removeItem("taskStartDate");
+  sessionStorage.removeItem("taskEndDate");
+  sessionStorage.removeItem("taskCreator");
+  sessionStorage.removeItem("role");
+  sessionStorage.removeItem("username");
+  sessionStorage.removeItem("taskCategory");
+  window.location.href = 'home.html';
+});
 
 // Definir os botões de status
 const todoButton = document.getElementById("todo-button"); // Atribuir o elemento respetivo à variável todoButton
@@ -125,6 +138,7 @@ savebutton.addEventListener("click", () => {
         if(enddate === ""){
             document.getElementById('enddate').value = "2199-12-31";
         }
+        console.log('updateTask');
         updateTask();
         // Limpa mensagem de erro
         document.getElementById('warningMessage3').innerText = '';
@@ -134,8 +148,8 @@ savebutton.addEventListener("click", () => {
     sessionStorage.removeItem("taskid");
     sessionStorage.removeItem("taskStatus");
     sessionStorage.removeItem("taskPriority");
-    sessionStorage.removeItem("taskStartdate");
-    sessionStorage.removeItem("taskEnddate");
+    sessionStorage.removeItem("taskStartDate");
+    sessionStorage.removeItem("taskEndDate");
     sessionStorage.removeItem("taskCreator");
     sessionStorage.removeItem("role");
     sessionStorage.removeItem("username");
