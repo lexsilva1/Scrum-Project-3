@@ -16,6 +16,7 @@ window.onload =async function () {
     let taskid = sessionStorage.getItem("taskid"); // Obter o id da task da session storage
     let startdate = sessionStorage.getItem("taskStartDate"); // Obter a data de início da session storage
     let enddate = sessionStorage.getItem("taskEndDate"); // Obter a data de fim da session storage
+    let category = sessionStorage.getItem("taskCategory"); // Obter a categoria da session storage
     if (username) {
         document.getElementById('titulo-task').textContent = titulo; // Colocar o título no input title
         document.getElementById('descricao-task').textContent = descricao; // Colocar a descrição na text area
@@ -24,9 +25,37 @@ window.onload =async function () {
         document.getElementById("startdate").value = startdate; // Colocar a data de início no input startdate
         if(enddate !== "2199-12-31"){
         document.getElementById("enddate").value = enddate; // Colocar a data de fim no input enddate
+        document.getElementById('category').value = category; // Colocar a categoria no input category
     }
     }
 };
+
+document.addEventListener('DOMContentLoaded', async function() {
+  try {
+    // Agora estamos usando await para esperar a promessa ser resolvida
+    var categories = await getCategories();
+    var select = document.getElementById('category');
+
+    // Limpa opções existentes
+    select.innerHTML = '';
+
+    // Cria uma nova opção para cada categoria e adiciona à combobox
+    for (var i = 0; i < categories.length; i++) {
+      var option = document.createElement('option');
+      option.value = categories[i];
+      option.text = categories[i];
+      select.appendChild(option);
+    }
+    if(sessionStorage.getItem("taskCategory") !== null){
+      select.value = sessionStorage.getItem("taskCategory");
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    // Handle fetch errors
+    alert('Error fetching categories. Please try again.');
+  }
+});
+
 
 
 // Definir os botões de status
@@ -110,6 +139,8 @@ savebutton.addEventListener("click", () => {
     sessionStorage.removeItem("taskCreator");
     sessionStorage.removeItem("role");
     sessionStorage.removeItem("username");
+    sessionStorage.removeItem("taskCategory");
+
     window.location.href = 'home.html';
     }
 });
@@ -137,8 +168,6 @@ cancelbutton.addEventListener("click", () => {
         sessionStorage.removeItem("taskStartdate");
         sessionStorage.removeItem("taskEnddate");
         sessionStorage.removeItem("taskCreator");
-        sessionStorage.removeItem("role");
-        sessionStorage.removeItem("username");
         window.location.href = 'home.html';    
     });
     cancelModal.style.display = "grid";
@@ -167,6 +196,7 @@ highButton.addEventListener("click", () => setPriorityButtonSelected(highButton,
     document.getElementById('titulo-task').disabled = true;
     document.getElementById('startdate').disabled=true;
     document.getElementById('enddate').disabled=true;
+    document.getElementById('category').disabled=true;
 }
 
 
@@ -191,7 +221,8 @@ async function updateTask() {
          status: taskElementstatus,
          priority: sessionStorage.getItem("taskPriority"),
          startDate: document.getElementById('startdate').value,
-         endDate: document.getElementById('enddate').value
+         endDate: document.getElementById('enddate').value,
+         category	: document.getElementById('category').value
         };
    
      try {
@@ -264,5 +295,37 @@ async function getUserDTO(){
     } catch (error){
         console.error('something went wrong', error);
         throw error;
+    }
+  }
+
+  async function getCategories() {
+    try {
+      const response = await fetch('http://localhost:8080/Scrum-Project-3/rest/task/allCategories', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'token': sessionStorage.getItem('token')
+        }
+      });
+  
+      if (response.status === 200) {
+        const categoriesArray = await response.json();
+        console.log(categoriesArray);
+        if(categoriesArray.length === 0){
+          alert('Categories not found');
+        } else {
+          const Array = [];
+          for (var i = 0; i < categoriesArray.length; i++) {
+            Array.push(categoriesArray[i].name);
+          }
+          return Array;
+        }
+      
+      } else if (response.status === 404) {
+        alert('Categories not found');
+      }
+    } catch (error) {
+      console.error('Something went wrong:', error);
+      throw error;
     }
   }

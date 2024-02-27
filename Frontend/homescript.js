@@ -6,6 +6,12 @@ window.onload = async function () {
     const names = user.name.split(" ");
     document.getElementById('profileImageHome').src = user.userPhoto;
     document.getElementById('login-home').innerHTML = names[0];
+    if (user.role === 'developer') {
+      document.getElementById('filter-container').remove();
+    }
+    fillUserFilter();
+    fillCategoryFilter();
+
   };
 
   if(sessionStorage.getItem('token') === null || sessionStorage.getItem('token') === ''){
@@ -31,7 +37,6 @@ document.addEventListener('DOMContentLoaded', async function() {
   try {
     // Agora estamos usando await para esperar a promessa ser resolvida
     var categories = await getCategories();
-
     var select = document.getElementById('taskCategory');
 
     // Limpa opções existentes
@@ -51,6 +56,49 @@ document.addEventListener('DOMContentLoaded', async function() {
   }
 });
 
+async function fillUserFilter() {
+  const users = await getUsers();
+  const userFilter = document.getElementById('userFilter');
+
+  // Limpa a combobox antes de adicionar novas opções
+  userFilter.innerHTML = '';
+
+  // Adiciona uma opção vazia no início
+  const defaultOption = document.createElement('option');
+  defaultOption.value = '';
+  defaultOption.text = '';
+  userFilter.appendChild(defaultOption);
+
+  // Adiciona uma opção para cada usuário
+  users.forEach(user => {
+    const option = document.createElement('option');
+    option.value = user.username;
+    option.text = user.name;
+    userFilter.appendChild(option);
+  });
+}
+
+async function fillCategoryFilter() {
+  const categories = await getCategories();
+  const categoryFilter = document.getElementById('categoryFilter');
+
+  // Limpa a combobox antes de adicionar novas opções
+  categoryFilter.innerHTML = '';
+
+  // Adiciona uma opção vazia no início
+  const defaultOption = document.createElement('option');
+  defaultOption.value = '';
+  defaultOption.text = '';
+  categoryFilter.appendChild(defaultOption);
+
+  // Adiciona uma opção para cada categoria
+  categories.forEach(category => {
+    const option = document.createElement('option');
+    option.value = category;
+    option.text = category;
+    categoryFilter.appendChild(option);
+  });
+}
 
 // Adiciona os listeners de drag and drop a um painel
 panels.forEach(panel => { 
@@ -122,7 +170,6 @@ document.getElementById('addTask').addEventListener('click', function() {
   var Description = taskDescription.value.trim();
   var Name = taskName.value.trim();
   var category = document.getElementById('taskCategory').value;
-  console.log(category);
   var priority = taskPriority;
   var startdate = document.getElementById('startdate').value;
   var enddate = document.getElementById('enddate').value;
@@ -202,8 +249,8 @@ async function postTask(task) {
 }
 
 function createTaskElement(task) {
-  console.log(task);
     const taskElement = document.createElement('div');
+    taskElement.category = task.category;
     taskElement.id = task.id;
     taskElement.priority = task.priority;
     taskElement.classList.add('task'); 
@@ -272,6 +319,7 @@ function createTaskElement(task) {
         sessionStorage.setItem("taskPriority", taskElement.priority);
         sessionStorage.setItem("taskStartDate", task.startDate);
         sessionStorage.setItem("taskEndDate", task.endDate);
+        sessionStorage.setItem("taskCategory", task.category);
         window.location.href = 'task.html';
     });
     return taskElement;
@@ -550,6 +598,37 @@ async function getCategories() {
   }
 }
 
+async function getUsers() {
+  try {
+    const response = await fetch('http://localhost:8080/Scrum-Project-3/rest/user/all', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'token': sessionStorage.getItem('token')
+      }
+    });
+
+    if (response.status === 200) {
+      const usersArray = await response.json();
+      if(usersArray.length === 0){
+        alert('Users not found');
+      } else {
+        const Array = [];
+        for (var i = 0; i < usersArray.length; i++) {
+          Array.push(usersArray[i]);
+        }
+        return Array;
+      }
+    
+    } else if (response.status === 404) {
+      alert('Users not found');
+    }
+  } catch (error) {
+    console.error('Something went wrong:', error);
+    throw error;
+  }
+}
+
 async function getUserDTO(){
   try {
     const response = await fetch('http://localhost:8080/Scrum-Project-3/rest/user/myUserDto', {
@@ -580,6 +659,107 @@ function clearTaskPanels() {
   document.getElementById('doing').innerHTML = '';
   document.getElementById('done').innerHTML = '';
 }
+
+document.getElementById('userFilter').addEventListener('change', async function() {
+  const selectedUser = this.value;
+  if(selectedUser === ''){
+    clearTaskPanels();
+    loadTasks();
+  }else{
+  const tasks = await getTasksByUser(selectedUser);
+
+  // Limpa as colunas antes de adicionar novas tasks
+  clearTaskPanels();
+
+  // Adiciona uma task para cada task
+  tasks.forEach(task => {
+    const taskElement = createTaskElement(task);
+    if (task.status === 10) {
+      document.getElementById('todo').appendChild(taskElement);
+    } else if (task.status === 20) {
+      document.getElementById('doing').appendChild(taskElement);
+    }else if (task.status === 30) {
+      document.getElementById('done').appendChild(taskElement);
+    }
+    attachDragAndDropListeners(taskElement);
+  
+  });
+}
+});
+
+async function getTasksByUser(username) {
+  try {
+    const response = await fetch(`http://localhost:8080/Scrum-Project-3/rest/task/byUser/${username}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'token': sessionStorage.getItem('token')
+      }
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch user data');
+      }
+      
+      const obj = await response.json();
+      return obj;
+      
+    } catch (error) {
+      console.error('Something went wrong:', error);
+      // Re-throw the error or return a rejected promise
+      throw error;
+    }
+  }
+  
+  document.getElementById('categoryFilter').addEventListener('change', async function() {
+    console.log(this.value);
+    const selectedCategory = this.value;
+    if(selectedCategory === ''){
+      clearTaskPanels();
+      loadTasks();
+    }else{
+    const tasks = await getTasksByCategory(selectedCategory);
+  
+    // Limpa as colunas antes de adicionar novas tasks
+    clearTaskPanels();
+  
+    // Adiciona uma task para cada task
+    tasks.forEach(task => {
+      const taskElement = createTaskElement(task);
+      if (task.status === 10) {
+        document.getElementById('todo').appendChild(taskElement);
+      } else if (task.status === 20) {
+        document.getElementById('doing').appendChild(taskElement);
+      }else if (task.status === 30) {
+        document.getElementById('done').appendChild(taskElement);
+      }
+      attachDragAndDropListeners(taskElement);
+    
+    });
+  }
+  });
+
+  async function getTasksByCategory(category) {
+    try {
+      const response = await fetch(`http://localhost:8080/Scrum-Project-3/rest/task/byCategory/${category}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'token': sessionStorage.getItem('token'),
+        },
+        });
+        if (!response.ok) {
+          throw new Error('Failed to fetch user data');
+        }
+        
+        const obj = await response.json();
+        return obj;
+        
+      } catch (error) {
+        console.error('Something went wrong:', error);
+        // Re-throw the error or return a rejected promise
+        throw error;
+      }
+    }
 
 
 

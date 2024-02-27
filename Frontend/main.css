@@ -420,7 +420,7 @@ main {
   padding-bottom: 10px;
 }
 
-.filter-container {
+#filter-container {
   display: flex;
   justify-content: space-between;
   padding: 10px;
