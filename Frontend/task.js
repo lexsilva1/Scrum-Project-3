@@ -167,6 +167,8 @@ cancelbutton.addEventListener("click", () => {
         sessionStorage.removeItem("taskStartdate");
         sessionStorage.removeItem("taskEnddate");
         sessionStorage.removeItem("taskCreator");
+        sessionStorage.removeItem("username");
+        sessionStorage.removeItem("re")
         window.location.href = 'home.html';    
     });
     cancelModal.style.display = "grid";
