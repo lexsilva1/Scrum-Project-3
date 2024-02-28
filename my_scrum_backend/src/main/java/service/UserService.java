@@ -183,6 +183,20 @@ public class UserService {
             return Response.status(200).entity(userDto).build();
         }
     }
-
+    @POST
+    @Path("/restore/{username}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response restoreUser(@HeaderParam("token") String token, @PathParam("username") String username) {
+        boolean authorized = userBean.isUserOwner(token);
+        if (!authorized) {
+            return Response.status(405).entity("Forbidden").build();
+        }else {
+            if (userBean.restoreUser(username)){
+                return Response.status(200).entity("User restored").build();
+            }else{
+                return Response.status(400).entity("User not restored").build();
+            }
+        }
+    }
 }
 
