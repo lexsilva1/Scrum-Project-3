@@ -14,6 +14,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.hibernate.query.sqm.function.SelfRenderingOrderedSetAggregateFunctionSqlAstExpression;
 
 
 @Path("/user")
@@ -162,8 +163,10 @@ public class UserService {
         if (!authorized) {
             return Response.status(405).entity("Forbidden").build();
         }else {
+
             userBean.deleteUser(token,username);
             return Response.status(200).entity("User deleted").build();
+
         }
     }
     @GET
