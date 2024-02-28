@@ -31,9 +31,64 @@
     
     <div class="main-container">
         <aside>
+            <img src= "multimedia/logo_scrum_01.png" alt="Logo" id="logo">
             <div class="add-task-container">
                 <button id="addUser">Add User</button>
-                <button id="backButton"><<</button>
+
+                <div id="myModal" class="modal">
+                    <div class="modal-content">
+                        <h1 id="modalTitle">Add User</h1>
+                      <span class="close">&times;</span>
+                      <form id="addUserForm">
+                        <div class="form-fields">
+                          <div class="form-field">
+                            <label for="firstName">First Name:</label>
+                            <input type="text" id="firstNameModal" name="firstName">
+                          </div>
+                          <div class="form-field">
+                            <label for="lastName">Last Name:</label>
+                            <input type="text" id="lastNameModal" name="lastName">
+                          </div>
+                          <div class="form-field">
+                            <label for="email">Email:</label>
+                            <input type="text" id="emailModal" name="email">
+                          </div>
+                          <div class="form-field">
+                            <label for="username">Username:</label>
+                            <input type="text" id="usernameModal" name="username">
+                          </div>
+                          <div class="form-field">
+                            <label for="contact">Contact:</label>
+                            <input type="text" id="contactModal" name="contact">
+                          </div>
+                          <div class="form-field">
+                            <label for="userPicture">User Picture:</label>
+                            <input type="text" id="userPictureModal" name="userPicture">
+                          </div>
+                          <div class="form-field">
+                            <label for="role">Role</label>
+                            <select id="role" name="role">
+                       
+                            </select>
+                          </div>
+                          <div class="form-field">
+                            <label for="password">Password:</label>
+                            <input type="password" id="passwordModal" name="password">
+                          </div>
+                          <div class="form-field">
+                            <label for="rePassword">Re-Write Password:</label>
+                            <input type="password" id="rePasswordModal" name="rePassword">
+                          </div>
+                          <div class="form-field">
+                            <input type="submit"id="newUser" value="Submit">
+                          </div>
+                        </div>
+                        <label for="userPicturePreview">User Picture</label>
+                        <img id="userPicturePreview" src="" alt="">
+                      </form>
+                    </div>
+                  </div>
+                <li class="link-bc" id="backButton"><a href="home.html">Home</a></li>
             </div>
         </aside>
 
@@ -49,6 +104,30 @@
             <div class="column" id="productOwnerColumn">
                 <h2>Product Owner</h2>
                 <!-- Lista de Product Owners aqui -->
+            </div>
+        </div>
+    </div>
+    <div id="myModalView" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id ='nome' class="user-title"></h2>
+            <div class="modal-left">
+                <label for="firstNameViewUser">First Name:</label>
+                <input type="text" id="firstNameViewUser" name="firstName" placeholder="">
+                <label for="lastNameViewUser">Last Name:</label>
+                <input type="text" id="lastNameViewUser" name="lastName" placeholder="">
+                <label for="usernameViewUser">Username:</label>
+                <input type="text" id="usernameViewUser" name="username" placeholder="">
+                <label for="emailViewUser">Email:</label>
+                <input type="text" id="emailViewUser" name="email" placeholder="">
+                <label for="contactViewUser">Contact:</label>
+                <input type="text" id="contactViewUser" name="contact" placeholder="">
+                <label for="roleViewUser">Role:</label>
+                <input type="text" id="roleViewUser" name="role" placeholder="">
+                <button class="save" id="save-button">Save</button>
+            </div>
+            <div class="modal-right">
+                <img id="userPhotoViewUser" src="" alt="User Photo">
             </div>
         </div>
     </div>

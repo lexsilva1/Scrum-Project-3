@@ -8,6 +8,7 @@ window.onload = async function () {
     document.getElementById('login-home').innerHTML = names[0];
     if (user.role === 'developer') {
       document.getElementById('filter-container').remove();
+      document.getElementById('viewUsersButton').remove();
     }
     fillUserFilter();
     fillCategoryFilter();
@@ -525,7 +526,7 @@ document.getElementById('logout').addEventListener('click', () => {
   logout();
 });
 
-window.onclose = function () { // Guarda as tarefas na local storage quando a página é fechada
+window.onclose = function () { 
   sessionStorage.clear();
   localStorage.clear();
 }
@@ -761,6 +762,7 @@ async function getTasksByUser(username) {
         throw error;
       }
     }
+
 
 
 

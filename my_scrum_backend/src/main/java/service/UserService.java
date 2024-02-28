@@ -38,11 +38,12 @@ public class UserService {
     @Path("/register")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addUser(User a) {
+        System.out.println("role: "+a.getRole());
        boolean valid = userBean.isUserValid(a);
         if (!valid) {
             return Response.status(400).entity("All elements are required are required").build();
         }
-        boolean user = userBean.userExists(a.getUsername());
+        boolean user = userBean.userNameExists(a.getUsername());
         if (user) {
 
             return Response.status(409).entity("User with this username is already exists").build();
@@ -50,6 +51,7 @@ public class UserService {
             if(a.getRole() == null || a.getRole().isEmpty()){
                 a.setRole("developer");
             }
+
             userBean.addUser(a);
             return Response.status(201).entity("A new user is created").build();
         }
@@ -93,8 +95,8 @@ public class UserService {
             return Response.status(403).entity("Forbidden").build();
         }
         User user = userBean.getUserByUsername(username);
-        UserEntity userEntity = userBean.convertToEntity(user);
-        return Response.status(200).entity(userEntity).build();
+        UserDto userDto = userBean.convertUsertoUserDto(user);
+        return Response.status(200).entity(userDto).build();
     }
     @PUT
     @Path("/update")

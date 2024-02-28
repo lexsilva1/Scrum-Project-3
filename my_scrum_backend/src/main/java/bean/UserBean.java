@@ -110,6 +110,13 @@ public class UserBean {
         }
         return false;
     }
+    public boolean userNameExists(String username) {
+        UserEntity a = userDao.findUserByUsername(username);
+        if (a != null) {
+            return true;
+        }
+        return false;
+    }
 
     public boolean isUserAuthorized(String token) {
         UserEntity a = userDao.findUserByToken(token);
