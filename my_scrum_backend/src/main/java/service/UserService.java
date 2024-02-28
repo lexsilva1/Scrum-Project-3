@@ -104,7 +104,7 @@ public class UserService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateUser(@HeaderParam("token") String token, User a) {
         System.out.println("username "+a.getUsername());
-        boolean user = userBean.userExists(a.getUsername());
+        boolean user = userBean.userNameExists(a.getUsername());
         boolean valid = userBean.isUserValid(a);
         if (!user) {
             return Response.status(404).entity("User with this username is not found").build();
@@ -119,7 +119,7 @@ public class UserService {
             }
             return Response.status(200).entity("User updated").build();
         }else if (userBean.getUser(token).getRole().equals("Owner") && a.getRole() != null) {
-            boolean updated = userBean.updateUser(token, a);
+            boolean updated = userBean.updateOtherUser(a.getUsername(), a);
             if (!updated) {
                 return Response.status(400).entity("Failed. User not updated").build();
             }

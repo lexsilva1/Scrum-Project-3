@@ -9,6 +9,7 @@ window.onload = async function () {
     if (user.role === 'developer' || user.role === 'ScrumMaster') {
         document.getElementById('addUser').remove();
     }
+    sessionStorage.setItem('role', user.role);
   };
 
   if(sessionStorage.getItem('token') === null || sessionStorage.getItem('token') === ''){
@@ -73,13 +74,17 @@ window.onload = async function () {
   }
   function createUserElement(user) {
     const userElement = document.createElement('div');
-    userElement.username=user.username;
-    userElement.role=user.role;
+    userElement.username = user.username;
+    userElement.role = user.role;
+    userElement.name = user.name;
+    userElement.email = user.email;
+    userElement.contactNumber = user.contactNumber;
+    userElement.userPhoto = user.userPhoto;
     userElement.classList.add('user');
 
-    // Crie um elemento de imagem para a foto do usuário
+    // Create an image element for the user's photo
     const img = document.createElement('img');
-    img.src = user.userPhoto; // Substitua 'user.userPhoto' pelo caminho correto para a foto do usuário
+    img.src = user.userPhoto;
     img.classList.add('userPhoto');
     userElement.appendChild(img);
 
@@ -87,43 +92,121 @@ window.onload = async function () {
     button.textContent = user.name;
     button.classList.add('userButton');
     button.addEventListener('click', () => {
-        let names = user.name.split(" ");
-        var modal = document.getElementById('myModalView');
-        document.getElementById('nome').innerHTML = names[0]+' '+names[1];
-        
-        modal.style.display = "block";
-        document.getElementById('firstNameViewUser').placeholder = names[0];
-        document.getElementById('lastNameViewUser').placeholder = names[1];
-        document.getElementById('usernameViewUser').placeholder = user.username;
-        document.getElementById('emailViewUser').placeholder = user.email;
-        document.getElementById('contactViewUser').placeholder = user.contactNumber;
-        document.getElementById('roleViewUser').placeholder = user.role;
-        document.getElementById('userPhotoViewUser').src = user.userPhoto;
-
-
-        if (sessionStorage.getItem('role') !== 'Owner') {
-            // Event listeners para os botões status
-                document.getElementById('firstNameViewUser').disabled = true;
-                document.getElementById('lastNameViewUser').disabled = true;
-                document.getElementById('usernameViewUser').disabled = true;
-                document.getElementById('emailViewUser').disabled = true;
-                document.getElementById('contactViewUser').disabled = true;
-                document.getElementById('roleViewUser').disabled = true;
-                document.getElementById('userPhotoViewUser').disabled = true;
-                document.getElementById('save-button').remove();
-            }
-        
-        
-        var closeButton = document.querySelector('#myModalView .close');
-        
-        // Quando o usuário clica no botão de fechar (a cruz), fecha o modal
-        closeButton.onclick = function() {
-          modal.style.display = "none";
-        }
-      
+        // Pass the user object to the userModal function
+        userModal(userElement);
     });
     userElement.appendChild(button);
+
     return userElement;
+}
+
+function userModal(user){
+    let names = user.name.split(" ");
+    var modal = document.getElementById('myModalView');
+    document.getElementById('nome').innerHTML = names[0]+' '+names[1];
+    
+    modal.style.display = "block";
+    document.getElementById('firstNameViewUser').placeholder = names[0];
+    document.getElementById('lastNameViewUser').placeholder = names[1];
+    document.getElementById('usernameViewUser').placeholder = user.username;
+    document.getElementById('usernameViewUser').disabled = true;
+    document.getElementById('emailViewUser').placeholder = user.email;
+    document.getElementById('contactViewUser').placeholder = user.contactNumber;
+    document.getElementById('imageURLViewUser').placeholder = user.userPhoto;
+    document.getElementById('roleViewUser').placeholder = user.role;
+    document.getElementById('userPhotoViewUser').src = user.userPhoto;
+
+
+    if (sessionStorage.getItem('role') !== 'Owner') {
+        // Event listeners para os botões status
+            document.getElementById('firstNameViewUser').disabled = true;
+            document.getElementById('lastNameViewUser').disabled = true;
+            document.getElementById('usernameViewUser').disabled = true;
+            document.getElementById('emailViewUser').disabled = true;
+            document.getElementById('contactViewUser').disabled = true;
+            document.getElementById('imageURLViewUser').disabled = true;
+            document.getElementById('roleViewUser').disabled = true;
+            document.getElementById('userPhotoViewUser').disabled = true;
+            document.getElementById('save-button').remove();
+            document.getElementById('delete-button').remove();
+        }
+        
+        var saveButton = document.getElementById('save-button');
+
+
+
+        // Adiciona um evento de clique ao botão
+        saveButton.addEventListener('click', function() {
+            if(document.getElementById('firstNameViewUser').value.trim() === "") {
+                document.getElementById('firstNameViewUser').value = names[0];
+            }
+            if(document.getElementById('lastNameViewUser').value.trim() === "") {
+                document.getElementById('lastNameViewUser').value = names[1];
+            }
+            if(document.getElementById('emailViewUser').value.trim() === "") {
+                document.getElementById('emailViewUser').value = user.email;
+            }
+            if(document.getElementById('contactViewUser').value.trim() === "") {
+                document.getElementById('contactViewUser').value = user.contactNumber;
+            }
+            if(document.getElementById('imageURLViewUser').value.trim() === "") {
+                document.getElementById('imageURLViewUser').value = user.userPhoto;
+            }
+            if(document.getElementById('roleViewUser').value.trim() === "") {
+                document.getElementById('roleViewUser').value = user.role;
+            }
+            const updatedUser = {
+                username: user.username,
+                name: document.getElementById('firstNameViewUser').value.trim() + ' ' + document.getElementById('lastNameViewUser').value.trim(),
+                email: document.getElementById('emailViewUser').value.trim(),
+                contactNumber: document.getElementById('contactViewUser').value.trim(),
+                userPhoto: document.getElementById('imageURLViewUser').value.trim(),
+                role: document.getElementById('roleViewUser').value.trim()
+                };
+
+          
+        saveUserProfileChanges(updatedUser).then(async () => {
+            document.getElementById('firstNameViewUser').value = '';
+            document.getElementById('lastNameViewUser').value = '';
+            document.getElementById('emailViewUser').value = '';
+            document.getElementById('contactViewUser').value = '';
+            document.getElementById('imageURLViewUser').value = '';
+            document.getElementById('roleViewUser').value = '';
+            clearUsers();
+            await displayUsers();
+        });
+        modal.style.display = "none";
+        });
+
+
+        var closeButton = document.querySelector('#myModalView .close');
+
+        // Quando o usuário clica no botão de fechar (a cruz), fecha o modal
+        closeButton.onclick = function() {
+            document.getElementById('firstNameViewUser').value = '';
+            document.getElementById('lastNameViewUser').value = '';
+            document.getElementById('emailViewUser').value = '';
+            document.getElementById('contactViewUser').value = '';
+            document.getElementById('imageURLViewUser').value = '';
+            document.getElementById('roleViewUser').value = '';
+          modal.style.display = "none";
+        }
+
+        saveButton.addEventListener('click', function() {
+            deleteUser();
+            modal.style.display = "none";
+        });
+
+}
+
+      
+
+
+  function clearUsers() {
+    const columns = document.querySelectorAll('.column');
+    columns.forEach(column => {
+      column.innerHTML = '';
+    });
   }
 
   async function displayUsers() {
@@ -249,7 +332,7 @@ function showTime() {
 
       var modal = document.getElementById("myModal");
       var btn = document.getElementById("addUser");
-      var span = document.getElementsByClassName("close")[0];
+      var span = document.getElementsByClassName("close");
       
       btn.onclick = function() {
         modal.style.display = "block";
@@ -328,11 +411,6 @@ function showTime() {
             //window.location.href='index.html';
         }
     });
-    document.getElementById('userbutton').addEventListener('click', () => {
-        sessionStorage.setItem('username', document.getElementById('userbutton').username);
-        window.location.href = 'userProfile.html';
-    });
-
       
 
 
@@ -384,7 +462,31 @@ function showTime() {
         throw error;
       }
     }
-    
+    async function saveUserProfileChanges(user){
+        try{
+        await fetch(`http://localhost:8080/Scrum-Project-3/rest/user/update`,{
+            method: 'PUT',
+            headers:{
+                'Accept':'*/*',
+                'Content-Type':'application/json',
+                'token': sessionStorage.getItem('token'),
+            },
+            body:JSON.stringify(user),
+        }).then(function(response){
+            if (response.status ==404){
+                alert(response.status, 'username not found')
+            } else if(response.status == 405){
+                alert(response.status,'forbidden due to header params')
+            } else if(response.status == 400){
+                alert(response.status,'failed, user not updated')
+            } else if(response.status == 200){
+                alert(response.status,'user updated sucessfully')
+            }
+        })
+        } catch(error){
+            console.error('error',error);
+        }
+    }
      
 
   
