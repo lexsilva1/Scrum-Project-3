@@ -156,17 +156,20 @@ public class UserService {
         }
     }
     @DELETE
-    @Path("/delete/{username})")
+    @Path("/delete/{username}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteUser(@HeaderParam("token") String token,@PathParam("username") String username){
+        System.out.println("username "+username);
         boolean authorized = userBean.isUserOwner(token);
         if (!authorized) {
             return Response.status(405).entity("Forbidden").build();
         }else {
 
-            userBean.deleteUser(token,username);
-            return Response.status(200).entity("User deleted").build();
-
+            if(userBean.deleteUser(token,username)){
+                return Response.status(200).entity("User deleted").build();
+            }else{
+            return Response.status(400).entity("User not deleted").build();
+            }
         }
     }
     @GET

@@ -82,6 +82,7 @@ window.onload = async function () {
     userElement.email = user.email;
     userElement.contactNumber = user.contactNumber;
     userElement.userPhoto = user.userPhoto;
+    userElement.active = user.active;
     userElement.classList.add('user');
 
     // Create an image element for the user's photo
@@ -102,9 +103,45 @@ window.onload = async function () {
     return userElement;
 }
 
+function attachDeletebutton(div,username) {
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = 'Delete User';
+    deleteButton.classList.add('delete');
+    deleteButton.id = 'delete-button'
+    deleteButton.addEventListener('click', () => {
+        deleteUser(username);
+        displayUsers();
+    });
+    div.appendChild(deleteButton);
+}
+
+function attachRestorebutton(div,username) {
+    const restoreButton = document.createElement('button');
+    restoreButton.textContent = 'Restore User';
+    restoreButton.classList.add('restore');
+    restoreButton.id = 'restore-button'
+    restoreButton.addEventListener('click', () => {
+        restoreUser(username);
+        displayUsers();
+    });
+    div.appendChild(restoreButton);
+}
+
+
+
 function userModal(user){
     let names = user.name.split(" ");
     var modal = document.getElementById('myModalView');
+    var div = document.getElementById('modal-info');
+    console.log(user.username);
+    attachDeletebutton(div,user.username);
+    console.log(user.active)
+
+    if (user.active === false) {
+
+        attachRestorebutton(div,user.username);
+    }
+
     document.getElementById('nome').innerHTML = names[0]+' '+names[1];
     
     modal.style.display = "block";
@@ -131,6 +168,9 @@ function userModal(user){
             document.getElementById('userPhotoViewUser').disabled = true;
             document.getElementById('save-button').remove();
             document.getElementById('delete-button').remove();
+            
+            
+            
         }
         
         var saveButton = document.getElementById('save-button');
@@ -194,10 +234,7 @@ function userModal(user){
           modal.style.display = "none";
         }
 
-        saveButton.addEventListener('click', function() {
-            deleteUser();
-            modal.style.display = "none";
-        });
+       
 
 }
 
@@ -213,6 +250,8 @@ function userModal(user){
       const users = await getUsers();
       users.forEach(user => {
         const userElement = createUserElement(user);
+
+        if (user.active === true) {
   
         // Determine a coluna correta para o usuário com base em seu role
         let column;
@@ -233,6 +272,7 @@ function userModal(user){
   
         // Adicione o link à coluna apropriada
         column.appendChild(userElement);
+    }
       });
     } catch (error) {
       console.error('Something went wrong:', error);
@@ -501,8 +541,8 @@ viewDeletedUsersBox.addEventListener('change', () => {
 
 async function getDeletedUsers() {
     try {
-        const response = await fetch('http://localhost:8080/Scrum-Project-3/rest/user/delete', {
-            method: 'DELETE',
+        const response = await fetch('http://localhost:8080/Scrum-Project-3/rest/user/all', {
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'token': sessionStorage.getItem('token')
@@ -559,29 +599,30 @@ async function getDeletedUsers() {
                       console.error('Something went wrong:', error);
                     }
                   }
-    async function deleteUser() {
-        const username = document.getElementById('usernameViewUser').value;
-        try {
-            const response = await fetch(`http://localhost:8080/Scrum-Project-3/rest/user/delete/${username}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'token': sessionStorage.getItem('token')
-                }
-            });
+    async function deleteUser(username) {
+        console.log("username dentro do delete"+username);
+            try {
+                const response = await fetch(`http://localhost:8080/Scrum-Project-3/rest/user/delete/${username}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'token': sessionStorage.getItem('token')
+                    }
+                });
 
-            if (response.status === 200) {
-                alert('User deleted successfully');
-                clearUsers();
-                displayUsers();
-            } else if (response.status === 404) {
-                alert('User not found');
-            } else if (response.status === 405) {
-                alert('Forbidden due to header params');
+                if (response.status === 200) {
+                    alert('User deleted successfully');
+                    clearUsers();
+                    displayUsers();
+                } else if (response.status === 404) {
+                    alert('User not found');
+                } else if (response.status === 405) {
+                    alert('Forbidden due to header params');
+                }
+            } catch (error) {
+                console.error('Something went wrong:', error);
+                throw error;
             }
-        } catch (error) {
-            console.error('Something went wrong:', error);
-            throw error;
         }
-    }
+    
   
