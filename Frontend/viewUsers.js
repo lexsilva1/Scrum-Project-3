@@ -8,6 +8,7 @@ window.onload = async function () {
     document.getElementById('login-home').innerHTML = names[0];
     if (user.role === 'developer' || user.role === 'ScrumMaster') {
         document.getElementById('addUser').remove();
+        document.getElementById('viewDeletedUsers').remove();
     }
     sessionStorage.setItem('role', user.role);
   };
@@ -72,6 +73,7 @@ window.onload = async function () {
       throw error;
     }
   }
+
   function createUserElement(user) {
     const userElement = document.createElement('div');
     userElement.username = user.username;
@@ -198,9 +200,6 @@ function userModal(user){
         });
 
 }
-
-      
-
 
   function clearUsers() {
     const columns = document.querySelectorAll('.column');
@@ -487,33 +486,102 @@ function showTime() {
             console.error('error',error);
         }
     }
-    async function getDeletedUsers() {
 
-        await fetch('http://localhost:8080/Scrum-Project-3/rest/user/all', {
-         method: 'GET',
-         headers: {
-           'Content-Type': 'application/json',
-           'token': sessionStorage.getItem('token')
-         }
-       }).then(async function(response){
-         if (response.status === 200){
-             const userArray = await response.json();
-             const deletedUsers = [];
-             if (userArray.length > 0) {
-                
-                 userArray.forEach((user) => {
-                     if(user.active === false){
-                     deletedUsers.push(user);
-                        }
-                 });
-             }
-             return deletedUsers;
-         } else if (response.status === 404) {
-             alert('Users not found');
-         }
+const viewDeletedUsersBox = document.getElementById('viewDeletedUsers');
+viewDeletedUsersBox.addEventListener('change', () => {
+  if (viewDeletedUsersBox.checked === true) {
+    clearUsers();
+    displayDeletedUsers();
+  } else {
+    clearUsers();
+    displayUsers();
+  }
+});
+
+
+async function getDeletedUsers() {
+    try {
+        const response = await fetch('http://localhost:8080/Scrum-Project-3/rest/user/delete', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'token': sessionStorage.getItem('token')
+            }
+        });
+
+        if (response.status === 200) {
+            const userArray = await response.json();
+            const deletedUsers = [];
+            if (userArray.length > 0) {
+                userArray.forEach((user) => {
+                    if(user.active === false){
+                        deletedUsers.push(user);
+                    }
                 });
+            }
+            return deletedUsers;
+        } else if (response.status === 404) {
+            alert('Users not found');
+        }
+    } catch (error) {
+        console.error('Something went wrong:', error);
+        throw error;
+    }
+}
+
+                async function displayDeletedUsers() {
+                    try {
+                      const users = await getDeletedUsers();
+                      users.forEach(user => {
+                        const userElement = createUserElement(user);
+                  
+                        // Determine a coluna correta para o usuário com base em seu role
+                        let column;
+                        switch(user.role) {
+                          case 'developer':
+                            column = document.getElementById('developerColumn');
+                            break;
+                          case 'ScrumMaster':
+                            column = document.getElementById('scrumMasterColumn');
+                            break;
+                          case 'Owner':
+                            column = document.getElementById('productOwnerColumn');
+                            break;
+                          default:
+                            console.error('Unknown role:', user.role);
+                            return;
+                        }
+                  
+                        // Adicione o link à coluna apropriada
+                        column.appendChild(userElement);
+                      });
+                    } catch (error) {
+                      console.error('Something went wrong:', error);
+                    }
+                  }
+    async function deleteUser() {
+        const username = document.getElementById('usernameViewUser').value;
+        try {
+            const response = await fetch(`http://localhost:8080/Scrum-Project-3/rest/user/delete/${username}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'token': sessionStorage.getItem('token')
                 }
+            });
 
-
-  
+            if (response.status === 200) {
+                alert('User deleted successfully');
+                clearUsers();
+                displayUsers();
+            } else if (response.status === 404) {
+                alert('User not found');
+            } else if (response.status === 405) {
+                alert('Forbidden due to header params');
+            }
+        } catch (error) {
+            console.error('Something went wrong:', error);
+            throw error;
+        }
+    }
   
