@@ -1,18 +1,30 @@
 window.onload = async function () {
+  const user = await getUserDTO();
+  sessionStorage.setItem('role', user.role);
     loadTasks();
     updateDate();
     showTime();
-    const user = await getUserDTO();
     const names = user.name.split(" ");
     document.getElementById('profileImageHome').src = user.userPhoto;
     document.getElementById('login-home').innerHTML = names[0];
+    fillUserFilter();
+    fillCategoryFilter();
     if (user.role === 'developer') {
       document.getElementById('filter-container').remove();
     }
-    fillUserFilter();
-    fillCategoryFilter();
-
   };
+  const deletebox = document.getElementById('deleted');
+  deletebox.addEventListener('change', () => {
+    if (deletebox.checked === true) {
+      clearTaskPanels();
+      loadDeletedTasks();
+    } else {
+      clearTaskPanels();
+      loadTasks();
+    }
+  });
+
+  
 
   if(sessionStorage.getItem('token') === null || sessionStorage.getItem('token') === ''){
     window.location.href = 'index.html';
@@ -287,27 +299,30 @@ function createTaskElement(task) {
     deleteButton.src = 'multimedia/dark-cross-01.png';
     deleteButton.className = 'apagarButton';
     deleteButton.addEventListener('click', function () {
-      const  deletemodal = document.getElementById('delete-modal');
-      deletemodal.style.display = "grid"; 
+      const deletemodal = document.getElementById('delete-modal');
+      deletemodal.style.display = "grid";
       const deletebtn = document.getElementById('delete-button');
-      deletebtn.addEventListener('click', () => {
-          deleteTask(taskElement.id);
-          taskElement.remove();
-          deletemodal.style.display = "none";
-      });
-      deletebtn.removeEventListener('click', () => {
-          deleteTask(taskElement.id);
-          taskElement.remove();
-          deletemodal.style.display = "none";
-      });
+
+      function deleteButtonClickHandler() {
+        deleteTask(taskElement.id);
+        taskElement.remove();
+        deletebtn.removeEventListener('click', deleteButtonClickHandler);
+        deletemodal.style.display = "none";
+      }
+
+      deletebtn.addEventListener('click', deleteButtonClickHandler);
       const cancelbtn = document.getElementById('cancel-delete-button');
       cancelbtn.addEventListener('click', () => {
-          deletemodal.style.display = "none";
+        deletemodal.style.display = "none";
       });
-  });
+    });
+
     descriprioncontainer.appendChild(displayDescription);
     postIt.appendChild(taskTitle);
-    postIt.appendChild(deleteButton);
+    if (sessionStorage.getItem('role') !== null && sessionStorage.getItem('role') !== 'developer') {
+      console.log(sessionStorage.getItem('role'));
+      postIt.appendChild(deleteButton);
+    }
     taskElement.appendChild(postIt);
     postIt.appendChild(descriprioncontainer);
     taskElement.addEventListener('dblclick', function () {
@@ -338,6 +353,8 @@ async function loadTasks() {
         
         if (taskArray.length > 0) {
           taskArray.forEach(task => {
+            if(task.active === true){
+              console.log(task);
             const taskElement = createTaskElement(task);
             if (task.status === 10) {
               document.getElementById('todo').appendChild(taskElement);
@@ -347,6 +364,7 @@ async function loadTasks() {
               document.getElementById('done').appendChild(taskElement);
             }
             attachDragAndDropListeners(taskElement);
+          }
           });
         }
         
@@ -356,6 +374,94 @@ async function loadTasks() {
         alert('Unauthorized');
       }
     });
+  }
+  async function loadDeletedTasks() {
+
+    await fetch('http://localhost:8080/Scrum-Project-3/rest/task/all', {
+     method: 'GET',
+     headers: {
+       'Content-Type': 'application/json',
+       'token': sessionStorage.getItem('token')
+     }
+   }).then(async function(response){
+     if (response.status === 200){
+       const taskArray = await response.json();
+       
+       if (taskArray.length > 0) {
+         taskArray.forEach(task => {
+           if(task.active === false){
+           const taskElement = createTaskElement(task);
+           if (task.status === 10) {
+             document.getElementById('todo').appendChild(taskElement);
+           } else if (task.status === 20) {
+             document.getElementById('doing').appendChild(taskElement);
+           }else if (task.status === 30) {
+             document.getElementById('done').appendChild(taskElement);
+           }
+           taskElement.style.opacity = 0.5;
+           taskElement.style.pointerEvents = "none";
+           taskElement.removeEventListener('dblclick', function () {
+            sessionStorage.setItem("taskDescription", taskElement.description);
+            sessionStorage.setItem("taskTitle", taskElement.title);
+            sessionStorage.setItem("taskid", taskElement.id);
+            sessionStorage.setItem("taskStatus", taskElement.status);
+            sessionStorage.setItem("taskPriority", taskElement.priority);
+            sessionStorage.setItem("taskStartDate", task.startDate);
+            sessionStorage.setItem("taskEndDate", task.endDate);
+            sessionStorage.setItem("taskCategory", task.category);
+            window.location.href = 'task.html'; 
+            });
+            const resutaurar =document.createElement('button');
+            resutaurar.textContent = "Restaurar";
+            resutaurar.className = "restoreButton";
+            taskElement.appendChild(resutaurar);
+            resutaurar.addEventListener('click', function(){
+              restoreTask(taskElement.id);
+              taskElement.remove();
+            });
+          if (sessionStorage.getItem('role') === 'ScrumMaster') {
+            const deleteButton = taskElement.querySelector('.apagarButton');
+            console.log(deleteButton);
+            if (deleteButton) {
+              deleteButton.remove();
+            }
+            }
+         }
+         });
+       }
+       
+     }else if (response.status === 404){
+       alert('User not found');
+     }else if (response.status === 401){
+       alert('Unauthorized');
+     }
+   });
+ }
+  async function restoreTask(id) {
+    try {
+      const response = await fetch(`http://localhost:8080/Scrum-Project-3/rest/task/restore/${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'token': sessionStorage.getItem('token')
+        }
+      });
+  
+      if (response.ok) {
+        alert('Task restored');
+      } else if (response.status === 404) {
+        alert('Task not found');
+      } else if (response.status === 401) {
+        alert('Unauthorized');
+      } else {
+        // Handle other response status codes
+        console.error('Unexpected response:', response.status);
+      }
+    } catch (error) {
+      console.error('Error restoring task:', error);
+      // Handle fetch errors
+      alert('Error restoring task. Please try again.');
+    }
   }
   async function deleteTask(id) {
     try {
