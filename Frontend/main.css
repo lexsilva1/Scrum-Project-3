@@ -311,7 +311,7 @@ aside h3 {
   width: 140px;
 }
 label[for="taskCategory"] {
-  margin-top: 20px; /* Ajuste este valor conforme necessário */
+  margin-top: 20px; 
 }
 
 /* Botões de priority no home.html */
@@ -397,6 +397,13 @@ label[for="taskCategory"] {
 
 /* Definições do painel main, onde estao as secções do Scrum (To do, Doing, Done) */
 /* Definições gerais de ambos os main (home.html e task.html) */
+
+.top-section {
+  background-color: var(--light-grey);
+  height: 80px;
+}
+
+
 main {
   width: calc(100% - 300px);
   padding-left: 30px;
@@ -436,11 +443,12 @@ main {
 }
 #viewUsersButton {
   min-width: 100px;
+  height: 40px;
   float: right;
-  margin-left: 800px; 
+  margin-left: 65rem; 
   color: white;
   background-color: var(--green3);
-  border-radius: 10px;
+  border-radius: 5px;
 }
 
 
@@ -1038,6 +1046,35 @@ footer {
     margin: 0;
   }
 }
+
+#editCategoriesModal .modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%; 
+}
+
+#editCategoriesModal .modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  width: 800px; 
+  height: 500px; 
+  
+}
+
+#editCategoriesModal .modal-title {
+  text-align: center;
+}
+
+#editCategoriesModal .close-button {
+  align-self: flex-start;
+  
+}
+
+
 /*---------------------PAGINA REGISTO---------------------------------*/
 #registrySection {
   flex-grow: 1;

@@ -121,7 +121,7 @@ public class UserService {
             return Response.status(200).entity("User updated").build();
           
         }else if (userBean.getUser(token).getRole().equals("Owner") && a.getRole() != null ) {
-            boolean updated = userBean.updateUser(token, a);
+            boolean updated = userBean.ownerupdateUser(token, a);
 
             if (!updated) {
                 return Response.status(400).entity("Failed. User not updated").build();

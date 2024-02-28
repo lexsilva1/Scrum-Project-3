@@ -1,16 +1,19 @@
 window.onload = async function () {
-    updateDate();
-    showTime();
-    displayUsers();
+
+    if (sessionStorage.getItem('role') === 'developer' || sessionStorage.getItem('role') === 'ScrumMaster') {
+        document.getElementById('addUser').remove();
+        document.getElementById('viewDeletedUsers').remove();
+        document.getElementById('viewDeletedUsersLabel').remove();
+    }
     const user = await getUserDTO();
     let names = user.name.split(" ");
     document.getElementById('profileImageHome').src = user.userPhoto;
     document.getElementById('login-home').innerHTML = names[0];
-    if (user.role === 'developer' || user.role === 'ScrumMaster') {
-        document.getElementById('addUser').remove();
-        document.getElementById('viewDeletedUsers').remove();
-    }
-    sessionStorage.setItem('role', user.role);
+
+    updateDate();
+    showTime();
+    displayUsers();
+
   };
 
   if(sessionStorage.getItem('token') === null || sessionStorage.getItem('token') === ''){
@@ -83,7 +86,7 @@ window.onload = async function () {
     userElement.contactNumber = user.contactNumber;
     userElement.userPhoto = user.userPhoto;
     userElement.active = user.active;
-    userElement.classList.add('user');
+    userElement.classList.add('user', 'user-element'); // Adicione a classe 'user-element' aqui
 
     // Create an image element for the user's photo
     const img = document.createElement('img');
@@ -166,13 +169,14 @@ async function restoreUser(username) {
 }
 
 
+
 function userModal(user){
     let names = user.name.split(" ");
     var modal = document.getElementById('myModalView');
     var div = document.getElementById('modal-info');
-    console.log(user.username);
+    attachSavebutton(div,user);
     attachDeletebutton(div,user.username);
-    console.log(user.active)
+    
 
     if (user.active === false) {
          attachRestorebutton(div,user.username);
@@ -211,80 +215,93 @@ function userModal(user){
             
         }
         
-        var saveButton = document.getElementById('save-button');
+    }
+
+    function attachSavebutton(div,user) {
+        const saveButton = document.createElement('button');
+        saveButton.textContent = 'Save';
+        saveButton.classList.add('save');
+        saveButton.id = 'save-button';
+        saveButton.addEventListener('click', () => {
+            savebuttonHandler(user);
+        });
+        div.appendChild(saveButton);
+    }
 
 
 
         // Adiciona um evento de clique ao botão
-        saveButton.addEventListener('click', function() {
-            if(document.getElementById('firstNameViewUser').value.trim() === "") {
-                document.getElementById('firstNameViewUser').value = names[0];
-            }
-            if(document.getElementById('lastNameViewUser').value.trim() === "") {
-                document.getElementById('lastNameViewUser').value = names[1];
-            }
-            if(document.getElementById('emailViewUser').value.trim() === "") {
-                document.getElementById('emailViewUser').value = user.email;
-            }
-            if(document.getElementById('contactViewUser').value.trim() === "") {
-                document.getElementById('contactViewUser').value = user.contactNumber;
-            }
-            if(document.getElementById('imageURLViewUser').value.trim() === "") {
-                document.getElementById('imageURLViewUser').value = user.userPhoto;
-            }
-            if(document.getElementById('roleViewUser').value.trim() === "") {
-                document.getElementById('roleViewUser').value = user.role;
-            }
-            const updatedUser = {
-                username: user.username,
-                name: document.getElementById('firstNameViewUser').value.trim() + ' ' + document.getElementById('lastNameViewUser').value.trim(),
-                email: document.getElementById('emailViewUser').value.trim(),
-                contactNumber: document.getElementById('contactViewUser').value.trim(),
-                userPhoto: document.getElementById('imageURLViewUser').value.trim(),
-                role: document.getElementById('roleViewUser').value.trim()
-                };
 
-          
-        saveUserProfileChanges(updatedUser).then(async () => {
-            document.getElementById('firstNameViewUser').value = '';
-            document.getElementById('lastNameViewUser').value = '';
-            document.getElementById('emailViewUser').value = '';
-            document.getElementById('contactViewUser').value = '';
-            document.getElementById('imageURLViewUser').value = '';
-            document.getElementById('roleViewUser').value = '';
-            clearUsers();
-            await displayUsers();
-        });
-        modal.style.display = "none";
-        });
+function savebuttonHandler(user) {
+    const modal = document.getElementById('myModalView');
+    let names = user.name.split(" ");
+    if(document.getElementById('firstNameViewUser').value.trim() === "") {
+        document.getElementById('firstNameViewUser').value = names[0];
+    }
+    if(document.getElementById('lastNameViewUser').value.trim() === "") {
+        document.getElementById('lastNameViewUser').value = names[1];
+    }
+    if(document.getElementById('emailViewUser').value.trim() === "") {
+        document.getElementById('emailViewUser').value = user.email;
+    }
+    if(document.getElementById('contactViewUser').value.trim() === "") {
+        document.getElementById('contactViewUser').value = user.contactNumber;
+    }
+    if(document.getElementById('imageURLViewUser').value.trim() === "") {
+        document.getElementById('imageURLViewUser').value = user.userPhoto;
+    }
+    if(document.getElementById('roleViewUser').value.trim() === "") {
+        document.getElementById('roleViewUser').value = user.role;
+    }
+    const updatedUser = {
+        username: user.username,
+        name: document.getElementById('firstNameViewUser').value.trim() + ' ' + document.getElementById('lastNameViewUser').value.trim(),
+        email: document.getElementById('emailViewUser').value.trim(),
+        contactNumber: document.getElementById('contactViewUser').value.trim(),
+        userPhoto: document.getElementById('imageURLViewUser').value.trim(),
+        role: document.getElementById('roleViewUser').value.trim()
+        };
 
-
-        var closeButton = document.querySelector('#myModalView .close');
-
-        // Quando o usuário clica no botão de fechar (a cruz), fecha o modal
-        closeButton.onclick = function() {
-            document.getElementById('firstNameViewUser').value = '';
-            document.getElementById('lastNameViewUser').value = '';
-            document.getElementById('emailViewUser').value = '';
-            document.getElementById('contactViewUser').value = '';
-            document.getElementById('imageURLViewUser').value = '';
-            document.getElementById('roleViewUser').value = '';
-            if(document.getElementById('restore-button') !== null){
-                document.getElementById('restore-button').remove();
-            }
-          modal.style.display = "none";
-        }
-
-       
+  
+saveUserProfileChanges(updatedUser).then(async () => {
+    document.getElementById('firstNameViewUser').value = '';
+    document.getElementById('lastNameViewUser').value = '';
+    document.getElementById('emailViewUser').value = '';
+    document.getElementById('contactViewUser').value = '';
+    document.getElementById('imageURLViewUser').value = '';
+    document.getElementById('roleViewUser').value = '';
+    clearUsers();
+    await displayUsers();
+});
+modal.style.display = "none";
 
 }
+    
 
-  function clearUsers() {
-    const columns = document.querySelectorAll('.column');
-    columns.forEach(column => {
-      column.innerHTML = '';
+
+var closeButton = document.querySelector('#myModalView .close');
+
+// Quando o usuário clica no botão de fechar (a cruz), fecha o modal
+closeButton.onclick = function() {
+    document.getElementById('firstNameViewUser').value = '';
+    document.getElementById('lastNameViewUser').value = '';
+    document.getElementById('emailViewUser').value = '';
+    document.getElementById('contactViewUser').value = '';
+    document.getElementById('imageURLViewUser').value = '';
+    document.getElementById('roleViewUser').value = '';
+    if(document.getElementById('restore-button') !== null){
+        document.getElementById('restore-button').remove();
+    }
+  modal.style.display = "none";
+}
+
+
+function clearUsers() {
+    const userElements = document.querySelectorAll('.user-element');
+    userElements.forEach(userElement => {
+        userElement.remove();
     });
-  }
+}
 
   async function displayUsers() {
     try {
