@@ -49,7 +49,43 @@ public class TaskBean {
         taskEntity.setUser(taskDao.findTaskById(task.getId()).getUser());
         taskEntity.setActive(true);
         return taskEntity;
-
+    }
+    public TaskEntity createTaskEntity(dto.Task task, String username) {
+        TaskEntity taskEntity = new TaskEntity();
+        taskEntity.setId(task.getId());
+        taskEntity.setTitle(task.getTitle());
+        taskEntity.setDescription(task.getDescription());
+        taskEntity.setStatus(task.getStatus());
+        taskEntity.setCategory(taskDao.findCategoryByName(task.getCategory()));
+        taskEntity.setStartDate(task.getStartDate());
+        taskEntity.setPriority(task.getPriority());
+        taskEntity.setEndDate(task.getEndDate());
+        taskEntity.setUser(userDao.findUserByUsername(username));
+        taskEntity.setActive(true);
+        return taskEntity;
+    }
+    public TaskEntity createTaskEntity(dto.Task task, UserEntity userEntity) {
+        TaskEntity taskEntity = new TaskEntity();
+        taskEntity.setId(task.getId());
+        taskEntity.setTitle(task.getTitle());
+        taskEntity.setDescription(task.getDescription());
+        taskEntity.setStatus(task.getStatus());
+        taskEntity.setCategory(taskDao.findCategoryByName(task.getCategory()));
+        taskEntity.setStartDate(task.getStartDate());
+        taskEntity.setPriority(task.getPriority());
+        taskEntity.setEndDate(task.getEndDate());
+        taskEntity.setUser(userEntity);
+        taskEntity.setActive(true);
+        return taskEntity;
+    }
+    public boolean restoreTask(String id) {
+        TaskEntity a = taskDao.findTaskById(id);
+        if (a != null) {
+            a.setActive(true);
+            taskDao.updateTask(a);
+            return true;
+        }
+        return false;
     }
     public CategoryEntity convertCatToEntity(String name) {
         CategoryEntity categoryEntity = new CategoryEntity();
@@ -124,11 +160,15 @@ public class TaskBean {
     public CategoryEntity findCategoryByName(String name) {
         return taskDao.findCategoryByName(name);
     }
-    public boolean blockTask(String id) {
+    public boolean blockTask(String id,String role) {
         TaskEntity a = taskDao.findTaskById(id);
         if (a != null) {
-            a.setActive(false);
-            taskDao.updateTask(a);
+            if(a.isActive() && !role.equals("developer")) {
+                a.setActive(false);
+                taskDao.updateTask(a);
+            }else if(!a.isActive()&& role.equals("Owner")) {
+                taskDao.remove(a);
+            }
             return true;
         }
         return false;
@@ -188,5 +228,7 @@ public class TaskBean {
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
     }
+    public void setInitialId(Task task){
+        task.setId("Task" + System.currentTimeMillis());}
 
 }

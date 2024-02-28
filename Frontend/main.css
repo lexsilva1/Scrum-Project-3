@@ -1448,6 +1448,7 @@ li.link-bc a {
   width: 70%; 
 }
 
+
 #addUserForm .form-field {
   display: flex;
   justify-content: space-between;
@@ -1594,3 +1595,22 @@ label[for="userPicturePreview"] {
   bottom: 0; /* Alinha o botão com a parte inferior do div .modal-left */
   left: 0; /* Alinha o botão com o lado esquerdo do div .modal-left */
 }
+
+.restoreButton {
+  position: absolute; /* Posiciona o botão no canto superior esquerdo */
+  bottom: 10px;
+  left: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: var(--green3);
+  color: white; 
+  opacity: 0;
+  
+}
+.restoreButton:hover {
+  background-color: var(--green1);
+  opacity: 1;
+  transition: ease 0.01s;
+  
+}
+
