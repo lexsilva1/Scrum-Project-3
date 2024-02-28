@@ -118,8 +118,10 @@ public class UserService {
                 return Response.status(400).entity("Failed. User not updated").build();
             }
             return Response.status(200).entity("User updated").build();
-        }else if (userBean.getUser(token).getRole().equals("Owner") && a.getRole() != null) {
-            boolean updated = userBean.updateOtherUser(a.getUsername(), a);
+          
+        }else if (userBean.getUser(token).getRole().equals("Owner") && a.getRole() != null ) {
+            boolean updated = userBean.updateUser(token, a);
+
             if (!updated) {
                 return Response.status(400).entity("Failed. User not updated").build();
             }
@@ -155,12 +157,12 @@ public class UserService {
     @DELETE
     @Path("/delete")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteUser(@HeaderParam("token") String token) {
-        boolean authorized = userBean.isUserAuthorized(token);
+    public Response deleteUser(@HeaderParam("token") String token,User user) {
+        boolean authorized = userBean.isUserOwner(token);
         if (!authorized) {
             return Response.status(405).entity("Forbidden").build();
         }else {
-            userBean.deleteUser(token);
+            userBean.deleteUser(token,user.getUsername());
             return Response.status(200).entity("User deleted").build();
         }
     }
