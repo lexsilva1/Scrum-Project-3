@@ -11,6 +11,7 @@ window.onload = async function () {
     fillCategoryFilter();
     if (user.role === 'developer') {
       document.getElementById('filter-container').remove();
+      document.getElementById('viewUsersButton').remove();
     }
   };
   const deletebox = document.getElementById('deleted');
@@ -631,7 +632,7 @@ document.getElementById('logout').addEventListener('click', () => {
   logout();
 });
 
-window.onclose = function () { // Guarda as tarefas na local storage quando a página é fechada
+window.onclose = function () { 
   sessionStorage.clear();
   localStorage.clear();
 }
@@ -867,6 +868,7 @@ async function getTasksByUser(username) {
         throw error;
       }
     }
+
 
 
 

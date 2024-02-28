@@ -45,7 +45,7 @@ public class User {
     @XmlElement
     public String getName() {
         return name;
-    }Scru
+    }
 
     public void setName(String name) {
         this.name = name;

@@ -83,6 +83,21 @@ public class UserBean {
         }
         return false;
     }
+    public boolean updateOtherUser(String username, User user) {
+        UserEntity a = userDao.findUserByUsername(username);
+        if (a != null) {
+            a.setUsername(user.getUsername());
+            a.setName(user.getName());
+            a.setEmail(user.getEmail());
+            a.setContactNumber(user.getContactNumber());
+            a.setUserPhoto(user.getUserPhoto());
+            a.setRole(user.getRole());
+            a.setActive(user.isActive());
+            userDao.updateUser(a);
+            return true;
+        }
+        return false;
+    }
 
     public String login(String username, String password) {
         UserEntity user = userDao.findUserByUsername(username);
@@ -110,6 +125,13 @@ public class UserBean {
         }
         return false;
     }
+    public boolean userNameExists(String username) {
+        UserEntity a = userDao.findUserByUsername(username);
+        if (a != null) {
+            return true;
+        }
+        return false;
+    }
 
     public boolean isUserAuthorized(String token) {
         UserEntity a = userDao.findUserByToken(token);
@@ -121,9 +143,9 @@ public class UserBean {
     }
 
     public boolean isUserValid(User user) {
-        if (user.getUsername().isBlank() || user.getPassword().isBlank() || user.getName().isBlank() || user.getEmail().isBlank() || user.getContactNumber().isBlank() || user.getUserPhoto().isBlank()) {
+        if (user.getUsername().isBlank() || user.getName().isBlank() || user.getEmail().isBlank() || user.getContactNumber().isBlank() || user.getUserPhoto().isBlank()) {
             return false;
-        } else if (user.getUsername() == null || user.getPassword() == null || user.getName() == null || user.getEmail() == null || user.getContactNumber() == null || user.getUserPhoto() == null) {
+        } else if (user.getUsername() == null  || user.getName() == null || user.getEmail() == null || user.getContactNumber() == null || user.getUserPhoto() == null) {
             return false;
         }
         return true;

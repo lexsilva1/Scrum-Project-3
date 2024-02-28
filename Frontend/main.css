@@ -1293,25 +1293,309 @@ aside {
 #addUser {
   display: block;
   width: 60%;
-  padding: 20px; 
-  margin-top: 80px;
+  padding: 10px; 
+  margin-top: 70px;
   margin-left: 60px;
   font-size: 16px;
   cursor: pointer;
   background-color: var(--green3);
   color: white; 
   border: none; 
-  border-radius: 10px;
+  border-radius: 5px;
 }
 #backButton {
-  position: absolute; /* Posiciona o botão no canto superior esquerdo */
+  position: absolute; 
   top: 95px;
   left: 10px;
   font-size: 16px;
   cursor: pointer;
-  background-color: var(--green3);
-  color: white; 
 }
+
+li.link-bc {
+  list-style: none; 
+}
+
+li.link-bc a {
+  color: var(--green3);
+}
+.userPhoto {
+  width: 50px; 
+  height: 50px; 
+  border-radius: 50%; 
+  margin-right: 10px;
+}
+
+.userButton {
+  margin-bottom: 10px; 
+  border: none;
+  background-color: transparent;
+  font-weight: bold; 
+  color: var(--green3); 
+}
+.userButton:hover {
+  background-color: rgba(0, 0, 0, 0.1); /* Isso escurece o botão quando o mouse passa por cima */
+}
+
+.user {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px; 
+}
+
+#logo {
+  width: 300px; 
+  margin-top: 20px;
+}
+
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}
+
+.close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+  box-sizing: border-box;
+  max-width: 100%;
+  background-color: var(--green3);
+  color: #ffffff; /* Letras brancas */
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  height: 80%;
+  position: absolute;
+  top: 45%; /* Ajuste este valor para mover o modal para cima */
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  justify-content: space-between;
+}
+
+.close {
+  color: #aaaaaa;
+  font-size: 28px;
+  font-weight: bold;
+  position: absolute; /* Adicionado */
+  top: 8px; /* Adicionado */
+  right: 8px; /* Adicionado */
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+#addUserForm {
+  display: flex;
+  justify-content: space-between;
+}
+
+#addUserForm .form-fields {
+  margin-top: 50px;
+  display: flex;
+  flex-direction: column;
+  width: 70%; 
+}
+
+
+#addUserForm .form-field {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px; /* Ajuste conforme necessário */
+}
+
+#addUserForm div {
+  display: flex; /* Adicionado */
+  flex-direction: column; /* Adicionado */
+}
+
+
+#addUserForm input {
+  text-align: left; 
+  margin-bottom: 5px;
+}
+
+#addUserForm label {
+  text-align: left;
+  padding-right: 10px;
+}
+
+#addUserForm label,
+#addUserForm input {
+  font-size: 15px; /* Aumenta o tamanho dos campos e labels */
+  width: 100%; /* Faz os campos ocuparem toda a largura disponível */
+}
+
+#addUserForm input[type="submit"] {
+  position: absolute; /* Adicionado */
+  bottom: 10px; /* Adicionado */
+  right: 10px; /* Adicionado */
+  width: 100px; /* Ajuste para o tamanho desejado */
+  height: 30px; /* Ajuste para o tamanho desejado */
+}
+#userPicturePreview {
+  width: 310px;
+  height: 240px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: transparent; /* Fundo transparente */
+  border: 1px solid white; /* Margens pretas */
+  order: 2;
+  position: relative;
+  left: calc(100% - 1px); /* Move o círculo para a direita */
+  top: 100px; /* Move o círculo para baixo */
+  overflow: hidden;
+}
+
+
+
+#modalTitle {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+}
+
+label[for="userPicturePreview"] {
+  position: absolute;
+  top: 100px;
+  left: 122%;
+  transform: translateX(-50%);
+  text-align: center;
+}
+#role {
+  height: 26px; 
+  width: 103%;
+}
+
+/*/////////////////////////////MODAL VIEW USER//////////////////////////////*/
+
+/* Estilo para o conteúdo do novo modal */
+#myModalView .modal-content {
+  display: flex; /* Organiza os filhos em linha */
+  
+  width: 50%; 
+  padding: 20px;
+}
+
+/* Estilo para as labels no novo modal */
+#myModalView .modal-left label {
+  text-align: left; /* Alinha as labels à esquerda */
+  font-size: 18px;
+}
+
+
+/* Estilo para o botão de fechar */
+#myModalView .close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+}
+
+/* Estilo para o título do usuário */
+#myModalView .user-title {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Estilo para a parte esquerda do novo modal (labels e placeholders) */
+#myModalView .modal-left {
+  flex: 1; /* Ocupa metade do espaço disponível */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Estilo para os campos de entrada no novo modal */
+#myModalView .modal-left input {
+  margin-bottom: 20px;
+  width: 80%; /* Reduz o tamanho dos campos de entrada */
+  font-size: 18px;
+}
+
+/* Estilo para o botão de salvar */
+#myModalView .modal-left .save {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+}
+
+/* Estilo para a parte direita do novo modal (imagem) */
+#myModalView .modal-right {
+  flex: 1; /* Ocupa metade do espaço disponível */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#myModalView #userPhotoViewUser {
+  width: 200px; /* Define a largura da imagem */
+  height: 200px; /* Define a altura da imagem */
+  border-radius: 50%; /* Faz a imagem aparecer redonda */
+  object-fit: cover; /* Garante que a imagem cubra todo o espaço disponível sem distorção */
+}
+
+#delete-button {
+  position: absolute; /* Posiciona o botão em relação ao div .modal-left */
+  bottom: 0; /* Alinha o botão com a parte inferior do div .modal-left */
+  left: 0; /* Alinha o botão com o lado esquerdo do div .modal-left */
+}
+
 .restoreButton {
   position: absolute; /* Posiciona o botão no canto superior esquerdo */
   bottom: 10px;
@@ -1329,3 +1613,4 @@ aside {
   transition: ease 0.01s;
   
 }
+
