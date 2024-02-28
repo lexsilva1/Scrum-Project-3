@@ -1290,7 +1290,7 @@ aside {
   border-bottom: 2px solid var(--green3);
 }
 
-#addUser {
+#addUser, #viewDeletedUsers {
   display: block;
   width: 60%;
   padding: 10px; 
@@ -1302,6 +1302,11 @@ aside {
   color: white; 
   border: none; 
   border-radius: 5px;
+}
+
+#viewDeletedUsers {
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 #backButton {
   position: absolute; 

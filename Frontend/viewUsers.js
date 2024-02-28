@@ -487,7 +487,33 @@ function showTime() {
             console.error('error',error);
         }
     }
-     
+    async function getDeletedUsers() {
+
+        await fetch('http://localhost:8080/Scrum-Project-3/rest/user/all', {
+         method: 'GET',
+         headers: {
+           'Content-Type': 'application/json',
+           'token': sessionStorage.getItem('token')
+         }
+       }).then(async function(response){
+         if (response.status === 200){
+             const userArray = await response.json();
+             const deletedUsers = [];
+             if (userArray.length > 0) {
+                
+                 userArray.forEach((user) => {
+                     if(user.active === false){
+                     deletedUsers.push(user);
+                        }
+                 });
+             }
+             return deletedUsers;
+         } else if (response.status === 404) {
+             alert('Users not found');
+         }
+                });
+                }
+
 
   
   
