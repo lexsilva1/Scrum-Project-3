@@ -105,28 +105,65 @@ window.onload = async function () {
 
 function attachDeletebutton(div,username) {
     const deleteButton = document.createElement('button');
+    const checkbox = document.getElementById('viewDeletedUsers');
+    const modal = document.getElementById('myModalView');
     deleteButton.textContent = 'Delete User';
     deleteButton.classList.add('delete');
     deleteButton.id = 'delete-button'
-    deleteButton.addEventListener('click', () => {
+    deleteButton.addEventListener('click', async () => { // Convert the arrow function to an async function
+        clearUsers();
         deleteUser(username);
         displayUsers();
+        checkbox.checked = false;
+        modal.style.display = "none";
     });
     div.appendChild(deleteButton);
 }
 
 function attachRestorebutton(div,username) {
     const restoreButton = document.createElement('button');
+    const modal = document.getElementById('myModalView');
+    const checkbox = document.getElementById('viewDeletedUsers');
     restoreButton.textContent = 'Restore User';
     restoreButton.classList.add('restore');
     restoreButton.id = 'restore-button'
-    restoreButton.addEventListener('click', () => {
-        restoreUser(username);
+    restoreButton.addEventListener('click', async () => { // Make the arrow function an async function
+        await restoreUser(username);
+        clearUsers();
         displayUsers();
+        checkbox.checked = false;
+        restoreButton.remove();
+        modal.style.display = "none";   
     });
     div.appendChild(restoreButton);
 }
 
+async function restoreUser(username) {
+    try{
+    await fetch(`http://localhost:8080/Scrum-Project-3/rest/user/restore/${username}`, {
+            method: 'POST',
+            headers: {
+                'Accept': '*/*',
+                'Content-Type': 'application/json',
+                token: sessionStorage.getItem('token'),
+            }
+            }).then(function(response) {
+            if (response.status === 200) {
+                alert('User restored successfully');
+            } else if (response.status === 404) {
+                alert('User not found');
+            } else if (response.status === 405) {
+                alert('Forbidden due to header params');
+            }
+    
+        });
+} catch (error) {
+    console.error('Something went wrong:', error);
+    // Re-throw the error or return a rejected promise
+    throw error;
+  }
+
+}
 
 
 function userModal(user){
@@ -138,8 +175,9 @@ function userModal(user){
     console.log(user.active)
 
     if (user.active === false) {
-
-        attachRestorebutton(div,user.username);
+         attachRestorebutton(div,user.username);
+    } else if (user.active === true && document.getElementById('restore-button') !== null ){
+        document.getElementById('delete-button').remove();
     }
 
     document.getElementById('nome').innerHTML = names[0]+' '+names[1];
@@ -231,6 +269,9 @@ function userModal(user){
             document.getElementById('contactViewUser').value = '';
             document.getElementById('imageURLViewUser').value = '';
             document.getElementById('roleViewUser').value = '';
+            if(document.getElementById('restore-button') !== null){
+                document.getElementById('restore-button').remove();
+            }
           modal.style.display = "none";
         }
 
