@@ -174,12 +174,16 @@ public class UserBean {
         }
         return token;
     }
-    public void deleteUser(String token) {
-        UserEntity user = userDao.findUserByToken(token);
-        if(userDao.findUserByToken(token).getRole().equals("Owner")){
+    public void deleteUser(String token, String username) {
+        UserEntity user = userDao.findUserByUsername(username);
+        UserEntity responsible = userDao.findUserByToken(token);
+        if(user.isActive() && responsible.getRole().equals("Owner")){
+            user.setActive(false);
+            userDao.updateUser(user);
+        }
+        if(responsible.getRole().equals("Owner")&& !user.isActive()) {
             userDao.remove(user);
         }
-        userDao.remove(user);
     }
     public void logout(String token) {
         UserEntity user = userDao.findUserByToken(token);
@@ -195,6 +199,13 @@ public class UserBean {
         userDto.setUserPhoto(user.getUserPhoto());
         userDto.setUsername(user.getUsername());
         return userDto;
+    }
+    public boolean isUserOwner(String token) {
+        UserEntity a = userDao.findUserByToken(token);
+        if (a.getRole().equals("Owner")) {
+            return true;
+        }
+        return false;
     }
 }
 
