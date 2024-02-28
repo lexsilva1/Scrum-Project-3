@@ -130,14 +130,14 @@ public class TaskService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createCategory(Category category, @HeaderParam("token") String token) {
-        boolean authorized = userBean.isUserAuthorized(token);
-        User user = userBean.getUser(token);
-        if (!authorized  || !user.getRole().equals("Owner")) {
+        boolean authorized = userBean.isUserOwner(token);
+           User user = userBean.getUser(token);
+        if (!authorized) {
             return Response.status(401).entity("Unauthorized").build();
         } else {
             boolean available = taskBean.categoryExists(category.getName());
             if (available) {
-                return Response.status(400).entity("All elements are required").build();
+                return Response.status(400).entity("Name not available").build();
             }
             taskBean.createCategory(category.getName(), user.getUsername());
             return Response.status(201).entity("Category created").build();
@@ -148,17 +148,16 @@ public class TaskService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateCategory(Category category, @HeaderParam("token") String token) {
-        boolean authorized = userBean.isUserAuthorized(token);
-        User user = userBean.getUser(token);
-        if (!authorized || !user.getRole().equals("Owner")) {
+        boolean authorized = userBean.isUserOwner(token);
+        if (!authorized) {
             return Response.status(401).entity("Unauthorized").build();
         } else {
-            boolean available = taskBean.categoryExists(category.getName());
-            if (!available) {
+            boolean exists = taskBean.categoryExists(category.getName());
+            if (!exists) {
                 return Response.status(400).entity("Category does not exist").build();
                 }
             }
-            taskBean.createCategory(category.getName(), user.getUsername());
+            taskBean.updateCategory(taskBean.convertCatToEntity(category));
             return Response.status(201).entity("Category updated").build();
         }
 
@@ -166,14 +165,17 @@ public class TaskService {
     @Path("/deleteCategory/{name}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response removeCategory(@HeaderParam("token") String token, @PathParam("name") String name) {
-        boolean authorized = userBean.isUserAuthorized(token);
-        User user = userBean.getUser(token);
-        if (!authorized || !user.getRole().equals("Owner")) {
+        boolean authorized = userBean.isUserOwner(token);
+        if (!authorized) {
             return Response.status(401).entity("Unauthorized").build();
         } else {
+            boolean exists = taskBean.categoryExists(name);
+            if (!exists) {
+                return Response.status(404).entity("Category does not exist").build();
+            }
             boolean removed = taskBean.removeCategory(name);
             if (!removed) {
-                return Response.status(400).entity("Failed. Category not removed").build();
+                return Response.status(409).entity("Failed. Category not removed. update all tasks before deleting the category").build();
             } else {
                 return Response.status(200).entity("Category removed").build();
             }

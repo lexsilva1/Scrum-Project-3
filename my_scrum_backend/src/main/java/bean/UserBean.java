@@ -10,6 +10,7 @@ import java.util.List;
 import dao.UserDao;
 import dto.Task;
 import dto.UserDto;
+import entities.TaskEntity;
 import entities.UserEntity;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Singleton;
@@ -28,6 +29,8 @@ public class UserBean {
 
     @EJB
     UserDao userDao;
+    @EJB
+    TaskBean taskDao;
 
     public void addUser(User a) {
         UserEntity userEntity = convertToEntity(a);
@@ -38,6 +41,7 @@ public class UserBean {
         UserEntity userEntity = userDao.findUserByToken(token);
         return convertToDto(userEntity);
     }
+
     public User findUserByUsername(String username) {
         UserEntity userEntity = userDao.findUserByUsername(username);
         return convertToDto(userEntity);
@@ -48,6 +52,7 @@ public class UserBean {
         List<UserEntity> users = userDao.findAll();
         return users;
     }
+
     public boolean blockUser(String username) {
         UserEntity a = userDao.findUserByUsername(username);
         if (a != null) {
@@ -83,6 +88,7 @@ public class UserBean {
         }
         return false;
     }
+
     public boolean updateOtherUser(String username, User user) {
         UserEntity a = userDao.findUserByUsername(username);
         if (a != null) {
@@ -101,15 +107,15 @@ public class UserBean {
 
     public String login(String username, String password) {
         UserEntity user = userDao.findUserByUsername(username);
-        if(user != null && user.isActive()){
+        if (user != null && user.isActive()) {
             String token;
-        if (user.getPassword().equals(password)) {
-            do {
-                token = generateToken();
-            } while (tokenExists(token));
-        }else {
-            return null;
-        }
+            if (user.getPassword().equals(password)) {
+                do {
+                    token = generateToken();
+                } while (tokenExists(token));
+            } else {
+                return null;
+            }
             user.setToken(token);
             userDao.updateToken(user);
             return token;
@@ -118,13 +124,14 @@ public class UserBean {
     }
 
     public boolean userExists(String token) {
-        System.out.println("username "+token);
+        System.out.println("username " + token);
         UserEntity a = userDao.findUserByToken(token);
         if (a != null) {
             return true;
         }
         return false;
     }
+
     public boolean userNameExists(String username) {
         UserEntity a = userDao.findUserByUsername(username);
         if (a != null) {
@@ -145,11 +152,12 @@ public class UserBean {
     public boolean isUserValid(User user) {
         if (user.getUsername().isBlank() || user.getName().isBlank() || user.getEmail().isBlank() || user.getContactNumber().isBlank() || user.getUserPhoto().isBlank()) {
             return false;
-        } else if (user.getUsername() == null  || user.getName() == null || user.getEmail() == null || user.getContactNumber() == null || user.getUserPhoto() == null) {
+        } else if (user.getUsername() == null || user.getName() == null || user.getEmail() == null || user.getContactNumber() == null || user.getUserPhoto() == null) {
             return false;
         }
         return true;
     }
+
     public User getUserByUsername(String username) {
         UserEntity userEntity = userDao.findUserByUsername(username);
         return convertToDto(userEntity);
@@ -184,8 +192,9 @@ public class UserBean {
 
     public boolean tokenExists(String token) {
         UserEntity a = userDao.findUserByToken(token);
-        return a!= null;
+        return a != null;
     }
+
     public String generateToken() {
         String token = "";
         for (int i = 0; i < 10; i++) {
@@ -193,26 +202,29 @@ public class UserBean {
         }
         return token;
     }
+
     public boolean deleteUser(String token, String username) {
         UserEntity user = userDao.findUserByUsername(username);
         UserEntity responsible = userDao.findUserByToken(token);
-        if(user.isActive() && responsible.getRole().equals("Owner")){
+        if (user.isActive() && responsible.getRole().equals("Owner")) {
             user.setActive(false);
             userDao.updateUser(user);
             return true;
         }
-        if(responsible.getRole().equals("Owner")&& !user.isActive()) {
+        if (responsible.getRole().equals("Owner") && !user.isActive()) {
             userDao.remove(user);
             return true;
         }
         return false;
     }
+
     public void logout(String token) {
         UserEntity user = userDao.findUserByToken(token);
         user.setToken(null);
         userDao.updateToken(user);
     }
-    public UserDto convertUsertoUserDto(User user){
+
+    public UserDto convertUsertoUserDto(User user) {
         UserDto userDto = new UserDto();
         userDto.setName(user.getName());
         userDto.setEmail(user.getEmail());
@@ -222,6 +234,7 @@ public class UserBean {
         userDto.setUsername(user.getUsername());
         return userDto;
     }
+
     public boolean isUserOwner(String token) {
         UserEntity a = userDao.findUserByToken(token);
         if (a.getRole().equals("Owner")) {
@@ -229,6 +242,7 @@ public class UserBean {
         }
         return false;
     }
+
     public boolean restoreUser(String username) {
         UserEntity a = userDao.findUserByUsername(username);
         if (a != null) {
@@ -238,8 +252,17 @@ public class UserBean {
         }
         return false;
     }
-}
 
+    public boolean doesUserHaveTasks(String username) {
+        UserEntity a = userDao.findUserByUsername(username);
+        List<TaskEntity> tasks = taskDao.getTasksByUser(a);
+        if (tasks.size() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+}
 
 
 

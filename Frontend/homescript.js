@@ -326,18 +326,20 @@ function createTaskElement(task) {
     }
     taskElement.appendChild(postIt);
     postIt.appendChild(descriprioncontainer);
-    taskElement.addEventListener('dblclick', function () {
-        sessionStorage.setItem("taskDescription", taskElement.description);
-        sessionStorage.setItem("taskTitle", taskElement.title);
-        sessionStorage.setItem("taskid", taskElement.id);
-        sessionStorage.setItem("taskStatus", taskElement.status);
-        sessionStorage.setItem("taskPriority", taskElement.priority);
-        sessionStorage.setItem("taskStartDate", task.startDate);
-        sessionStorage.setItem("taskEndDate", task.endDate);
-        sessionStorage.setItem("taskCategory", task.category);
-        window.location.href = 'task.html';
-    });
+    taskElement.addEventListener('dblclick', taskElementDblClickHandler);
     return taskElement;
+}
+
+function taskElementDblClickHandler() {
+  sessionStorage.setItem("taskDescription", taskElement.description);
+  sessionStorage.setItem("taskTitle", taskElement.title);
+  sessionStorage.setItem("taskid", taskElement.id);
+  sessionStorage.setItem("taskStatus", taskElement.status);
+  sessionStorage.setItem("taskPriority", taskElement.priority);
+  sessionStorage.setItem("taskStartDate", task.startDate);
+  sessionStorage.setItem("taskEndDate", task.endDate);
+  sessionStorage.setItem("taskCategory", task.category);
+  window.location.href = 'task.html'; 
 }
 
 async function loadTasks() {
@@ -400,18 +402,7 @@ async function loadTasks() {
              document.getElementById('done').appendChild(taskElement);
            }
            taskElement.style.opacity = 0.5;
-           taskElement.style.pointerEvents = "none";
-           taskElement.removeEventListener('dblclick', function () {
-            sessionStorage.setItem("taskDescription", taskElement.description);
-            sessionStorage.setItem("taskTitle", taskElement.title);
-            sessionStorage.setItem("taskid", taskElement.id);
-            sessionStorage.setItem("taskStatus", taskElement.status);
-            sessionStorage.setItem("taskPriority", taskElement.priority);
-            sessionStorage.setItem("taskStartDate", task.startDate);
-            sessionStorage.setItem("taskEndDate", task.endDate);
-            sessionStorage.setItem("taskCategory", task.category);
-            window.location.href = 'task.html'; 
-            });
+           taskElement.removeEventListener('dblclick', taskElementDblClickHandler); 
             const resutaurar =document.createElement('button');
             resutaurar.textContent = "Restaurar";
             resutaurar.className = "restoreButton";
@@ -422,7 +413,6 @@ async function loadTasks() {
             });
           if (sessionStorage.getItem('role') === 'ScrumMaster') {
             const deleteButton = taskElement.querySelector('.apagarButton');
-            console.log(deleteButton);
             if (deleteButton) {
               deleteButton.remove();
             }

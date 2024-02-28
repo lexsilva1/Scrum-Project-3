@@ -73,6 +73,16 @@ public class TaskDao extends AbstractDao<TaskEntity>{
     public void createCategory(CategoryEntity categoryEntity) {
         em.persist(categoryEntity);
     }
+    public void updateCategory(CategoryEntity categoryEntity) {
+        em.merge(categoryEntity);
+    }
+    public CategoryEntity findCategoryById(int id) {
+        try {
+            return (CategoryEntity) em.createNamedQuery("Category.findCategoryById").setParameter("id", id).getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
     public void updateTask(TaskEntity taskEntity) {
         em.merge(taskEntity);
     }

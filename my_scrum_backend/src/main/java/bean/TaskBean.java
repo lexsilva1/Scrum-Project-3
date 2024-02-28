@@ -87,14 +87,14 @@ public class TaskBean {
         }
         return false;
     }
-    public CategoryEntity convertCatToEntity(String name) {
-        CategoryEntity categoryEntity = new CategoryEntity();
-        categoryEntity.setCreator(taskDao.findCategoryByName(name).getCreator());
-        categoryEntity.setName(name);
+    public CategoryEntity convertCatToEntity(Category category) {
+        CategoryEntity categoryEntity= taskDao.findCategoryById(category.getId());
+        categoryEntity.setName(category.getName());
         return categoryEntity;
     }
     public Category convertCatToDto(CategoryEntity categoryEntity) {
         Category category = new Category();
+        category.setId(categoryEntity.getId());
         category.setName(categoryEntity.getName());
         return category;
     }
@@ -143,6 +143,15 @@ public class TaskBean {
         }
         return false;
     }
+    public boolean updateCategory(CategoryEntity categoryEntity) {
+        CategoryEntity a = taskDao.findCategoryById(categoryEntity.getId());
+        if (a != null) {
+            a.setName(categoryEntity.getName());
+            taskDao.updateCategory(a);
+            return true;
+        }
+        return false;
+    }
     public void createCategory(String name, String creator) {
         CategoryEntity categoryEntity = new CategoryEntity();
         categoryEntity.setName(name);
@@ -150,9 +159,9 @@ public class TaskBean {
         taskDao.createCategory(categoryEntity);
     }
     public boolean removeCategory(String name) {
-        CategoryEntity a = taskDao.findCategoryByName(name);
-        if (a != null) {
-            taskDao.removeCategory(a);
+        List <TaskEntity> tasks = taskDao.findTasksByCategory(name);
+        if(tasks.isEmpty()) {
+            taskDao.removeCategory(taskDao.findCategoryByName(name));
             return true;
         }
         return false;
