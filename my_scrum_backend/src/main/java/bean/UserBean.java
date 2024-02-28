@@ -184,10 +184,7 @@ public class UserBean {
 
     public boolean tokenExists(String token) {
         UserEntity a = userDao.findUserByToken(token);
-        if (a != null) {
-            return true;
-        }
-        return false;
+        return a!= null;
     }
     public String generateToken() {
         String token = "";
@@ -196,16 +193,19 @@ public class UserBean {
         }
         return token;
     }
-    public void deleteUser(String token, String username) {
+    public boolean deleteUser(String token, String username) {
         UserEntity user = userDao.findUserByUsername(username);
         UserEntity responsible = userDao.findUserByToken(token);
         if(user.isActive() && responsible.getRole().equals("Owner")){
             user.setActive(false);
             userDao.updateUser(user);
+            return true;
         }
         if(responsible.getRole().equals("Owner")&& !user.isActive()) {
             userDao.remove(user);
+            return true;
         }
+        return false;
     }
     public void logout(String token) {
         UserEntity user = userDao.findUserByToken(token);
