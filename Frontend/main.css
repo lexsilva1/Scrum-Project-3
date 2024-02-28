@@ -1312,3 +1312,20 @@ aside {
   background-color: var(--green3);
   color: white; 
 }
+.restoreButton {
+  position: absolute; /* Posiciona o botão no canto superior esquerdo */
+  bottom: 10px;
+  left: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: var(--green3);
+  color: white; 
+  opacity: 0;
+  
+}
+.restoreButton:hover {
+  background-color: var(--green1);
+  opacity: 1;
+  transition: ease 0.01s;
+  
+}

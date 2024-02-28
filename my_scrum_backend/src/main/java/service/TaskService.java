@@ -40,7 +40,7 @@ public class TaskService {
         } else {
             ArrayList<Task> taskList = new ArrayList<>();
             for (TaskEntity taskEntity : taskBean.getTasks()) {
-                taskList.add(taskBean.convertToDto(taskEntity));
+                    taskList.add(taskBean.convertToDto(taskEntity));
             }
             taskList.sort(Comparator.comparing(Task::getPriority, Comparator.reverseOrder()).thenComparing(Comparator.comparing(Task::getStartDate).thenComparing(Task::getEndDate)));
             return Response.status(200).entity(taskList).build();
@@ -101,13 +101,28 @@ public class TaskService {
                 return Response.status(400).entity("Category does not exist").build();
             }
             User user = userBean.getUser(token);
-            String category = task.getCategory();
-            CategoryEntity categoryEntity = taskBean.findCategoryByName(category);
-            TaskEntity taskEntity = taskBean.convertToEntity(task);
-            taskEntity.setCategory(categoryEntity);
-            taskEntity.setUser(userBean.convertToEntity(user));
+            taskBean.setInitialId(task);
+            UserEntity userEntity = userBean.convertToEntity(user);
+            TaskEntity taskEntity = taskBean.createTaskEntity(task,userEntity);
             taskBean.addTask(taskEntity);
             return Response.status(201).entity(taskBean.convertToDto(taskEntity)).build();
+        }
+    }
+    @PATCH
+    @Path("/restore/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response restoreTask(@HeaderParam("token") String token, @PathParam("id") String id) {
+        boolean authorized = userBean.isUserAuthorized(token);
+        if (!authorized) {
+            return Response.status(401).entity("Unauthorized").build();
+        } else {
+            System.out.println("id: " + id);
+            boolean restored = taskBean.restoreTask(id);
+            if (!restored) {
+                return Response.status(400).entity("Failed. Task not restored").build();
+            } else {
+                return Response.status(200).entity("Task restored").build();
+            }
         }
     }
     @POST
@@ -236,10 +251,12 @@ public class TaskService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response blockTask(@HeaderParam("token") String token, @PathParam("id") String id) {
         boolean authorized = userBean.isUserAuthorized(token);
+        User user = userBean.getUser(token);
+        String role = user.getRole();
         if (!authorized) {
             return Response.status(401).entity("Unauthorized").build();
         } else {
-            boolean blocked = taskBean.blockTask(id);
+            boolean blocked = taskBean.blockTask(id, role);
             if (!blocked) {
                 return Response.status(400).entity("Failed. Task not blocked").build();
             } else {
