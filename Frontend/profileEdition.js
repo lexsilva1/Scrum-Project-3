@@ -67,13 +67,12 @@ if(sessionStorage.getItem('token') === null || sessionStorage.getItem('token') =
             username : user.username,
             name : document.getElementById('editFirstName').value.trim()+' '+document.getElementById('editLastName').value.trim(),
             email: document.getElementById('editUserEmail').value.trim(),
-            password : document.getElementById('editNewPassword').value.trim(),
             contactNumber : document.getElementById('editUserContact').value.trim(),
             userPhoto : document.getElementById("profileImage").src = document.getElementById('photoUpload').value.trim(),
+            userRole : user.userRole
             }
         confirmationDialog.close();
         updateUserData(user);
-        sessionStorage.setItem('password', user.password);
         window.location.href = 'home.html'
     })
     document.getElementById('declineChangesButton').addEventListener('click',()=>{
@@ -90,8 +89,7 @@ async function updateUserData(user){//chama o user aqui
         headers:{
             'Accept':'*/*',
             'Content-Type':'application/json',
-            'username': sessionStorage.getItem('username'),
-            'password': sessionStorage.getItem('password'),
+            'token':sessionStorage.getItem('token')
         },
         body:JSON.stringify(user),
     }).then(function(response){
