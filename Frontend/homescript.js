@@ -859,6 +859,41 @@ async function getTasksByUser(username) {
       }
     }
 
+    document.addEventListener('DOMContentLoaded', function() {
+      // Create the modal and its elements
+      var modalCategories = document.createElement('div');
+      var modalContent = document.createElement('div');
+      var modalTitle = document.createElement('h2');
+      var closeModalButton = document.createElement('button');
+  
+      // Set the attributes and content of the elements
+      modalCategories.id = 'editCategoriesModal';
+      modalCategories.className = 'modal';
+      modalCategories.style.display = 'none'; // The modal is initially hidden
+      modalContent.className = 'modal-content';
+      modalTitle.textContent = 'Edit Categories';
+      closeModalButton.id = 'closeModalButton';
+      closeModalButton.textContent = 'Close';
+  
+      // Append the elements to the modal
+      modalContent.appendChild(modalTitle);
+      modalContent.appendChild(closeModalButton);
+      modalCategories.appendChild(modalContent);
+  
+      // Append the modal to the body of the document
+      document.body.appendChild(modalCategories);
+  
+      // Add an event listener to the "Edit Categories" button to open the modal
+      document.getElementById('editCategoriesButton').addEventListener('click', function() {
+          modalCategories.style.display = 'block';
+      });
+  
+      // Add an event listener to the "Close" button to close the modal
+      closeModalButton.addEventListener('click', function() {
+          modalCategories.style.display = 'none';
+      });
+  });
+
 
 
 

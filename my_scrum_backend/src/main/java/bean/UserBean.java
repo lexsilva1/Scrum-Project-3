@@ -71,9 +71,23 @@ public class UserBean {
         }
         return false;
     }
+    public boolean ownerupdateUser(String token, User user) {
+        UserEntity a = userDao.findUserByUsername(user.getUsername());
+        UserEntity responsible = userDao.findUserByToken(token);
+        if (a != null && responsible.getRole().equals("Owner")) {
+            a.setName(user.getName());
+            a.setEmail(user.getEmail());
+            a.setContactNumber(user.getContactNumber());
+            a.setUserPhoto(user.getUserPhoto());
+            a.setRole(user.getRole());
+            userDao.updateUser(a);
+            return true;
+        }
+        return false;
+    }
 
     public boolean updateUser(String token, User user) {
-        UserEntity a = userDao.findUserByToken(token);
+        UserEntity a = userDao.findUserByUsername(user.getUsername());
         if (a != null) {
             a.setUsername(user.getUsername());
             a.setName(user.getName());

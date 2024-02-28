@@ -29,6 +29,26 @@
             Logout
         </button>
     </header>
+    <div class="top-section">
+        <div id="filter-container">
+            <div class="filter">
+                <label for="userFilter">Tasks by user:</label>
+                <select id="userFilter">
+                    <!-- Opções de usuário serão preenchidas dinamicamente -->
+                </select>
+            </div>
+            <div class="filter">
+                <label for="categoryFilter">Tasks by category:</label>
+                <select id="categoryFilter">
+                    <!-- Opções de categoria serão preenchidas dinamicamente -->
+                </select>
+                <div class="deleted-filter">
+                <input type="checkbox" id="deleted" name="deleted">Show deleted tasks</input>
+                </div>
+            </div>
+            <button id="viewUsersButton" onclick="window.location.href='viewUsers.html'">View Users</button>
+        </div>
+    </div>
     <div class="container"> <!--Container para o aside e o main-->
         <aside>
             <div class="add-task-container">
@@ -37,9 +57,11 @@
               <input type="text" id="taskName" placeholder="Title (required)" maxlength="15">
               <label for="taskDescription">Description</label> 
               <textarea id="taskDescription" placeholder="Description (required)"></textarea>
-              <label for="taskCategory">Category</label> <!-- Adicionado -->
+              <label for="taskCategory">Category</label> 
               <select id="taskCategory"> 
-              </select> <!-- Adicionado -->
+              </select> 
+              <br>
+              <button id="editCategoriesButton">Edit Categories</button>
               <label class="priority-label">Priority</label> 
               <div class="priority-buttons-home">
                 <button class="priority-button-home low" id="low-button-home">Low</button>
@@ -57,24 +79,8 @@
             </div>
           </aside>
     <main>
-        <div id="filter-container">
-            <div class="filter">
-                <label for="userFilter">Tasks by user:</label>
-                <select id="userFilter">
-                    <!-- Opções de usuário serão preenchidas dinamicamente -->
-                </select>
-            </div>
-            <div class="filter">
-                <label for="categoryFilter">Tasks by category:</label>
-                <select id="categoryFilter">
-                    <!-- Opções de categoria serão preenchidas dinamicamente -->
-                </select>
-                <div class="deleted-filter">
-                <input type="checkbox" id="deleted" name="deleted">Show deleted tasks</input>
-                </div>
-            </div>
-            <<button id="viewUsersButton" onclick="window.location.href='viewUsers.html'">View Users</button>
-        </div>
+      
+        
         <div class="titulo-main">
             <h2 class="main-home">To do</h2>
             <div class="panel" id="todo">
