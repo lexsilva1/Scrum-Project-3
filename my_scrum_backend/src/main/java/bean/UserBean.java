@@ -229,6 +229,15 @@ public class UserBean {
         }
         return false;
     }
+    public boolean restoreUser(String username) {
+        UserEntity a = userDao.findUserByUsername(username);
+        if (a != null) {
+            a.setActive(true);
+            userDao.updateUser(a);
+            return true;
+        }
+        return false;
+    }
 }
 
 
