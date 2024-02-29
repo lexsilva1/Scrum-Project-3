@@ -414,6 +414,7 @@ async function loadTasks() {
             sessionStorage.setItem("taskCategory", task.category);
             window.location.href = 'task.html'; 
           }
+
            taskElement.removeEventListener('dblclick', taskElementDblClickHandler); 
             const resutaurar =document.createElement('img');
             resutaurar.src = 'multimedia/restore.png';

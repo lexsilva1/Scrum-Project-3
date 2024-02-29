@@ -169,6 +169,9 @@ public class TaskBean {
     public CategoryEntity findCategoryByName(String name) {
         return taskDao.findCategoryByName(name);
     }
+    public CategoryEntity findCategoryById(int id) {
+        return taskDao.findCategoryById(id);
+    }
     public boolean blockTask(String id,String role) {
         TaskEntity a = taskDao.findTaskById(id);
         if (a != null) {

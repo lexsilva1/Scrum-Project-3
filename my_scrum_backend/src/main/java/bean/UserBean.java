@@ -159,7 +159,7 @@ public class UserBean {
     }
 
     public boolean userExists(String token) {
-        System.out.println("username " + token);
+        ;
         UserEntity a = userDao.findUserByToken(token);
         if (a != null) {
             return true;
