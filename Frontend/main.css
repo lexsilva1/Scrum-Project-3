@@ -423,7 +423,7 @@ main {
   color: var(--green3);
   text-transform: uppercase;
   font-size: 20px;
-  padding-top: 40px;
+  padding-top: 80px;
   padding-bottom: 10px;
   font-weight: bold; 
  
@@ -478,7 +478,7 @@ input[type="checkbox"] {
   height: 500px;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
-  margin-top: 10px;
+  margin-top: -60px;
   margin-right: 15px;
   margin-left: 15px;
   margin-bottom: 40px;
@@ -1066,7 +1066,7 @@ footer {
   align-items: flex-start;
   width: 800px; 
   height: 500px; 
-  padding-top: 50px;
+  padding-top: 10px;
   background-color: white;
   color: var(--green3);
   
@@ -1092,9 +1092,10 @@ footer {
 
 .table-container {
   width: 100%; /* Set the container width to 100% */
+  height: 80%;
   position: relative; /* Set the position to relative */
   overflow: auto;
-  margin-bottom: 60px;
+  
 }
 
 table {
