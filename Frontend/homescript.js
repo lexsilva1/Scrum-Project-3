@@ -430,42 +430,44 @@ async function loadDeletedTasks() {
     if (response.status === 200) {
       const taskArray = await response.json();
 
-    await fetch('http://localhost:8080/Scrum-Project-3/rest/task/all', {
-     method: 'GET',
-     headers: {
-       'Content-Type': 'application/json',
-       'token': sessionStorage.getItem('token')
-     }
-   }).then(async function(response){
-     if (response.status === 200){
-       const taskArray = await response.json();
-       
-       if (taskArray.length > 0) {
-         taskArray.forEach(task => {
-           if(task.active === false){
-           const taskElement = createTaskElement(task);
-           if (task.status === 10) {
-             document.getElementById('todo').appendChild(taskElement);
-           } else if (task.status === 20) {
-             document.getElementById('doing').appendChild(taskElement);
-           }else if (task.status === 30) {
-             document.getElementById('done').appendChild(taskElement);
-           }
-           taskElement.style.opacity = 0.5;
-            const resutaurar =document.createElement('img');
-            resutaurar.src = 'multimedia/restore.png';
-            resutaurar.className = "restoreButton";
-            taskElement.classList.add('taskdeleted');
-            taskElement.appendChild(resutaurar);
-            resutaurar.addEventListener("click", function () {
-              restoreTask(taskElement.id);
-              taskElement.remove();
+      await fetch('http://localhost:8080/Scrum-Project-3/rest/task/all', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'token': sessionStorage.getItem('token')
+        }
+      }).then(async function(response){
+        if (response.status === 200){
+          const taskArray = await response.json();
+          
+          if (taskArray.length > 0) {
+            taskArray.forEach(task => {
+              if(task.active === false){
+                const taskElement = createTaskElement(task);
+                if (task.status === 10) {
+                  document.getElementById('todo').appendChild(taskElement);
+                } else if (task.status === 20) {
+                  document.getElementById('doing').appendChild(taskElement);
+                }else if (task.status === 30) {
+                  document.getElementById('done').appendChild(taskElement);
+                }
+                taskElement.style.opacity = 0.5;
+                const resutaurar =document.createElement('img');
+                resutaurar.src = 'multimedia/restore.png';
+                resutaurar.className = "restoreButton";
+                taskElement.classList.add('taskdeleted');
+                taskElement.appendChild(resutaurar);
+                resutaurar.addEventListener("click", function () {
+                  restoreTask(taskElement.id);
+                  taskElement.remove();
+                });
+              }
             });
+          } else if (response.status === 404) {
+            alert("User not found");
+          } else if (response.status === 401) {
+            alert("Unauthorized");
           }
-        } else if (response.status === 404) {
-          alert("User not found");
-        } else if (response.status === 401) {
-          alert("Unauthorized");
         }
       });
     }
