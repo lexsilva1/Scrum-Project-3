@@ -1057,21 +1057,14 @@ footer {
 }
 
 #editCategoriesModal .modal-content {
+  
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: space-between;
-  height: 100%; 
-}
-
-#editCategoriesModal .modal-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
+  align-items: flex-start;
   width: 800px; 
   height: 500px; 
-  
+  padding-top: 50px;
 }
 
 #editCategoriesModal .modal-title {
@@ -1080,10 +1073,41 @@ footer {
 
 #editCategoriesModal .close-button {
   align-self: flex-start;
-  
 }
 
+.table-container {
+  width: 100%; /* Set the container width to 100% */
+  position: relative; /* Set the position to relative */
+  top: -200px;
+}
 
+table {
+  border-collapse: collapse;
+  width: 100%; /* Set the table width to 100% */
+}
+
+table td {
+  text-align: left; /* Align the text to the left */
+}
+
+table tr {
+  border-top: 1px solid white;
+}
+table tr:last-child {
+  border-bottom: 1px solid white;
+}
+#saveEditCategories {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+}
+.delete-cell {
+  display: flex;
+  justify-content: space-between;
+}
+input::placeholder {
+  font-size: 16px; /* Adjust this value as needed */
+}
 /*---------------------PAGINA REGISTO---------------------------------*/
 #registrySection {
   flex-grow: 1;

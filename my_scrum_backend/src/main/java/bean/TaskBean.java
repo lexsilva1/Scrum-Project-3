@@ -160,7 +160,7 @@ public class TaskBean {
     }
     public boolean removeCategory(String name) {
         List <TaskEntity> tasks = taskDao.findTasksByCategory(name);
-        if(tasks.isEmpty()) {
+        if(tasks == null) {
             taskDao.removeCategory(taskDao.findCategoryByName(name));
             return true;
         }
