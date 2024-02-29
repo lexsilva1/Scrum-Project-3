@@ -171,7 +171,7 @@ header {
 }
 /* Título Welcome to Scrum */
 h1 {
-  margin-left: 20px;
+  margin-left: 7px;
   font-size: 20px;
   color: var(--light-grey);
 }
@@ -199,7 +199,7 @@ h1 {
   transition: ease-in-out 0.1s;
   transition-property: background, box-shadow, color;
 }
-
+/*imagem de perfil que aparece no header*/
 #profileImageHome{
   width: 3.125rem;
   height: 3.125rem;
@@ -212,8 +212,8 @@ h1 {
 .username {
   color: var(--green1);
   display: flex;
-  align-items: center; /* Align children vertically */
-  justify-content: center; /* Center children horizontally */
+  align-items: center; 
+  justify-content: center; 
   
 }
 .username input {
@@ -423,8 +423,19 @@ main {
   color: var(--green3);
   text-transform: uppercase;
   font-size: 20px;
-  padding-top: 40px;
+  padding-top: 80px;
   padding-bottom: 10px;
+  font-weight: bold; 
+ 
+}
+
+.main-home::after {
+  content: "";
+  display: block;
+  width: 90%; 
+  margin: auto; 
+  border-bottom: 2px solid var(--green3);
+  margin-top: 15px;
 }
 
 #filter-container {
@@ -465,31 +476,22 @@ input[type="checkbox"] {
 .panel {
   flex: 1;
   height: 500px;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-  margin-top: 20px;
-  margin-right: 50px;
-  margin-left: 50px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  margin-top: -60px;
+  margin-right: 15px;
+  margin-left: 15px;
   margin-bottom: 40px;
   padding-top: 20px;
   padding-bottom: 20px;
   padding-left: 40px;
-  border: 2px solid var(--green3);
+  border: 3px solid #ddd;
   overflow: auto;
   /* Estilos da scroll bar */
   scrollbar-width: thin;
   scrollbar-color: var(--green2) var(--white);
 }
-/* Cor de fundo de cada painel */
-#todo {
-  background-color: var(--todo);
-}
-#doing {
-  background-color: var(--doing);
-}
-#done {
-  background-color: var(--done);
-}
+
 
 /* Estilos da scroll bar (painéis da home.html e da task no task.html) */
 /* Tamanho da barra */
@@ -1064,7 +1066,9 @@ footer {
   align-items: flex-start;
   width: 800px; 
   height: 500px; 
-  padding-top: 50px;
+  padding-top: 10px;
+  background-color: white;
+  color: var(--green3);
   
 }
 
@@ -1075,12 +1079,23 @@ footer {
 #editCategoriesModal .close-button {
   align-self: flex-start;
 }
+/* Remove background color and margins from the buttons */
+#editCategoriesModal button {
+  background-color: transparent;
+  margin: 0;
+  padding: 5px 10px; /* Adjust as needed */
+  margin: 0 5px;
+  border: none;
+  width: 30px; /* Adjust as needed */
+  height: 30px;
+}
 
 .table-container {
   width: 100%; /* Set the container width to 100% */
+  height: 80%;
   position: relative; /* Set the position to relative */
   overflow: auto;
-  margin-bottom: 60px;
+  
 }
 
 table {
@@ -1093,10 +1108,10 @@ table td {
 }
 
 table tr {
-  border-top: 1px solid white;
+  border-top: 1px solid var(--green3);
 }
 table tr:last-child {
-  border-bottom: 1px solid white;
+  border-bottom: 1px solid var(--green3);
 }
 #saveEditCategories {
   position: absolute;
