@@ -174,6 +174,8 @@ public class TaskService {
                 return Response.status(409).entity("Category name is not available").build();
                 }
             }
+        //JsonObject jsonObject = Json.createReader(new StringReader(category.getId())).readObject();
+       // int newActiveStatus = jsonObject.getInt("status");
             CategoryEntity categoryEntity = taskBean.findCategoryById(category.getId());
             taskBean.updateCategory(categoryEntity);
             return Response.status(201).entity("Category updated").build();
@@ -294,6 +296,7 @@ public class TaskService {
         } else {
             ArrayList<Category> categoryList = new ArrayList<>();
             for (CategoryEntity categoryEntity : taskBean.getAllCategories()) {
+                System.out.println("id "+categoryEntity.getId());
                 categoryList.add(taskBean.convertCatToDto(categoryEntity));
             }
             return Response.status(200).entity(categoryList).build();

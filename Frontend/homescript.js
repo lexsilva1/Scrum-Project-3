@@ -14,6 +14,8 @@ window.onload = async function () {
     document.getElementById("viewUsersButton").remove();
   }
 };
+
+//checkbox para mostrar tarefas apagadas
 const deletebox = document.getElementById("deleted");
 deletebox.addEventListener("change", () => {
   if (deletebox.checked === true) {
@@ -31,6 +33,7 @@ if (
 ) {
   window.location.href = "index.html";
 }
+
 let tasks = document.querySelectorAll(".task");
 const panels = document.querySelectorAll(".panel");
 
@@ -46,7 +49,7 @@ function attachDragAndDropListeners(task) {
 }
 
 document.addEventListener("DOMContentLoaded", async function () {
-fillTaskCategory();
+  fillTaskCategory();
 });
 
 async function fillUserFilter() {
@@ -87,7 +90,9 @@ async function fillCategoryFilter() {
   // Adiciona uma opção para cada categoria
   categories.forEach((category) => {
     const option = document.createElement("option");
-    option.value = category.id;
+
+    option.value = category.name;
+
     option.text = category.name;
     categoryFilter.appendChild(option);
   });
@@ -339,10 +344,12 @@ function createTaskElement(task) {
     deletemodal.style.display = "grid";
     const deletebtn = document.getElementById("delete-button");
 
-    function deleteButtonClickHandler() {
+    async function deleteButtonClickHandler() {
       deleteTask(taskElement.id);
       taskElement.remove();
       deletebtn.removeEventListener("click", deleteButtonClickHandler);
+      clearModalCategories();
+      await displayCategoriesInModal();
       deletemodal.style.display = "none";
     }
 
@@ -377,8 +384,6 @@ function createTaskElement(task) {
   }
     return taskElement;
 }
-
-
 
 async function loadTasks() {
   await fetch("http://localhost:8080/Scrum-Project-3/rest/task/all", {
@@ -456,27 +461,16 @@ async function loadDeletedTasks() {
               restoreTask(taskElement.id);
               taskElement.remove();
             });
-            if (sessionStorage.getItem("role") === "ScrumMaster") {
-              const deleteButton = taskElement.querySelector(".apagarButton");
-              if (deleteButton) {
-                deleteButton.remove();
-              }
-            }
           }
-        });
-      }
-    } else if (response.status === 404) {
-      alert("User not found");
-    } else if (response.status === 401) {
-      alert("Unauthorized");
+        } else if (response.status === 404) {
+          alert("User not found");
+        } else if (response.status === 401) {
+          alert("Unauthorized");
+        }
+      });
     }
-  
   });
-  }
-});
 }
-
-
 
 async function restoreTask(id) {
   try {
@@ -940,42 +934,56 @@ async function getTasksByCategory(category) {
 
 // modal das categorias
 
-document.addEventListener("DOMContentLoaded", function () {
-  // Create the modal and its elements
-  var modalCategories = document.createElement("div");
+function createCategoryModal() {
+
+  var modalCategories = document.createElement("modal");
   var modalContent = document.createElement("div");
   var modalTitle = document.createElement("h2");
-  var closeModalSpan = document.createElement("span"); 
-  var saveButton = document.createElement("button"); 
+  var closeModalSpanCategories = document.createElement("span");
+  modalCategories.appendChild(modalContent);
+  modalContent.appendChild(modalTitle);
+  modalContent.appendChild(closeModalSpanCategories);
 
-  // Set the attributes and content of the elements
   modalCategories.id = "editCategoriesModal";
   modalCategories.className = "modal";
-  modalCategories.style.display = "none"; 
+  modalCategories.style.display = "none";
   modalContent.className = "modal-content";
-  modalTitle.textContent = "Edit Categories";
-  closeModalSpan.id = "closeModalSpan";
-  closeModalSpan.textContent = "X"; 
-  closeModalSpan.style.position = "absolute";
-  closeModalSpan.style.top = "0";
-  closeModalSpan.style.right = "0";
-  closeModalSpan.style.cursor = "pointer"; 
-  saveButton.id = "saveEditCategories"; 
-  saveButton.textContent = "Save"; 
+  modalTitle.textContent = "Categories";
+  closeModalSpanCategories.id = "closeModalSpan";
+  closeModalSpanCategories.textContent = "X";
+  closeModalSpanCategories.style.position = "absolute";
+  closeModalSpanCategories.style.top = "0";
+  closeModalSpanCategories.style.right = "0";
+  closeModalSpanCategories.style.cursor = "pointer";
 
-  // Create the "Add Category" button
+// Criar o botão para adicionar uma categoria
 const addCategoryButton = document.createElement("button");
 addCategoryButton.textContent = "Add Category";
-addCategoryButton.style.position = 'absolute';
-addCategoryButton.style.bottom = '10px';
-addCategoryButton.style.left = '10px';
+addCategoryButton.style.position = "absolute";
+addCategoryButton.style.bottom = "10px";
+addCategoryButton.style.left = "10px";
+addCategoryButton.style.cursor = "pointer";
+addCategoryButton.addEventListener("click", function () { 
+  createAddCategoryModal();
+});
+modalContent.appendChild(addCategoryButton);
+modalCategories.style.display = "block";
+document.body.appendChild(modalCategories);
+  displayCategoriesInModal();
+closeModalSpanCategories.addEventListener("click", function () {
+  fillTaskCategory();
+  modalCategories.style.display = "none";
+});
 
-  // Append the elements to the modal
-  modalContent.appendChild(modalTitle);
-  modalContent.appendChild(closeModalSpan);
-  modalContent.appendChild(saveButton); 
-  modalCategories.appendChild(modalContent);
-  modalContent.appendChild(addCategoryButton);
+}
+
+const editButton = document.getElementById("editCategoriesButton");
+editButton.addEventListener("click", function () {
+  createCategoryModal();
+});
+
+
+function createAddCategoryModal() {
 
   const addCategoryModal = document.createElement("div");
   const addCategoryModalContent = document.createElement("div");
@@ -984,7 +992,6 @@ addCategoryButton.style.left = '10px';
   const addCategorySaveButton = document.createElement("button");
   const addCategoryNameInput = document.createElement("input");
 
-  // Set the attributes and content of the elements
   addCategoryModal.id = "addCategoryModal";
   addCategoryModal.className = "modal";
   addCategoryModal.style.display = "none";
@@ -998,7 +1005,7 @@ addCategoryButton.style.left = '10px';
   addCategorySaveButton.textContent = "Save";
   addCategoryNameInput.placeholder = "Category name";
   addCategoryNameInput.className = "add-category-input";
-  // Append the elements to the add category modal
+  // Adicionar os elementos ao modal de adicionar categoria
   addCategoryModalContent.appendChild(addCategoryModalTitle);
   addCategoryModalContent.appendChild(addCategoryCloseModalSpan);
   addCategoryModalContent.appendChild(addCategoryNameInput);
@@ -1006,142 +1013,137 @@ addCategoryButton.style.left = '10px';
   addCategoryModal.appendChild(addCategoryModalContent);
   document.body.appendChild(addCategoryModal);
   addCategoryModal.style.zIndex = "1000";
+  addCategoryModal.style.display = "block";
 
-  addCategoryButton.addEventListener("click", function () {
+  addCategorySaveButton.addEventListener("click", function () {
     addCategoryModal.style.display = "block";
   });
 
   addCategoryCloseModalSpan.addEventListener("click", function () {
     addCategoryModal.style.display = "none";
   });
-
+  // Event listener quando se clica no botão de salvar no modal de adicionar categoria
   addCategorySaveButton.addEventListener("click", async function () {
     const categoryName = addCategoryNameInput.value;
-    await addCategory(categoryName); // Call the addCategory function with the category name
+    await addCategory(categoryName);
     addCategoryModal.style.display = "none";
-    displayCategoriesInModal(); // Call the function to display the categories in the modal again
+    displayCategoriesInModal();
   });
+ 
+}
 
-
-  // Append the modal to the body of the document
-  document.body.appendChild(modalCategories);
-
-  // Add an event listener to the "Edit Categories" button to open the modal
-  document
-    .getElementById("editCategoriesButton")
-    .addEventListener("click", function () {
-      modalCategories.style.display = "block";
-    });
-
-    const saveButtonCategory = document.getElementById("saveEditCategories");
-
-    saveButtonCategory.addEventListener("click", async function () {
-      
-      let inputFields = document.getElementsByClassName("categoryNameInput");
-      let name;
-      let id;
-      let updatedCategories = [];
-    for (let i = 0; i < inputFields.length; i++) {
-      let inputField = inputFields[i];
-      if (inputField.value === null) {
-        console.log(inputField.name);
-        name = inputField.name; 
-        id = inputField.id;
-        const category = {
-          name: name,
-          id: id
-        }
-        updatedCategories.push(category);
-      }
-      
-      };
-      for (let i = 0; i < updatedCategories.length; i++) {
-        let category = updatedCategories[i];
-        await updateCategory(category);
-    }
-      
-    
-      // Call the updateCategory function with the updated category data
-      
-    
-      // Close the modal
-      modalCategories.style.display = "none";
-    });
-
-
-
-
-
-
-  // Add an event listener to the "Close" span to close the modal
-  closeModalSpan.addEventListener("click", function () {
-    fillCategoryFilter();
-    fillTaskCategory();
-    modalCategories.style.display = "none";
-    
-  });
-});
 
 async function displayCategoriesInModal() {
-  // Call the existing function to get the categories
   const categories = await getCategories();
-
-  // Get the modal content div
   const modalContent = document.querySelector(
     "#editCategoriesModal .modal-content"
   );
-
-  // Create a container for the table
   let tableContainer = document.querySelector(".table-container");
 
-  // If the table container doesn't exist, create it
   if (!tableContainer) {
     tableContainer = document.createElement("div");
     tableContainer.className = "table-container";
     modalContent.appendChild(tableContainer);
   } else {
-    
     tableContainer.innerHTML = "";
   }
 
-  // Create a table
   const table = document.createElement("table");
 
   for (let i = 0; i < categories.length; i++) {
     const row = document.createElement("tr");
     const nameCell = document.createElement("td");
-    const nameInput = document.createElement("input"); 
-    nameInput.placeholder = categories[i].name;
-    
-    nameInput.name = categories[i].name; 
-    nameInput.id= categories[i].id;
-    nameInput.className = "categoryNameInput";
-    nameCell.appendChild(nameInput); 
+    const nameLabel = document.createElement("label");
+    nameLabel.textContent = categories[i].name;
+    nameLabel.className = "categoryNameLabel";
+    nameCell.appendChild(nameLabel);
+
     row.appendChild(nameCell);
 
-    
-    const deleteCell = document.createElement("td");
-    deleteCell.className = "delete-cell"; 
-    const deleteButton = document.createElement("button");
-    deleteButton.textContent = "Delete";
-    deleteButton.addEventListener("click", async function () {
-      await deleteCategory(nameInput.placeholder); 
-      displayCategoriesInModal(); 
-    });
-    deleteCell.appendChild(deleteButton);
-    row.appendChild(deleteCell);
+    const buttonsCell = document.createElement("td");
+    buttonsCell.style.textAlign = "right";
 
-    // Append the row to the table
+    const editButton = document.createElement("button");
+    editButton.innerHTML = "&#9998;";
+    editButton.style.marginRight = "10px";
+    editButton.addEventListener("click", function () {
+      // Create the edit category modal and its elements
+      var editCategoryModal = document.createElement("div");
+      var editCategoryContent = document.createElement("div");
+      var editCategoryTitle = document.createElement("h2");
+      var categoryLabel = document.createElement("label");
+      var categoryInput = document.createElement("input");
+      var saveButton = document.createElement("button");
+      var cancelButton = document.createElement("button");
+
+      editCategoryModal.id = "editCategoryModal";
+      editCategoryModal.className = "modal";
+      editCategoryModal.style.display = "block";
+
+      editCategoryContent.className = "modal-content";
+      editCategoryContent.style.padding = "10px"; 
+      editCategoryContent.style.width = "40%"; 
+      editCategoryContent.style.height = "40%"; 
+      editCategoryContent.style.margin = "0 auto"; 
+      editCategoryContent.style.display = "flex"; 
+      editCategoryContent.style.flexDirection = "column"; 
+      editCategoryContent.style.justifyContent = "space-between"; 
+
+      editCategoryTitle.textContent = "Edit Category";
+      categoryLabel.textContent = categories[i].name;
+      categoryInput.type = "text";
+      categoryInput.placeholder = "New category name";
+
+      saveButton.textContent = "Save";
+      cancelButton.textContent = "Cancel";
+
+      // Add click events to the buttons
+      saveButton.addEventListener("click", function() {
+        updateCategory(categoryInput.value);
+        editCategoryModal.style.display = "none";
+      });
+      cancelButton.addEventListener("click", function() {
+        editCategoryModal.style.display = "none";
+      });
+
+      // Add the elements to the content
+      editCategoryContent.appendChild(editCategoryTitle);
+      editCategoryContent.appendChild(categoryLabel);
+      editCategoryContent.appendChild(categoryInput);
+      editCategoryContent.appendChild(saveButton);
+      editCategoryContent.appendChild(cancelButton);
+
+      editCategoryModal.appendChild(editCategoryContent);
+      document.body.appendChild(editCategoryModal);
+    });
+    buttonsCell.appendChild(editButton);
+
+    const deleteButton = document.createElement("button");
+    deleteButton.innerHTML = "&#128465;";
+    deleteButton.addEventListener("click", function () {
+      var showModal = confirmationModal(
+        "Do you want to delete the category?",
+        function () {
+          deleteCategory(categories[i].name);
+          clearModalCategories();
+          displayCategoriesInModal();
+        },
+        function () {}
+      );
+      showModal();
+    });
+
+    buttonsCell.appendChild(deleteButton);
+
+    row.appendChild(buttonsCell);
     table.appendChild(row);
   }
-
-  // Append the table to the container
   tableContainer.appendChild(table);
 }
 
-// Call the function to display the categories in the modal
-displayCategoriesInModal();
 
+
+//função para apagar categoria
 async function deleteCategory(name) {
   console.log(name);
   try {
@@ -1171,7 +1173,6 @@ async function deleteCategory(name) {
     // Handle fetch errors
     alert("Error deleting Category. Please try again.");
   }
- 
 }
 
 function clearModalCategories() {
@@ -1183,9 +1184,11 @@ function clearModalCategories() {
   }
 }
 
+//função para adicionar categoria
 async function addCategory(name) {
   try {
-    const response = await fetch(`http://localhost:8080/Scrum-Project-3/rest/task/createCategory`,
+    const response = await fetch(
+      `http://localhost:8080/Scrum-Project-3/rest/task/createCategory`,
       {
         method: "POST",
         headers: {
@@ -1194,7 +1197,6 @@ async function addCategory(name) {
         },
         body: JSON.stringify({ name: name }),
       }
-      
     );
 
     if (response.status === 201) {
@@ -1213,10 +1215,11 @@ async function addCategory(name) {
     alert("Error adding Category. Please try again.");
   }
 }
-
-async function updateCategory (category) {
+//função para fazer update da categoria
+async function updateCategory(category) {
   try {
-    const response = await fetch(`http://localhost:8080/Scrum-Project-3/rest/task/updateCategory`,
+    const response = await fetch(
+      `http://localhost:8080/Scrum-Project-3/rest/task/updateCategory`,
       {
         method: "PUT",
         headers: {
@@ -1225,7 +1228,6 @@ async function updateCategory (category) {
         },
         body: JSON.stringify(category),
       }
-      
     );
 
     if (response.status === 200) {
@@ -1243,4 +1245,64 @@ async function updateCategory (category) {
     // Handle fetch errors
     alert("Error updating Category. Please try again.");
   }
+}
+
+function confirmationModal(message, confirmCallback, cancelCallback) {
+  // Create the confirmation modal and its elements
+  var confirmationModal = document.createElement("div");
+  var confirmationContent = document.createElement("div");
+  var confirmationMessage = document.createElement("p");
+  var confirmButton = document.createElement("button");
+  var cancelButton = document.createElement("button");
+
+  confirmationModal.id = "confirmationModal";
+  confirmationModal.className = "modal";
+  confirmationModal.style.display = "none";
+  confirmationContent.className = "modal-content";
+  confirmationContent.style.padding = "10px";
+  confirmationContent.style.width = "30%";
+  confirmationContent.style.height = "30%";
+  confirmationContent.style.margin = "0 auto";
+  confirmationContent.style.display = "flex";
+  confirmationContent.style.flexDirection = "column";
+  confirmationContent.style.justifyContent = "space-between";
+  confirmationMessage.textContent = message;
+  confirmationMessage.style.textAlign = "center";
+  confirmationMessage.style.marginTop = "70px";
+
+  var buttonsContainer = document.createElement("div");
+  buttonsContainer.style.display = "flex";
+  buttonsContainer.style.flexDirection = "row";
+  buttonsContainer.style.justifyContent = "space-between";
+
+  confirmButton.textContent = "Confirm";
+  cancelButton.textContent = "Cancel";
+
+  // Add click events to the buttons
+  confirmButton.addEventListener("click", function () {
+    confirmCallback();
+    confirmationModal.style.display = "none";
+  });
+  cancelButton.addEventListener("click", function () {
+    cancelCallback();
+    confirmationModal.style.display = "none";
+  });
+
+  // Add the buttons to the buttons container
+  buttonsContainer.appendChild(cancelButton);
+  buttonsContainer.appendChild(confirmButton);
+  cancelButton.style.marginRight = "100px";
+
+  // Add the message and the buttons container to the content
+  confirmationContent.appendChild(confirmationMessage);
+  confirmationContent.appendChild(buttonsContainer);
+
+  confirmationModal.appendChild(confirmationContent);
+  document.body.appendChild(confirmationModal);
+
+  function showModal() {
+    confirmationModal.style.display = "block";
+  }
+
+  return showModal;
 }
