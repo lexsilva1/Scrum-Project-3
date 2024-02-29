@@ -87,8 +87,8 @@ async function fillCategoryFilter() {
   // Adiciona uma opção para cada categoria
   categories.forEach((category) => {
     const option = document.createElement("option");
-    option.value = category;
-    option.text = category;
+    option.value = category.id;
+    option.text = category.name;
     categoryFilter.appendChild(option);
   });
 }
@@ -104,8 +104,8 @@ async function fillTaskCategory() {
     // Cria uma nova opção para cada categoria e adiciona à combobox
     for (var i = 0; i < categories.length; i++) {
       var option = document.createElement("option");
-      option.value = categories[i];
-      option.text = categories[i];
+      option.value = categories[i].name;
+      option.text = categories[i].name;
       select.appendChild(option);
     }
   } catch (error) {
@@ -762,7 +762,7 @@ async function getCategories() {
       } else {
         const Array = [];
         for (var i = 0; i < categoriesArray.length; i++) {
-          Array.push(categoriesArray[i].name);
+          Array.push(categoriesArray[i]);
         }
         return Array;
       }
@@ -1050,20 +1050,24 @@ addCategoryButton.style.left = '10px';
       let inputFields = document.getElementsByClassName("categoryNameInput");
       let name;
       let id;
+      let updatedCategories = [];
     for (let i = 0; i < inputFields.length; i++) {
       let inputField = inputFields[i];
-      if (inputField.value === "") {
+      if (inputField.value === null) {
+        console.log(inputField.name);
         name = inputField.name; 
         id = inputField.id;
-      } else {
-        name = inputField.value; 
-        id = inputField.id;
+        const category = {
+          name: name,
+          id: id
+        }
+        updatedCategories.push(category);
       }
-      const category = {
-        name: name,
-        id: id
+      
       };
-      await updateCategory(category);
+      for (let i = 0; i < updatedCategories.length; i++) {
+        let category = updatedCategories[i];
+        await updateCategory(category);
     }
       
     
@@ -1113,15 +1117,12 @@ async function displayCategoriesInModal() {
   // Create a table
   const table = document.createElement("table");
 
-  // Iterate over the categories
   for (let i = 0; i < categories.length; i++) {
-    // Create a new row
     const row = document.createElement("tr");
-
-    // Create a cell for the category name
     const nameCell = document.createElement("td");
     const nameInput = document.createElement("input"); 
-    nameInput.placeholder = categories[i];
+    nameInput.placeholder = categories[i].name;
+    
     nameInput.name = categories[i].name; 
     nameInput.id= categories[i].id;
     nameInput.className = "categoryNameInput";
