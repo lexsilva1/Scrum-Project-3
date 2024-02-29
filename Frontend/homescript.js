@@ -1,89 +1,70 @@
 window.onload = async function () {
   const user = await getUserDTO();
-  sessionStorage.setItem('role', user.role);
-    loadTasks();
-    updateDate();
-    showTime();
-    const names = user.name.split(" ");
-    document.getElementById('profileImageHome').src = user.userPhoto;
-    document.getElementById('login-home').innerHTML = names[0];
-    fillUserFilter();
-    fillCategoryFilter();
-    if (user.role === 'developer') {
-      document.getElementById('filter-container').remove();
-      document.getElementById('viewUsersButton').remove();
-    }
-  };
-  const deletebox = document.getElementById('deleted');
-  deletebox.addEventListener('change', () => {
-    if (deletebox.checked === true) {
-      clearTaskPanels();
-      loadDeletedTasks();
-    } else {
-      clearTaskPanels();
-      loadTasks();
-    }
-  });
-
-  
-
-  if(sessionStorage.getItem('token') === null || sessionStorage.getItem('token') === ''){
-    window.location.href = 'index.html';
+  sessionStorage.setItem("role", user.role);
+  loadTasks();
+  updateDate();
+  showTime();
+  const names = user.name.split(" ");
+  document.getElementById("profileImageHome").src = user.userPhoto;
+  document.getElementById("login-home").innerHTML = names[0];
+  fillUserFilter();
+  fillCategoryFilter();
+  if (user.role === "developer") {
+    document.getElementById("filter-container").remove();
+    document.getElementById("viewUsersButton").remove();
   }
-let tasks = document.querySelectorAll('.task');
-const panels = document.querySelectorAll('.panel')
+};
+const deletebox = document.getElementById("deleted");
+deletebox.addEventListener("change", () => {
+  if (deletebox.checked === true) {
+    clearTaskPanels();
+    loadDeletedTasks();
+  } else {
+    clearTaskPanels();
+    loadTasks();
+  }
+});
 
-function attachDragAndDropListeners(task) { // Adiciona os listeners de drag and drop a uma tarefa criada dinamicamente
-  task.addEventListener('dragstart', () => {
-      task.classList.add('dragging')
+if (
+  sessionStorage.getItem("token") === null ||
+  sessionStorage.getItem("token") === ""
+) {
+  window.location.href = "index.html";
+}
+let tasks = document.querySelectorAll(".task");
+const panels = document.querySelectorAll(".panel");
+
+function attachDragAndDropListeners(task) {
+  // Adiciona os listeners de drag and drop a uma tarefa criada dinamicamente
+  task.addEventListener("dragstart", () => {
+    task.classList.add("dragging");
   });
-  task.addEventListener('dragend', () => {
-      task.classList.remove('dragging')
-      updateStatus(task);
-      
-
+  task.addEventListener("dragend", () => {
+    task.classList.remove("dragging");
+    updateStatus(task);
   });
 }
 
-document.addEventListener('DOMContentLoaded', async function() {
-  try {
-    // Agora estamos usando await para esperar a promessa ser resolvida
-    var categories = await getCategories();
-    var select = document.getElementById('taskCategory');
-
-    // Limpa opções existentes
-    select.innerHTML = '';
-
-    // Cria uma nova opção para cada categoria e adiciona à combobox
-    for (var i = 0; i < categories.length; i++) {
-      var option = document.createElement('option');
-      option.value = categories[i];
-      option.text = categories[i];
-      select.appendChild(option);
-    }
-  } catch (error) {
-    console.error('Error:', error);
-    // Handle fetch errors
-    alert('Error fetching categories. Please try again.');
-  }
+document.addEventListener("DOMContentLoaded", async function () {
+fillTaskCategory();
 });
 
 async function fillUserFilter() {
   const users = await getUsers();
-  const userFilter = document.getElementById('userFilter');
+  const userFilter = document.getElementById("userFilter");
 
   // Limpa a combobox antes de adicionar novas opções
-  userFilter.innerHTML = '';
+  userFilter.innerHTML = "";
 
   // Adiciona uma opção vazia no início
-  const defaultOption = document.createElement('option');
-  defaultOption.value = '';
-  defaultOption.text = '';
+  const defaultOption = document.createElement("option");
+  defaultOption.value = "";
+  defaultOption.text = "";
   userFilter.appendChild(defaultOption);
 
   // Adiciona uma opção para cada usuário
-  users.forEach(user => {
-    const option = document.createElement('option');
+  users.forEach((user) => {
+    const option = document.createElement("option");
     option.value = user.username;
     option.text = user.name;
     userFilter.appendChild(option);
@@ -92,44 +73,65 @@ async function fillUserFilter() {
 
 async function fillCategoryFilter() {
   const categories = await getCategories();
-  const categoryFilter = document.getElementById('categoryFilter');
+  const categoryFilter = document.getElementById("categoryFilter");
 
   // Limpa a combobox antes de adicionar novas opções
-  categoryFilter.innerHTML = '';
+  categoryFilter.innerHTML = "";
 
   // Adiciona uma opção vazia no início
-  const defaultOption = document.createElement('option');
-  defaultOption.value = '';
-  defaultOption.text = '';
+  const defaultOption = document.createElement("option");
+  defaultOption.value = "";
+  defaultOption.text = "";
   categoryFilter.appendChild(defaultOption);
 
   // Adiciona uma opção para cada categoria
-  categories.forEach(category => {
-    const option = document.createElement('option');
-    option.value = category;
-    option.text = category;
+  categories.forEach((category) => {
+    const option = document.createElement("option");
+    option.value = category.id;
+    option.text = category.name;
     categoryFilter.appendChild(option);
   });
 }
+async function fillTaskCategory() {
+  try {
+    // Agora estamos usando await para esperar a promessa ser resolvida
+    var categories = await getCategories();
+    var select = document.getElementById("taskCategory");
 
+    // Limpa opções existentes
+    select.innerHTML = "";
+
+    // Cria uma nova opção para cada categoria e adiciona à combobox
+    for (var i = 0; i < categories.length; i++) {
+      var option = document.createElement("option");
+      option.value = categories[i].name;
+      option.text = categories[i].name;
+      select.appendChild(option);
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    // Handle fetch errors
+    alert("Error fetching categories. Please try again.");
+  }
+}
 // Adiciona os listeners de drag and drop a um painel
-panels.forEach(panel => { 
-  panel.addEventListener('dragover', e => {
-    e.preventDefault()
-    const afterElement = getDragAfterElement(panel, e.clientY)
-    const task = document.querySelector('.dragging')
-    const panelID = document.getElementById(panel.id) // Guarda o ID do painel onde a tarefa vai ser colocada
+panels.forEach((panel) => {
+  panel.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    const afterElement = getDragAfterElement(panel, e.clientY);
+    const task = document.querySelector(".dragging");
+    const panelID = document.getElementById(panel.id); // Guarda o ID do painel onde a tarefa vai ser colocada
     if (afterElement == null) {
-      panel.appendChild(task)
+      panel.appendChild(task);
       task.status = panel.id;
-      for (var i = 0; i < tasks.length; i++) { // Percorre o array de tarefas e altera o status da tarefa para o painel onde foi colocada
+      for (var i = 0; i < tasks.length; i++) {
+        // Percorre o array de tarefas e altera o status da tarefa para o painel onde foi colocada
         if (tasks[i].id == task.id) {
           tasks[i].status = panelID; // Atualiza o status da tarefa
         }
       }
-      
     } else {
-      panel.insertBefore(task, afterElement)
+      panel.insertBefore(task, afterElement);
       task.status = panel.id;
       for (var i = 0; i < tasks.length; i++) {
         if (tasks[i].id == task.id) {
@@ -137,8 +139,8 @@ panels.forEach(panel => {
         }
       }
     }
-  })
-})
+  });
+});
 
 // Definir os botões de priority
 const lowButton = document.getElementById("low-button-home");
@@ -146,95 +148,127 @@ const mediumButton = document.getElementById("medium-button-home");
 const highButton = document.getElementById("high-button-home");
 let taskPriority;
 
-
 function setPriorityButtonSelected(button, priority) {
   const buttons = [lowButton, mediumButton, highButton];
-  buttons.forEach(btn => btn.classList.remove("selected"));
+  buttons.forEach((btn) => btn.classList.remove("selected"));
   button.classList.add("selected");
   taskPriority = priority;
 }
 function removeSelectedPriorityButton() {
   const buttons = [lowButton, mediumButton, highButton];
-  buttons.forEach(btn => btn.classList.remove("selected"));
+  buttons.forEach((btn) => btn.classList.remove("selected"));
 }
 
-
-
 // Event listeners para os botões priority
-lowButton.addEventListener("click", () => setPriorityButtonSelected(lowButton, 100));
-mediumButton.addEventListener("click", () => setPriorityButtonSelected(mediumButton, 200));
-highButton.addEventListener("click", () => setPriorityButtonSelected(highButton, 300));
+lowButton.addEventListener("click", () =>
+  setPriorityButtonSelected(lowButton, 100)
+);
+mediumButton.addEventListener("click", () =>
+  setPriorityButtonSelected(mediumButton, 200)
+);
+highButton.addEventListener("click", () =>
+  setPriorityButtonSelected(highButton, 300)
+);
 
 function getDragAfterElement(panel, y) {
-    const draggableElements = [...panel.querySelectorAll('.task:not(.dragging)')] // Dentro da lista de painéis, seleciona todos os elementos com a classe task que nao tenham a classe dragging  
-    return draggableElements.reduce((closest, child) => { // Retorna o elemento mais próximo do que esáa a ser arrastado e que está a ser comparado
-        const box = child.getBoundingClientRect() // Retorna o tamanho do elemento e a sua posição relativamente ao viewport
-        const offset = y - box.top - box.height / 2 // Calcula a distância entre o elemento que está a ser arrastado e o que está a ser comparado
-        if (offset < 0 && offset > closest.offset) { // Se a distância for menor que 0 e maior que a distância do elemento mais próximo até agora
-            return { offset: offset, element: child }
-        } else { //
-            return closest // Retorna o elemento mais próximo até agora
-        }
-    }, { offset: Number.NEGATIVE_INFINITY }).element} 
+  const draggableElements = [...panel.querySelectorAll(".task:not(.dragging)")]; // Dentro da lista de painéis, seleciona todos os elementos com a classe task que nao tenham a classe dragging
+  return draggableElements.reduce(
+    (closest, child) => {
+      // Retorna o elemento mais próximo do que esáa a ser arrastado e que está a ser comparado
+      const box = child.getBoundingClientRect(); // Retorna o tamanho do elemento e a sua posição relativamente ao viewport
+      const offset = y - box.top - box.height / 2; // Calcula a distância entre o elemento que está a ser arrastado e o que está a ser comparado
+      if (offset < 0 && offset > closest.offset) {
+        // Se a distância for menor que 0 e maior que a distância do elemento mais próximo até agora
+        return { offset: offset, element: child };
+      } else {
+        //
+        return closest; // Retorna o elemento mais próximo até agora
+      }
+    },
+    { offset: Number.NEGATIVE_INFINITY }
+  ).element;
+}
 
-  // Event listener do botão add task para criar uma nova task e colocá-la no painel To Do (default para qualquer task criada)
-document.getElementById('addTask').addEventListener('click', function() {
+// Event listener do botão add task para criar uma nova task e colocá-la no painel To Do (default para qualquer task criada)
+document.getElementById("addTask").addEventListener("click", function () {
   var Description = taskDescription.value.trim();
   var Name = taskName.value.trim();
-  var category = document.getElementById('taskCategory').value;
+  var category = document.getElementById("taskCategory").value;
   var priority = taskPriority;
-  var startdate = document.getElementById('startdate').value;
-  var enddate = document.getElementById('enddate').value;
-  if (Name === '' || Description === '' || category === '' || priority === null || startdate === '') {
-    document.getElementById('warningMessage2').innerText = 'Fill in all fields and define a priority';
-  }else if(enddate !== ''){
+  var startdate = document.getElementById("startdate").value;
+  var enddate = document.getElementById("enddate").value;
+  if (
+    Name === "" ||
+    Description === "" ||
+    category === "" ||
+    priority === null ||
+    startdate === ""
+  ) {
+    document.getElementById("warningMessage2").innerText =
+      "Fill in all fields and define a priority";
+  } else if (enddate !== "") {
     if (startdate > enddate) {
-    document.getElementById('warningMessage2').innerText = 'Start date must be before end date';
+      document.getElementById("warningMessage2").innerText =
+        "Start date must be before end date";
     }
   } else {
-    document.getElementById('warningMessage2').innerText = '';
+    document.getElementById("warningMessage2").innerText = "";
   }
-  if (Name.trim() !== '' && Description.trim() !== '' && category !== null && priority !== null && startdate !== ''){
-    if(enddate === ''){
-      enddate = '2199-12-31';
+  if (
+    Name.trim() !== "" &&
+    Description.trim() !== "" &&
+    category !== null &&
+    priority !== null &&
+    startdate !== ""
+  ) {
+    if (enddate === "") {
+      enddate = "2199-12-31";
     }
-      const task = createTask(Name, Description, category, priority,startdate,enddate);
-      postTask(task);
-      clearTaskPanels();
-      loadTasks();
-      // Limpar os input fields depois de adicionar a task
-      document.getElementById('taskName').value = '';
-      document.getElementById('taskDescription').value = '';
-      document.getElementById('taskCategory').value = '';
-      document.getElementById('startdate').value = '';
-      document.getElementById('enddate').value = '';
-      removeSelectedPriorityButton();
-      taskPriority = null;
+    const task = createTask(
+      Name,
+      Description,
+      category,
+      priority,
+      startdate,
+      enddate
+    );
+    postTask(task);
+    clearTaskPanels();
+    loadTasks();
+    // Limpar os input fields depois de adicionar a task
+    document.getElementById("taskName").value = "";
+    document.getElementById("taskDescription").value = "";
+    document.getElementById("taskCategory").value = "";
+    document.getElementById("startdate").value = "";
+    document.getElementById("enddate").value = "";
+    removeSelectedPriorityButton();
+    taskPriority = null;
   }
 });
 
-function createTask(name, description, category, priority,startdate,enddate) { // Cria uma tarefa com o nome, a descrição e a priority passados como argumentos 
+function createTask(name, description, category, priority, startdate, enddate) {
+  // Cria uma tarefa com o nome, a descrição e a priority passados como argumentos
   const task = {
-  title :name,
-  description: description,
-  category: category,
-  priority: priority,
-  startDate: startdate,
-  endDate: enddate,
-  }
+    title: name,
+    description: description,
+    category: category,
+    priority: priority,
+    startDate: startdate,
+    endDate: enddate,
+  };
   return task;
 }
 async function postTask(task) {
-    await fetch('http://localhost:8080/Scrum-Project-3/rest/task/add', {
-    method: 'POST',
+  await fetch("http://localhost:8080/Scrum-Project-3/rest/task/add", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
-      'token': sessionStorage.getItem('token')
+      "Content-Type": "application/json",
+      token: sessionStorage.getItem("token"),
     },
-    body: JSON.stringify(task)
-  }).then(async function(response){
-    if (response.status === 201){
-      const taskData= await response.json();
+    body: JSON.stringify(task),
+  }).then(async function (response) {
+    if (response.status === 201) {
+      const taskData = await response.json();
       task = {
         id: taskData.id,
         title: taskData.title,
@@ -243,80 +277,80 @@ async function postTask(task) {
         priority: taskData.priority,
         startDate: taskData.startDate,
         endDate: taskData.endDate,
-        status: taskData.status
-      }
+        status: taskData.status,
+      };
       const taskElement = createTaskElement(task);
       if (task.status === 10) {
-        document.getElementById('todo').appendChild(taskElement);
+        document.getElementById("todo").appendChild(taskElement);
       } else if (task.status === 20) {
-        document.getElementById('doing').appendChild(taskElement);
-      }else if (task.status === 30) {
-        document.getElementById('done').appendChild(taskElement);
+        document.getElementById("doing").appendChild(taskElement);
+      } else if (task.status === 30) {
+        document.getElementById("done").appendChild(taskElement);
       }
       attachDragAndDropListeners(taskElement);
-    }else if (response.status === 404){
-      alert('User not found');
+    } else if (response.status === 404) {
+      alert("User not found");
     }
   });
 }
 
 function createTaskElement(task) {
-    const taskElement = document.createElement('div');
-    taskElement.category = task.category;
-    taskElement.id = task.id;
-    taskElement.priority = task.priority;
-    taskElement.classList.add('task'); 
-    if (task.priority === 100) {
-        taskElement.classList.add('low');
-    } else if (task.priority === 200) {
-        taskElement.classList.add('medium');
-    } else if (task.priority === 300) {
-        taskElement.classList.add('high');
-    }
-    taskElement.draggable = true;
-    taskElement.description = task.description;
-    taskElement.title = task.title;
-    if(task.status === 10){
+  const taskElement = document.createElement("div");
+  taskElement.category = task.category;
+  taskElement.id = task.id;
+  taskElement.priority = task.priority;
+  taskElement.classList.add("task");
+  if (task.priority === 100) {
+    taskElement.classList.add("low");
+  } else if (task.priority === 200) {
+    taskElement.classList.add("medium");
+  } else if (task.priority === 300) {
+    taskElement.classList.add("high");
+  }
+  taskElement.draggable = true;
+  taskElement.description = task.description;
+  taskElement.title = task.title;
+  if (task.status === 10) {
     taskElement.status = "todo";
-    }else if(task.status === 20){
+  } else if (task.status === 20) {
     taskElement.status = "doing";
-    }else if(task.status === 30){
+  } else if (task.status === 30) {
     taskElement.status = "done";
+  }
+  taskElement.startdate = task.startDate;
+  taskElement.enddate = task.endDate;
+
+  const postIt = document.createElement("div");
+  postIt.className = "post-it";
+
+  const taskTitle = document.createElement("h3");
+  taskTitle.textContent = task.title;
+  const descriprioncontainer = document.createElement("div");
+  descriprioncontainer.className = "post-it-text";
+  const displayDescription = document.createElement("p");
+  displayDescription.textContent = task.description;
+
+  const deleteButton = document.createElement("img");
+  deleteButton.src = "multimedia/dark-cross-01.png";
+  deleteButton.className = "apagarButton";
+  deleteButton.addEventListener("click", function () {
+    const deletemodal = document.getElementById("delete-modal");
+    deletemodal.style.display = "grid";
+    const deletebtn = document.getElementById("delete-button");
+
+    function deleteButtonClickHandler() {
+      deleteTask(taskElement.id);
+      taskElement.remove();
+      deletebtn.removeEventListener("click", deleteButtonClickHandler);
+      deletemodal.style.display = "none";
     }
-    taskElement.startdate = task.startDate;
-    taskElement.enddate = task.endDate;
 
-    const postIt = document.createElement('div');
-    postIt.className = 'post-it';
-
-    const taskTitle = document.createElement('h3');
-    taskTitle.textContent = task.title;
-    const descriprioncontainer = document.createElement('div');
-    descriprioncontainer.className = 'post-it-text';
-    const displayDescription = document.createElement('p');
-    displayDescription.textContent = task.description;
-
-    const deleteButton = document.createElement('img');
-    deleteButton.src = 'multimedia/dark-cross-01.png';
-    deleteButton.className = 'apagarButton';
-    deleteButton.addEventListener('click', function () {
-      const deletemodal = document.getElementById('delete-modal');
-      deletemodal.style.display = "grid";
-      const deletebtn = document.getElementById('delete-button');
-
-      function deleteButtonClickHandler() {
-        deleteTask(taskElement.id);
-        taskElement.remove();
-        deletebtn.removeEventListener('click', deleteButtonClickHandler);
-        deletemodal.style.display = "none";
-      }
-
-      deletebtn.addEventListener('click', deleteButtonClickHandler);
-      const cancelbtn = document.getElementById('cancel-delete-button');
-      cancelbtn.addEventListener('click', () => {
-        deletemodal.style.display = "none";
-      });
+    deletebtn.addEventListener("click", deleteButtonClickHandler);
+    const cancelbtn = document.getElementById("cancel-delete-button");
+    cancelbtn.addEventListener("click", () => {
+      deletemodal.style.display = "none";
     });
+  });
 
     descriprioncontainer.appendChild(displayDescription);
     postIt.appendChild(taskTitle);
@@ -326,59 +360,67 @@ function createTaskElement(task) {
     }
     taskElement.appendChild(postIt);
     postIt.appendChild(descriprioncontainer);
+    function taskElementDblClickHandler() {
+      sessionStorage.setItem("taskDescription", taskElement.description);
+      sessionStorage.setItem("taskTitle", taskElement.title);
+      sessionStorage.setItem("taskid", taskElement.id);
+      sessionStorage.setItem("taskStatus", taskElement.status);
+      sessionStorage.setItem("taskPriority", taskElement.priority);
+      sessionStorage.setItem("taskStartDate", task.startDate);
+      sessionStorage.setItem("taskEndDate", task.endDate);
+      sessionStorage.setItem("taskCategory", task.category);
+      window.location.href = 'task.html'; 
+    }
     taskElement.addEventListener('dblclick', taskElementDblClickHandler);
     return taskElement;
 }
 
-function taskElementDblClickHandler() {
-  sessionStorage.setItem("taskDescription", taskElement.description);
-  sessionStorage.setItem("taskTitle", taskElement.title);
-  sessionStorage.setItem("taskid", taskElement.id);
-  sessionStorage.setItem("taskStatus", taskElement.status);
-  sessionStorage.setItem("taskPriority", taskElement.priority);
-  sessionStorage.setItem("taskStartDate", task.startDate);
-  sessionStorage.setItem("taskEndDate", task.endDate);
-  sessionStorage.setItem("taskCategory", task.category);
-  window.location.href = 'task.html'; 
-}
+
 
 async function loadTasks() {
+  await fetch("http://localhost:8080/Scrum-Project-3/rest/task/all", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      token: sessionStorage.getItem("token"),
+    },
+  }).then(async function (response) {
+    if (response.status === 200) {
+      const taskArray = await response.json();
 
-     await fetch('http://localhost:8080/Scrum-Project-3/rest/task/all', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'token': sessionStorage.getItem('token')
-      }
-    }).then(async function(response){
-      if (response.status === 200){
-        const taskArray = await response.json();
-        
-        if (taskArray.length > 0) {
-          taskArray.forEach(task => {
-            if(task.active === true){
-              console.log(task);
+      if (taskArray.length > 0) {
+        taskArray.forEach((task) => {
+          if (task.active === true) {
+            console.log(task);
             const taskElement = createTaskElement(task);
             if (task.status === 10) {
-              document.getElementById('todo').appendChild(taskElement);
+              document.getElementById("todo").appendChild(taskElement);
             } else if (task.status === 20) {
-              document.getElementById('doing').appendChild(taskElement);
-            }else if (task.status === 30) {
-              document.getElementById('done').appendChild(taskElement);
+              document.getElementById("doing").appendChild(taskElement);
+            } else if (task.status === 30) {
+              document.getElementById("done").appendChild(taskElement);
             }
             attachDragAndDropListeners(taskElement);
           }
-          });
-        }
-        
-      }else if (response.status === 404){
-        alert('User not found');
-      }else if (response.status === 401){
-        alert('Unauthorized');
+        });
       }
-    });
-  }
-  async function loadDeletedTasks() {
+    } else if (response.status === 404) {
+      alert("User not found");
+    } else if (response.status === 401) {
+      alert("Unauthorized");
+    }
+  });
+}
+async function loadDeletedTasks() {
+  await fetch("http://localhost:8080/Scrum-Project-3/rest/task/all", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      token: sessionStorage.getItem("token"),
+    },
+  }).then(async function (response) {
+    if (response.status === 200) {
+      const taskArray = await response.json();
 
     await fetch('http://localhost:8080/Scrum-Project-3/rest/task/all', {
      method: 'GET',
@@ -402,180 +444,215 @@ async function loadTasks() {
              document.getElementById('done').appendChild(taskElement);
            }
            taskElement.style.opacity = 0.5;
+           function taskElementDblClickHandler() {
+            sessionStorage.setItem("taskDescription", taskElement.description);
+            sessionStorage.setItem("taskTitle", taskElement.title);
+            sessionStorage.setItem("taskid", taskElement.id);
+            sessionStorage.setItem("taskStatus", taskElement.status);
+            sessionStorage.setItem("taskPriority", taskElement.priority);
+            sessionStorage.setItem("taskStartDate", task.startDate);
+            sessionStorage.setItem("taskEndDate", task.endDate);
+            sessionStorage.setItem("taskCategory", task.category);
+            window.location.href = 'task.html'; 
+          }
+
            taskElement.removeEventListener('dblclick', taskElementDblClickHandler); 
-            const resutaurar =document.createElement('button');
-            resutaurar.textContent = "Restaurar";
+            const resutaurar =document.createElement('img');
+            resutaurar.src = 'multimedia/restore.png';
             resutaurar.className = "restoreButton";
+            taskElement.classList.add('taskdeleted');
             taskElement.appendChild(resutaurar);
-            resutaurar.addEventListener('click', function(){
+            resutaurar.addEventListener("click", function () {
               restoreTask(taskElement.id);
               taskElement.remove();
             });
-          if (sessionStorage.getItem('role') === 'ScrumMaster') {
-            const deleteButton = taskElement.querySelector('.apagarButton');
-            if (deleteButton) {
-              deleteButton.remove();
+            if (sessionStorage.getItem("role") === "ScrumMaster") {
+              const deleteButton = taskElement.querySelector(".apagarButton");
+              if (deleteButton) {
+                deleteButton.remove();
+              }
             }
-            }
-         }
-         });
-       }
-       
-     }else if (response.status === 404){
-       alert('User not found');
-     }else if (response.status === 401){
-       alert('Unauthorized');
-     }
-   });
- }
-  async function restoreTask(id) {
-    try {
-      const response = await fetch(`http://localhost:8080/Scrum-Project-3/rest/task/restore/${id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'token': sessionStorage.getItem('token')
-        }
-      });
-  
-      if (response.ok) {
-        alert('Task restored');
-      } else if (response.status === 404) {
-        alert('Task not found');
-      } else if (response.status === 401) {
-        alert('Unauthorized');
-      } else {
-        // Handle other response status codes
-        console.error('Unexpected response:', response.status);
+          }
+        });
       }
-    } catch (error) {
-      console.error('Error restoring task:', error);
-      // Handle fetch errors
-      alert('Error restoring task. Please try again.');
+    } else if (response.status === 404) {
+      alert("User not found");
+    } else if (response.status === 401) {
+      alert("Unauthorized");
     }
-  }
-  async function deleteTask(id) {
-    try {
-      const response = await fetch(`http://localhost:8080/Scrum-Project-3/rest/task/block/${id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'token': sessionStorage.getItem('token')
-        }
-      });
   
-      if (response.ok) {
-        alert('Task deleted');
-      } else if (response.status === 404) {
-        alert('Task not found');
-      } else if (response.status === 401) {
-        alert('Unauthorized');
-      } else {
-        // Handle other response status codes
-        console.error('Unexpected response:', response.status);
-      }
-    } catch (error) {
-      console.error('Error deleting task:', error);
-      // Handle fetch errors
-      alert('Error deleting task. Please try again.');
-    }
+  });
   }
-  async function updateStatus(taskElement) {
-    let taskElementstatus;
-    if(taskElement.status === "todo"){
-      taskElementstatus = 10
-    }else if(taskElement.status === "doing"){
-      taskElementstatus = 20
-    }else if(taskElement.status === "done"){
-      taskElementstatus = 30
-    }
-let taskStatus = {
-  id: taskElement.id,
-  status: taskElementstatus
-};
-    try {
-      const response = await fetch(`http://localhost:8080/Scrum-Project-3/rest/task/changeStatus/${taskStatus.id}`, {
-        method: 'PATCH',
+});
+}
+
+
+
+async function restoreTask(id) {
+  try {
+    const response = await fetch(
+      `http://localhost:8080/Scrum-Project-3/rest/task/restore/${id}`,
+      {
+        method: "PATCH",
         headers: {
-          'Content-Type': 'application/json',
-          'token': sessionStorage.getItem('token')
+          "Content-Type": "application/json",
+          token: sessionStorage.getItem("token"),
         },
-        body: JSON.stringify(taskStatus)
-      });
-  
-      if (response.ok) {
-        console.log('Task updated');
-      } else if (response.status === 404) {
-        console.log('Task not found');
-      } else if (response.status === 401) {
-        console.log('Unauthorized');
-      } else {
-        // Handle other response status codes
-        console.error('Unexpected response:', response.status);
       }
-    } catch (error) {
-      console.error('Error updating task:', error);
-      // Handle fetch errors
-      alert('Error updating task. Please try again.');
+    );
+
+    if (response.ok) {
+      alert("Task restored");
+    } else if (response.status === 404) {
+      alert("Task not found");
+    } else if (response.status === 401) {
+      alert("Unauthorized");
+    } else {
+      // Handle other response status codes
+      console.error("Unexpected response:", response.status);
     }
+  } catch (error) {
+    console.error("Error restoring task:", error);
+    // Handle fetch errors
+    alert("Error restoring task. Please try again.");
   }
-  async function updateTask(taskElement) {
-   let taskElementstatus;
-    if(taskElement.status === "todo"){
-      taskElementstatus = 10
-    }else if(taskElement.status === "doing"){
-      taskElementstatus = 20
-    }else if(taskElement.status === "done"){
-      taskElementstatus = 30
-    }
-    let task = {
-      id: taskElement.id,
-      title: taskElement.title,
-      description: taskElement.description,
-      priority: taskElement.priority,
-      startDate: taskElement.startdate,
-      endDate: taskElement.enddate,
-      status: taskElementstatus
-    };
-  
-    try {
-      const response = await fetch(`http://localhost:8080/Scrum-Project-3/rest/task/changeStatus/${task.id}`, {
-        method: 'PATCH',
+}
+async function deleteTask(id) {
+  try {
+    const response = await fetch(
+      `http://localhost:8080/Scrum-Project-3/rest/task/block/${id}`,
+      {
+        method: "PATCH",
         headers: {
-          'Content-Type': 'application/json',
-          'token': sessionStorage.getItem('token')
+          "Content-Type": "application/json",
+          token: sessionStorage.getItem("token"),
         },
-        body: JSON.stringify(task)
-      });
-  
-      if (response.ok) {
-        console.log('Task updated');
-        clearTaskPanels();
-        loadTasks();
-      } else if (response.status === 404) {
-        console.log('Task not found');
-      } else if (response.status === 401) {
-        console.log('Unauthorized');
-      } else {
-        // Handle other response status codes
-        console.error('Unexpected response:', response.status);
       }
-    } catch (error) {
-      console.error('Error updating task:', error);
-      // Handle fetch errors
-      alert('Error updating task. Please try again.');
+    );
+
+    if (response.ok) {
+      alert("Task deleted");
+    } else if (response.status === 404) {
+      alert("Task not found");
+    } else if (response.status === 401) {
+      alert("Unauthorized");
+    } else {
+      // Handle other response status codes
+      console.error("Unexpected response:", response.status);
     }
+  } catch (error) {
+    console.error("Error deleting task:", error);
+    // Handle fetch errors
+    alert("Error deleting task. Please try again.");
   }
- // Elemento html onde vai ser mostrada a hora
+}
+async function updateStatus(taskElement) {
+  let taskElementstatus;
+  if (taskElement.status === "todo") {
+    taskElementstatus = 10;
+  } else if (taskElement.status === "doing") {
+    taskElementstatus = 20;
+  } else if (taskElement.status === "done") {
+    taskElementstatus = 30;
+  }
+  let taskStatus = {
+    id: taskElement.id,
+    status: taskElementstatus,
+  };
+  try {
+    const response = await fetch(
+      `http://localhost:8080/Scrum-Project-3/rest/task/changeStatus/${taskStatus.id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          token: sessionStorage.getItem("token"),
+        },
+        body: JSON.stringify(taskStatus),
+      }
+    );
+
+    if (response.ok) {
+      console.log("Task updated");
+    } else if (response.status === 404) {
+      console.log("Task not found");
+    } else if (response.status === 401) {
+      console.log("Unauthorized");
+    } else {
+      // Handle other response status codes
+      console.error("Unexpected response:", response.status);
+    }
+  } catch (error) {
+    console.error("Error updating task:", error);
+    // Handle fetch errors
+    alert("Error updating task. Please try again.");
+  }
+}
+async function updateTask(taskElement) {
+  let taskElementstatus;
+  if (taskElement.status === "todo") {
+    taskElementstatus = 10;
+  } else if (taskElement.status === "doing") {
+    taskElementstatus = 20;
+  } else if (taskElement.status === "done") {
+    taskElementstatus = 30;
+  }
+  let task = {
+    id: taskElement.id,
+    title: taskElement.title,
+    description: taskElement.description,
+    priority: taskElement.priority,
+    startDate: taskElement.startdate,
+    endDate: taskElement.enddate,
+    status: taskElementstatus,
+  };
+
+  try {
+    const response = await fetch(
+      `http://localhost:8080/Scrum-Project-3/rest/task/changeStatus/${task.id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          token: sessionStorage.getItem("token"),
+        },
+        body: JSON.stringify(task),
+      }
+    );
+
+    if (response.ok) {
+      console.log("Task updated");
+      clearTaskPanels();
+      loadTasks();
+    } else if (response.status === 404) {
+      console.log("Task not found");
+    } else if (response.status === 401) {
+      console.log("Unauthorized");
+    } else {
+      // Handle other response status codes
+      console.error("Unexpected response:", response.status);
+    }
+  } catch (error) {
+    console.error("Error updating task:", error);
+    // Handle fetch errors
+    alert("Error updating task. Please try again.");
+  }
+}
+// Elemento html onde vai ser mostrada a hora
 const displayTime = document.querySelector(".display-time");
 function showTime() {
   let time = new Date();
-  let timeString = time.toLocaleTimeString("en-US", { hour12: false, hour: '2-digit', minute: '2-digit' });
+  let timeString = time.toLocaleTimeString("en-US", {
+    hour12: false,
+    hour: "2-digit",
+    minute: "2-digit",
+  });
   displayTime.innerText = timeString;
   setTimeout(showTime, 1000);
 }
 // Data
-function updateDate() { // Mostra a data atual
+function updateDate() {
+  // Mostra a data atual
   let today = new Date();
   let dayName = today.getDay(), // 0 - 6
     dayNum = today.getDate(), // 1 - 31
@@ -609,107 +686,112 @@ function updateDate() { // Mostra a data atual
   const IDCollection = ["day", "daynum", "month", "year"]; // Array com os IDs dos elementos html que vão mostrar a data
   // Retornar um array com números como índices
   const val = [dayWeek[dayName], dayNum, months[month], year]; // Array com os valores que vão ser mostrados nos elementos html
-  for (let i = 0; i < IDCollection.length; i++) { // Percorre o array de IDs
+  for (let i = 0; i < IDCollection.length; i++) {
+    // Percorre o array de IDs
     document.getElementById(IDCollection[i]).firstChild.nodeValue = val[i]; // Altera o valor do elemento html com o ID correspondente
   }
 }
 
-document.getElementById('login-home').addEventListener('click', () => {
-  window.location.href = 'profileEdition.html';
+document.getElementById("login-home").addEventListener("click", () => {
+  window.location.href = "profileEdition.html";
 });
 
-document.getElementById('logout').addEventListener('click', () => {
+document.getElementById("logout").addEventListener("click", () => {
   logout();
 });
 
-window.onclose = function () { 
+window.onclose = function () {
   sessionStorage.clear();
   localStorage.clear();
-}
-
+};
 
 async function logout() {
-  await fetch('http://localhost:8080/Scrum-Project-3/rest/user/logout', {
-    method: 'GET',
+  await fetch("http://localhost:8080/Scrum-Project-3/rest/user/logout", {
+    method: "GET",
     headers: {
-      'Accept': '*/*',
-      'Content-Type': 'application/json',
-      token: sessionStorage.getItem('token'),
-    }
-  }).then(function(response) {
+      Accept: "*/*",
+      "Content-Type": "application/json",
+      token: sessionStorage.getItem("token"),
+    },
+  }).then(function (response) {
     if (response.status === 200) {
       // User is logged in successfully
-      alert('User is logged out successfully :)');  
-     const tasks = document.querySelectorAll('.task');
-     if (tasks.length > 0) {
-        tasks.forEach(task => {
+      alert("User is logged out successfully :)");
+      const tasks = document.querySelectorAll(".task");
+      if (tasks.length > 0) {
+        tasks.forEach((task) => {
           updateTask(task);
         });
       }
       sessionStorage.clear();
-      window.location.href = 'index.html';
+      window.location.href = "index.html";
     } else if (response.status === 405) {
       sessionStorage.clear();
-      window.location.href = 'index.html';
+      window.location.href = "index.html";
       // User not found
-      alert('Unauthorized User');
+      alert("Unauthorized User");
     } else {
       // Something went wrong
-      alert('Something went wrong :(');
+      alert("Something went wrong :(");
       sessionStorage.clear();
-      window.location.href = 'index.html';
+      window.location.href = "index.html";
     }
   });
   sessionStorage.clear();
-  window.location.href = 'index.html';
+  window.location.href = "index.html";
 }
 
 async function getCategories() {
   try {
-    const response = await fetch('http://localhost:8080/Scrum-Project-3/rest/task/allCategories', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'token': sessionStorage.getItem('token')
+    const response = await fetch(
+      "http://localhost:8080/Scrum-Project-3/rest/task/allCategories",
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          token: sessionStorage.getItem("token"),
+        },
       }
-    });
+    );
 
     if (response.status === 200) {
       const categoriesArray = await response.json();
       console.log(categoriesArray);
-      if(categoriesArray.length === 0){
-        alert('Categories not found');
+      if (categoriesArray.length === 0) {
+        alert("Categories not found");
       } else {
         const Array = [];
         for (var i = 0; i < categoriesArray.length; i++) {
-          Array.push(categoriesArray[i].name);
+          Array.push(categoriesArray[i]);
         }
         return Array;
       }
-    
     } else if (response.status === 404) {
-      alert('Categories not found');
+      alert("Categories not found");
     }
   } catch (error) {
-    console.error('Something went wrong:', error);
+    console.error("Something went wrong:", error);
     throw error;
   }
 }
 
 async function getUsers() {
   try {
-    const response = await fetch('http://localhost:8080/Scrum-Project-3/rest/user/all', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'token': sessionStorage.getItem('token')
+    const response = await fetch(
+      "http://localhost:8080/Scrum-Project-3/rest/user/all",
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          token: sessionStorage.getItem("token"),
+        },
       }
-    });
+    );
 
     if (response.status === 200) {
       const usersArray = await response.json();
-      if(usersArray.length === 0){
-        alert('Users not found');
+      if (usersArray.length === 0) {
+        alert("Users not found");
       } else {
         const Array = [];
         for (var i = 0; i < usersArray.length; i++) {
@@ -717,184 +799,458 @@ async function getUsers() {
         }
         return Array;
       }
-    
     } else if (response.status === 404) {
-      alert('Users not found');
+      alert("Users not found");
     }
   } catch (error) {
-    console.error('Something went wrong:', error);
+    console.error("Something went wrong:", error);
     throw error;
   }
 }
 
-async function getUserDTO(){
+async function getUserDTO() {
   try {
-    const response = await fetch('http://localhost:8080/Scrum-Project-3/rest/user/myUserDto', {
-    method: 'GET',
-    headers: {
-      'Accept': '*/*',
-      'Content-Type': 'application/json',
-      'token': sessionStorage.getItem('token')
-    }
-  });
+    const response = await fetch(
+      "http://localhost:8080/Scrum-Project-3/rest/user/myUserDto",
+      {
+        method: "GET",
+        headers: {
+          Accept: "*/*",
+          "Content-Type": "application/json",
+          token: sessionStorage.getItem("token"),
+        },
+      }
+    );
 
     if (!response.ok) {
-      throw new Error('Failed to fetch user data');
+      throw new Error("Failed to fetch user data");
     }
-    
+
     const obj = await response.json();
     return obj;
-    
   } catch (error) {
-    console.error('Something went wrong:', error);
+    console.error("Something went wrong:", error);
     // Re-throw the error or return a rejected promise
     throw error;
   }
 }
 
 function clearTaskPanels() {
-  document.getElementById('todo').innerHTML = '';
-  document.getElementById('doing').innerHTML = '';
-  document.getElementById('done').innerHTML = '';
+  document.getElementById("todo").innerHTML = "";
+  document.getElementById("doing").innerHTML = "";
+  document.getElementById("done").innerHTML = "";
 }
 
-document.getElementById('userFilter').addEventListener('change', async function() {
-  const selectedUser = this.value;
-  if(selectedUser === ''){
-    clearTaskPanels();
-    loadTasks();
-  }else{
-  const tasks = await getTasksByUser(selectedUser);
+document
+  .getElementById("userFilter")
+  .addEventListener("change", async function () {
+    const selectedUser = this.value;
+    if (selectedUser === "") {
+      clearTaskPanels();
+      loadTasks();
+    } else {
+      const tasks = await getTasksByUser(selectedUser);
 
-  // Limpa as colunas antes de adicionar novas tasks
-  clearTaskPanels();
+      // Limpa as colunas antes de adicionar novas tasks
+      clearTaskPanels();
 
-  // Adiciona uma task para cada task
-  tasks.forEach(task => {
-    const taskElement = createTaskElement(task);
-    if (task.status === 10) {
-      document.getElementById('todo').appendChild(taskElement);
-    } else if (task.status === 20) {
-      document.getElementById('doing').appendChild(taskElement);
-    }else if (task.status === 30) {
-      document.getElementById('done').appendChild(taskElement);
+      // Adiciona uma task para cada task
+      tasks.forEach((task) => {
+        const taskElement = createTaskElement(task);
+        if (task.status === 10) {
+          document.getElementById("todo").appendChild(taskElement);
+        } else if (task.status === 20) {
+          document.getElementById("doing").appendChild(taskElement);
+        } else if (task.status === 30) {
+          document.getElementById("done").appendChild(taskElement);
+        }
+        attachDragAndDropListeners(taskElement);
+      });
     }
-    attachDragAndDropListeners(taskElement);
-  
   });
-}
-});
 
 async function getTasksByUser(username) {
   try {
-    const response = await fetch(`http://localhost:8080/Scrum-Project-3/rest/task/byUser/${username}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'token': sessionStorage.getItem('token')
+    const response = await fetch(
+      `http://localhost:8080/Scrum-Project-3/rest/task/byUser/${username}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          token: sessionStorage.getItem("token"),
+        },
       }
-      });
-      if (!response.ok) {
-        throw new Error('Failed to fetch user data');
-      }
-      
-      const obj = await response.json();
-      return obj;
-      
-    } catch (error) {
-      console.error('Something went wrong:', error);
-      // Re-throw the error or return a rejected promise
-      throw error;
+    );
+    if (!response.ok) {
+      throw new Error("Failed to fetch user data");
     }
+
+    const obj = await response.json();
+    return obj;
+  } catch (error) {
+    console.error("Something went wrong:", error);
+    // Re-throw the error or return a rejected promise
+    throw error;
   }
-  
-  document.getElementById('categoryFilter').addEventListener('change', async function() {
+}
+
+document
+  .getElementById("categoryFilter")
+  .addEventListener("change", async function () {
     console.log(this.value);
     const selectedCategory = this.value;
-    if(selectedCategory === ''){
-      clearTaskPanels();
+    if (selectedCategory === "") {
+      clearModalCategories();
       loadTasks();
-    }else{
-    const tasks = await getTasksByCategory(selectedCategory);
-  
-    // Limpa as colunas antes de adicionar novas tasks
-    clearTaskPanels();
-  
-    // Adiciona uma task para cada task
-    tasks.forEach(task => {
-      const taskElement = createTaskElement(task);
-      if (task.status === 10) {
-        document.getElementById('todo').appendChild(taskElement);
-      } else if (task.status === 20) {
-        document.getElementById('doing').appendChild(taskElement);
-      }else if (task.status === 30) {
-        document.getElementById('done').appendChild(taskElement);
-      }
-      attachDragAndDropListeners(taskElement);
-    
-    });
-  }
+    } else {
+      const tasks = await getTasksByCategory(selectedCategory);
+
+      // Limpa as colunas antes de adicionar novas tasks
+      clearTaskPanels();
+
+      // Adiciona uma task para cada task
+      tasks.forEach((task) => {
+        const taskElement = createTaskElement(task);
+        if (task.status === 10) {
+          document.getElementById("todo").appendChild(taskElement);
+        } else if (task.status === 20) {
+          document.getElementById("doing").appendChild(taskElement);
+        } else if (task.status === 30) {
+          document.getElementById("done").appendChild(taskElement);
+        }
+        attachDragAndDropListeners(taskElement);
+      });
+    }
   });
 
-  async function getTasksByCategory(category) {
-    try {
-      const response = await fetch(`http://localhost:8080/Scrum-Project-3/rest/task/byCategory/${category}`, {
-        method: 'GET',
+async function getTasksByCategory(category) {
+  try {
+    const response = await fetch(
+      `http://localhost:8080/Scrum-Project-3/rest/task/byCategory/${category}`,
+      {
+        method: "GET",
         headers: {
-          'Content-Type': 'application/json',
-          'token': sessionStorage.getItem('token'),
+          "Content-Type": "application/json",
+          token: sessionStorage.getItem("token"),
         },
-        });
-        if (!response.ok) {
-          throw new Error('Failed to fetch user data');
-        }
-        
-        const obj = await response.json();
-        return obj;
-        
-      } catch (error) {
-        console.error('Something went wrong:', error);
-        // Re-throw the error or return a rejected promise
-        throw error;
       }
+    );
+    if (!response.ok) {
+      throw new Error("Failed to fetch user data");
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
-      // Create the modal and its elements
-      var modalCategories = document.createElement('div');
-      var modalContent = document.createElement('div');
-      var modalTitle = document.createElement('h2');
-      var closeModalButton = document.createElement('button');
-  
-      // Set the attributes and content of the elements
-      modalCategories.id = 'editCategoriesModal';
-      modalCategories.className = 'modal';
-      modalCategories.style.display = 'none'; // The modal is initially hidden
-      modalContent.className = 'modal-content';
-      modalTitle.textContent = 'Edit Categories';
-      closeModalButton.id = 'closeModalButton';
-      closeModalButton.textContent = 'Close';
-  
-      // Append the elements to the modal
-      modalContent.appendChild(modalTitle);
-      modalContent.appendChild(closeModalButton);
-      modalCategories.appendChild(modalContent);
-  
-      // Append the modal to the body of the document
-      document.body.appendChild(modalCategories);
-  
-      // Add an event listener to the "Edit Categories" button to open the modal
-      document.getElementById('editCategoriesButton').addEventListener('click', function() {
-          modalCategories.style.display = 'block';
-      });
-  
-      // Add an event listener to the "Close" button to close the modal
-      closeModalButton.addEventListener('click', function() {
-          modalCategories.style.display = 'none';
-      });
+    const obj = await response.json();
+    return obj;
+  } catch (error) {
+    console.error("Something went wrong:", error);
+    // Re-throw the error or return a rejected promise
+    throw error;
+  }
+}
+
+// modal das categorias
+
+document.addEventListener("DOMContentLoaded", function () {
+  // Create the modal and its elements
+  var modalCategories = document.createElement("div");
+  var modalContent = document.createElement("div");
+  var modalTitle = document.createElement("h2");
+  var closeModalSpan = document.createElement("span"); 
+  var saveButton = document.createElement("button"); 
+
+  // Set the attributes and content of the elements
+  modalCategories.id = "editCategoriesModal";
+  modalCategories.className = "modal";
+  modalCategories.style.display = "none"; 
+  modalContent.className = "modal-content";
+  modalTitle.textContent = "Edit Categories";
+  closeModalSpan.id = "closeModalSpan";
+  closeModalSpan.textContent = "X"; 
+  closeModalSpan.style.position = "absolute";
+  closeModalSpan.style.top = "0";
+  closeModalSpan.style.right = "0";
+  closeModalSpan.style.cursor = "pointer"; 
+  saveButton.id = "saveEditCategories"; 
+  saveButton.textContent = "Save"; 
+
+  // Create the "Add Category" button
+const addCategoryButton = document.createElement("button");
+addCategoryButton.textContent = "Add Category";
+addCategoryButton.style.position = 'absolute';
+addCategoryButton.style.bottom = '10px';
+addCategoryButton.style.left = '10px';
+
+  // Append the elements to the modal
+  modalContent.appendChild(modalTitle);
+  modalContent.appendChild(closeModalSpan);
+  modalContent.appendChild(saveButton); 
+  modalCategories.appendChild(modalContent);
+  modalContent.appendChild(addCategoryButton);
+
+  const addCategoryModal = document.createElement("div");
+  const addCategoryModalContent = document.createElement("div");
+  const addCategoryModalTitle = document.createElement("h2");
+  const addCategoryCloseModalSpan = document.createElement("span");
+  const addCategorySaveButton = document.createElement("button");
+  const addCategoryNameInput = document.createElement("input");
+
+  // Set the attributes and content of the elements
+  addCategoryModal.id = "addCategoryModal";
+  addCategoryModal.className = "modal";
+  addCategoryModal.style.display = "none";
+  addCategoryModalContent.className = "modal-content";
+  addCategoryModalTitle.textContent = "Add Category";
+  addCategoryCloseModalSpan.textContent = "X";
+  addCategoryCloseModalSpan.style.position = "absolute";
+  addCategoryCloseModalSpan.style.top = "0";
+  addCategoryCloseModalSpan.style.right = "0";
+  addCategoryCloseModalSpan.style.cursor = "pointer";
+  addCategorySaveButton.textContent = "Save";
+  addCategoryNameInput.placeholder = "Category name";
+  addCategoryNameInput.className = "add-category-input";
+  // Append the elements to the add category modal
+  addCategoryModalContent.appendChild(addCategoryModalTitle);
+  addCategoryModalContent.appendChild(addCategoryCloseModalSpan);
+  addCategoryModalContent.appendChild(addCategoryNameInput);
+  addCategoryModalContent.appendChild(addCategorySaveButton);
+  addCategoryModal.appendChild(addCategoryModalContent);
+  document.body.appendChild(addCategoryModal);
+  addCategoryModal.style.zIndex = "1000";
+
+  addCategoryButton.addEventListener("click", function () {
+    addCategoryModal.style.display = "block";
+  });
+
+  addCategoryCloseModalSpan.addEventListener("click", function () {
+    addCategoryModal.style.display = "none";
+  });
+
+  addCategorySaveButton.addEventListener("click", async function () {
+    const categoryName = addCategoryNameInput.value;
+    await addCategory(categoryName); // Call the addCategory function with the category name
+    addCategoryModal.style.display = "none";
+    displayCategoriesInModal(); // Call the function to display the categories in the modal again
   });
 
 
+  // Append the modal to the body of the document
+  document.body.appendChild(modalCategories);
+
+  // Add an event listener to the "Edit Categories" button to open the modal
+  document
+    .getElementById("editCategoriesButton")
+    .addEventListener("click", function () {
+      modalCategories.style.display = "block";
+    });
+
+    const saveButtonCategory = document.getElementById("saveEditCategories");
+
+    saveButtonCategory.addEventListener("click", async function () {
+      
+      let inputFields = document.getElementsByClassName("categoryNameInput");
+      let name;
+      let id;
+      let updatedCategories = [];
+    for (let i = 0; i < inputFields.length; i++) {
+      let inputField = inputFields[i];
+      if (inputField.value === null) {
+        console.log(inputField.name);
+        name = inputField.name; 
+        id = inputField.id;
+        const category = {
+          name: name,
+          id: id
+        }
+        updatedCategories.push(category);
+      }
+      
+      };
+      for (let i = 0; i < updatedCategories.length; i++) {
+        let category = updatedCategories[i];
+        await updateCategory(category);
+    }
+      
+    
+      // Call the updateCategory function with the updated category data
+      
+    
+      // Close the modal
+      modalCategories.style.display = "none";
+    });
 
 
 
+
+
+
+  // Add an event listener to the "Close" span to close the modal
+  closeModalSpan.addEventListener("click", function () {
+    fillCategoryFilter();
+    fillTaskCategory();
+    modalCategories.style.display = "none";
+    
+  });
+});
+
+async function displayCategoriesInModal() {
+  // Call the existing function to get the categories
+  const categories = await getCategories();
+
+  // Get the modal content div
+  const modalContent = document.querySelector(
+    "#editCategoriesModal .modal-content"
+  );
+
+  // Create a container for the table
+  let tableContainer = document.querySelector(".table-container");
+
+  // If the table container doesn't exist, create it
+  if (!tableContainer) {
+    tableContainer = document.createElement("div");
+    tableContainer.className = "table-container";
+    modalContent.appendChild(tableContainer);
+  } else {
+    
+    tableContainer.innerHTML = "";
+  }
+
+  // Create a table
+  const table = document.createElement("table");
+
+  for (let i = 0; i < categories.length; i++) {
+    const row = document.createElement("tr");
+    const nameCell = document.createElement("td");
+    const nameInput = document.createElement("input"); 
+    nameInput.placeholder = categories[i].name;
+    
+    nameInput.name = categories[i].name; 
+    nameInput.id= categories[i].id;
+    nameInput.className = "categoryNameInput";
+    nameCell.appendChild(nameInput); 
+    row.appendChild(nameCell);
+
+    
+    const deleteCell = document.createElement("td");
+    deleteCell.className = "delete-cell"; 
+    const deleteButton = document.createElement("button");
+    deleteButton.textContent = "Delete";
+    deleteButton.addEventListener("click", async function () {
+      await deleteCategory(nameInput.placeholder); 
+      displayCategoriesInModal(); 
+    });
+    deleteCell.appendChild(deleteButton);
+    row.appendChild(deleteCell);
+
+    // Append the row to the table
+    table.appendChild(row);
+  }
+
+  // Append the table to the container
+  tableContainer.appendChild(table);
+}
+
+// Call the function to display the categories in the modal
+displayCategoriesInModal();
+
+async function deleteCategory(name) {
+  console.log(name);
+  try {
+    const response = await fetch(
+      `http://localhost:8080/Scrum-Project-3/rest/task/deleteCategory/${name}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          token: sessionStorage.getItem("token"),
+        },
+      }
+    );
+
+    if (response.status === 200) {
+      alert("Category deleted");
+    } else if (response.status === 404) {
+      alert("Category not found");
+    } else if (response.status === 401) {
+      alert("Unauthorized");
+    } else {
+      // Handle other response status codes
+      console.error("Unexpected response:", response.status);
+    }
+  } catch (error) {
+    console.error("Error deleting Category:", error);
+    // Handle fetch errors
+    alert("Error deleting Category. Please try again.");
+  }
+ 
+}
+
+function clearModalCategories() {
+  const tableContainer = document.querySelector(
+    "#editCategoriesModal .table-container"
+  );
+  if (tableContainer) {
+    tableContainer.innerHTML = "";
+  }
+}
+
+async function addCategory(name) {
+  try {
+    const response = await fetch(`http://localhost:8080/Scrum-Project-3/rest/task/createCategory`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          token: sessionStorage.getItem("token"),
+        },
+        body: JSON.stringify({ name: name }),
+      }
+      
+    );
+
+    if (response.status === 201) {
+      alert("Category added");
+    } else if (response.status === 404) {
+      alert("Category not found");
+    } else if (response.status === 401) {
+      alert("Unauthorized");
+    } else {
+      // Handle other response status codes
+      console.error("Unexpected response:", response.status);
+    }
+  } catch (error) {
+    console.error("Error adding Category:", error);
+    // Handle fetch errors
+    alert("Error adding Category. Please try again.");
+  }
+}
+
+async function updateCategory (category) {
+  try {
+    const response = await fetch(`http://localhost:8080/Scrum-Project-3/rest/task/updateCategory`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          token: sessionStorage.getItem("token"),
+        },
+        body: JSON.stringify(category),
+      }
+      
+    );
+
+    if (response.status === 200) {
+      alert("Category updated");
+    } else if (response.status === 404) {
+      alert("Category not found");
+    } else if (response.status === 401) {
+      alert("Unauthorized");
+    } else {
+      // Handle other response status codes
+      console.error("Unexpected response:", response.status);
+    }
+  } catch (error) {
+    console.error("Error updating Category:", error);
+    // Handle fetch errors
+    alert("Error updating Category. Please try again.");
+  }
+}

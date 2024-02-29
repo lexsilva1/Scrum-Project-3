@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import bean.UserBean;
+import dto.PasswordDto;
 import dto.Task;
 import dto.User;
 import dto.UserDto;
@@ -114,6 +115,7 @@ public class UserService {
         }
         if (!userBean.getUser(token).getRole().equals("Owner") && a.getUsername().equals(userBean.getUser(token).getUsername()) && (a.getRole() == null)) {
             a.setRole(userBean.getUser(token).getRole());
+            a.setPassword(userBean.getUser(token).getPassword());
             boolean updated = userBean.updateUser(token, a);
             if (!updated) {
                 return Response.status(400).entity("Failed. User not updated").build();
@@ -129,6 +131,25 @@ public class UserService {
             return Response.status(200).entity("User updated").build();
         }
             return Response.status(403).entity("Forbidden").build();
+    }
+    @PATCH
+    @Path("/updatePassword")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updatePassword(@HeaderParam("token") String token, PasswordDto password) {
+        System.out.println("password "+password.getPassword());
+        boolean authorized = userBean.isUserAuthorized(token);
+        boolean valid = userBean.isPasswordValid(password);
+        if (!authorized) {
+            return Response.status(403).entity("Forbidden").build();
+        }else if (!valid) {
+            return Response.status(400).entity("Password is not valid").build();
+        }else {
+            boolean updated = userBean.updatePassword(token, password);
+            if (!updated) {
+                return Response.status(400).entity("Failed. Password not updated").build();
+            }
+            return Response.status(200).entity("Password updated").build();
+        }
     }
 
     @GET
@@ -188,7 +209,6 @@ public class UserService {
     @Path("/restore/{username}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response restoreUser(@HeaderParam("token") String token, @PathParam("username") String username) {
-        System.out.println("username "+username);
         boolean authorized = userBean.isUserOwner(token);
         if (!authorized) {
             return Response.status(405).entity("Forbidden").build();

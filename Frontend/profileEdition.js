@@ -1,12 +1,9 @@
 window.onload = async function(){
     const user = await getUserDTO();
+    
     const names = user.name.split(" ");
     document.getElementById('profileImageHomeReg').src = user.userPhoto;
     document.getElementById('loginReg').innerHTML = names[0];
-    console.log(user);
-
-    
-    
     document.getElementById('editFirstName').placeholder = names[0];
     document.getElementById('editLastName').placeholder = names[1];
     document.getElementById('profileImageEdit').src = user.userPhoto;
@@ -17,11 +14,16 @@ window.onload = async function(){
 
 }
 
+
+
 if(sessionStorage.getItem('token') === null || sessionStorage.getItem('token') === ''){
     window.location.href = 'index.html';
 }
 
-    document.getElementById('buttonSubmitData').addEventListener('click',()=>{
+    document.getElementById('buttonSubmitData').addEventListener('click',async ()=>{
+        const userData = await getUserDTO();
+        sessionStorage.setItem('username',userData.username);  
+        const names = userData.name.split(" ");
 
         const confirmationDialog = document.getElementById('confirmChanges');
         //primeiro nome
@@ -33,26 +35,19 @@ if(sessionStorage.getItem('token') === null || sessionStorage.getItem('token') =
             document.getElementById('editLastName').value = names[1];
         }
         //contacto
-        if(document.getElementById('editUserContact').value.trim() === "" || document.getElementById('editUserContact').value.trim() === user.contactNumber){
-            document.getElementById('editUserContact').value = user.contactNumber;
+        if(document.getElementById('editUserContact').value.trim() === "" || document.getElementById('editUserContact').value.trim() === null){
+            document.getElementById('editUserContact').value = userData.contactNumber;
         }
        //email
-       if (document.getElementById('editUserEmail').value.trim() === "" || document.getElementById('editUserEmail').value.trim() ===user.email){
-        document.getElementById('editUserEmail').value = user.email;
+       if (document.getElementById('editUserEmail').value.trim() === "" || document.getElementById('editUserEmail').value.trim() ===null){
+        document.getElementById('editUserEmail').value = userData.email;
        }
        //photo input text
-       if(document.getElementById('photoUpload').value.trim() === "" || document.getElementById('photoUpload').value.trim() === user.userPhoto){
-        document.getElementById('photoUpload').value = user.userPhoto;
+       if(document.getElementById('editUserPhotoUrl').value.trim() === "" || document.getElementById('editUserPhotoUrl').value.trim() === null){
+        document.getElementById('editUserPhotoUrl').value = userData.userPhoto;
        }
-       //photo input source
-       if(document.getElementById('profileImage').src === "" || document.getElementById('profileImage').src === user.userPhoto){
-        document.getElementById('profileImage').src = user.userPhoto;
-       }
-       //new password must match new password else if
-       if(document.getElementById('editNewPassword').value === ''){
-        document.getElementById('editNewPassword').value = user.password; 
         confirmationDialog.showModal();     
-       } else if(document.getElementById('editNewPassword')!== ""){
+        if(document.getElementById('editNewPassword')!== ""){
             if (document.getElementById('editNewPassword').value === document.getElementById('rewritePasswordField').value){
                 document.getElementById('editNewPassword').value = document.getElementById('rewritePasswordField').value; 
                 confirmationDialog.showModal();            
@@ -64,15 +59,24 @@ if(sessionStorage.getItem('token') === null || sessionStorage.getItem('token') =
 
     document.getElementById('confirmChangesButton').addEventListener('click',()=>{
         user = {
-            username : user.username,
+            username : sessionStorage.getItem('username'),
             name : document.getElementById('editFirstName').value.trim()+' '+document.getElementById('editLastName').value.trim(),
             email: document.getElementById('editUserEmail').value.trim(),
             contactNumber : document.getElementById('editUserContact').value.trim(),
-            userPhoto : document.getElementById("profileImage").src = document.getElementById('photoUpload').value.trim(),
-            userRole : user.userRole
+            userPhoto : document.getElementById('editUserPhotoUrl').value.trim(),
+            userRole : sessionStorage.getItem('role'),
             }
+
+        const confirmationDialog = document.getElementById('confirmChanges');
         confirmationDialog.close();
         updateUserData(user);
+        if(document.getElementById('editNewPassword').value !== user.password && document.getElementById('editNewPassword').value !== '' && document.getElementById('editNewPassword').value === document.getElementById('rewritePasswordField').value){
+            password = {
+                password : document.getElementById('oldPassword').value,
+                newPassword : document.getElementById('editNewPassword').value
+            }
+            updatePassword(password);
+        }
         window.location.href = 'home.html'
     })
     document.getElementById('declineChangesButton').addEventListener('click',()=>{
@@ -101,6 +105,31 @@ async function updateUserData(user){//chama o user aqui
             alert(response.status,'failed, user not updated')
         } else if(response.status == 200){
             sessionStorage.setItem('password',user.password);
+            alert(response.status,'user updated sucessfully')
+        }
+    })
+    } catch(error){
+        console.error('error',error);
+    }
+}
+async function updatePassword(password){//chama o user aqui
+    try{
+    await fetch(`http://localhost:8080/Scrum-Project-3/rest/user/updatePassword`,{
+        method: 'PATCH',
+        headers:{
+            'Accept':'*/*',
+            'Content-Type':'application/json',
+            'token':sessionStorage.getItem('token')
+        },
+        body:JSON.stringify(password),
+    }).then(function(response){
+        if (response.status ==404){
+            alert(response.status, 'username not found')
+        } else if(response.status == 403){
+            alert(response.status,'forbidden due to header params')
+        } else if(response.status == 400){
+            alert(response.status,'failed, user not updated')
+        } else if(response.status == 200){
             alert(response.status,'user updated sucessfully')
         }
     })

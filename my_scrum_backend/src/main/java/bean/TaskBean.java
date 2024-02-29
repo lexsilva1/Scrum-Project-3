@@ -160,7 +160,7 @@ public class TaskBean {
     }
     public boolean removeCategory(String name) {
         List <TaskEntity> tasks = taskDao.findTasksByCategory(name);
-        if(tasks.isEmpty()) {
+        if(tasks == null) {
             taskDao.removeCategory(taskDao.findCategoryByName(name));
             return true;
         }
@@ -168,6 +168,9 @@ public class TaskBean {
     }
     public CategoryEntity findCategoryByName(String name) {
         return taskDao.findCategoryByName(name);
+    }
+    public CategoryEntity findCategoryById(int id) {
+        return taskDao.findCategoryById(id);
     }
     public boolean blockTask(String id,String role) {
         TaskEntity a = taskDao.findTaskById(id);

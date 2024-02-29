@@ -152,12 +152,13 @@ public class TaskService {
         if (!authorized) {
             return Response.status(401).entity("Unauthorized").build();
         } else {
-            boolean exists = taskBean.categoryExists(category.getName());
-            if (!exists) {
-                return Response.status(400).entity("Category does not exist").build();
+            boolean notavailable = taskBean.categoryExists(category.getName());
+            if (notavailable) {
+                return Response.status(409).entity("Category name is not available").build();
                 }
             }
-            taskBean.updateCategory(taskBean.convertCatToEntity(category));
+            CategoryEntity categoryEntity = taskBean.findCategoryById(category.getId());
+            taskBean.updateCategory(categoryEntity);
             return Response.status(201).entity("Category updated").build();
         }
 
