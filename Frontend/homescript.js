@@ -326,21 +326,22 @@ function createTaskElement(task) {
     }
     taskElement.appendChild(postIt);
     postIt.appendChild(descriprioncontainer);
+    function taskElementDblClickHandler() {
+      sessionStorage.setItem("taskDescription", taskElement.description);
+      sessionStorage.setItem("taskTitle", taskElement.title);
+      sessionStorage.setItem("taskid", taskElement.id);
+      sessionStorage.setItem("taskStatus", taskElement.status);
+      sessionStorage.setItem("taskPriority", taskElement.priority);
+      sessionStorage.setItem("taskStartDate", task.startDate);
+      sessionStorage.setItem("taskEndDate", task.endDate);
+      sessionStorage.setItem("taskCategory", task.category);
+      window.location.href = 'task.html'; 
+    }
     taskElement.addEventListener('dblclick', taskElementDblClickHandler);
     return taskElement;
 }
 
-function taskElementDblClickHandler() {
-  sessionStorage.setItem("taskDescription", taskElement.description);
-  sessionStorage.setItem("taskTitle", taskElement.title);
-  sessionStorage.setItem("taskid", taskElement.id);
-  sessionStorage.setItem("taskStatus", taskElement.status);
-  sessionStorage.setItem("taskPriority", taskElement.priority);
-  sessionStorage.setItem("taskStartDate", task.startDate);
-  sessionStorage.setItem("taskEndDate", task.endDate);
-  sessionStorage.setItem("taskCategory", task.category);
-  window.location.href = 'task.html'; 
-}
+
 
 async function loadTasks() {
 
@@ -402,10 +403,22 @@ async function loadTasks() {
              document.getElementById('done').appendChild(taskElement);
            }
            taskElement.style.opacity = 0.5;
+           function taskElementDblClickHandler() {
+            sessionStorage.setItem("taskDescription", taskElement.description);
+            sessionStorage.setItem("taskTitle", taskElement.title);
+            sessionStorage.setItem("taskid", taskElement.id);
+            sessionStorage.setItem("taskStatus", taskElement.status);
+            sessionStorage.setItem("taskPriority", taskElement.priority);
+            sessionStorage.setItem("taskStartDate", task.startDate);
+            sessionStorage.setItem("taskEndDate", task.endDate);
+            sessionStorage.setItem("taskCategory", task.category);
+            window.location.href = 'task.html'; 
+          }
            taskElement.removeEventListener('dblclick', taskElementDblClickHandler); 
-            const resutaurar =document.createElement('button');
-            resutaurar.textContent = "Restaurar";
+            const resutaurar =document.createElement('img');
+            resutaurar.src = 'multimedia/restore.png';
             resutaurar.className = "restoreButton";
+            taskElement.classList.add('taskdeleted');
             taskElement.appendChild(resutaurar);
             resutaurar.addEventListener('click', function(){
               restoreTask(taskElement.id);

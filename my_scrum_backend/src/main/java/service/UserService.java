@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import bean.UserBean;
+import dto.PasswordDto;
 import dto.Task;
 import dto.User;
 import dto.UserDto;
@@ -129,6 +130,24 @@ public class UserService {
             return Response.status(200).entity("User updated").build();
         }
             return Response.status(403).entity("Forbidden").build();
+    }
+    @PATCH
+    @Path("/updatePassword")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updatePassword(@HeaderParam("token") String token, PasswordDto password) {
+        boolean authorized = userBean.isUserAuthorized(token);
+        boolean valid = userBean.isPasswordValid(password);
+        if (!authorized) {
+            return Response.status(403).entity("Forbidden").build();
+        }else if (!valid) {
+            return Response.status(400).entity("Password is not valid").build();
+        }else {
+            boolean updated = userBean.updatePassword(token, password);
+            if (!updated) {
+                return Response.status(400).entity("Failed. Password not updated").build();
+            }
+            return Response.status(200).entity("Password updated").build();
+        }
     }
 
     @GET

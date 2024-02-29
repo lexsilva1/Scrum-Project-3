@@ -1647,22 +1647,80 @@ label[for="userPicturePreview"] {
   left: 0; /* Alinha o botão com o lado esquerdo do div .modal-left */
 }
 
+.taskdeleted {
+  position: relative;
+  width: 190px;
+  height: 50px; /* tamanho do espaço em que é inserido cada post-it (inclui espaçamento entre post-its) */
+  margin-top: 20px;
+  background-color: var(--grey);
+  margin-top: 30px;
+  margin-bottom: 30px;
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  transition: all 0.5s ease-in-out;
+}
+.taskdeleted.low {
+  --grey: #a8db27;
+}
+.taskdeleted.medium {
+  --grey: #ffd549;
+}
+.taskdeleted.high {
+  --grey: #FF3232;
+  color: color-mix(in srgb, var(--white), var(--white) 95%);
+}
+/* Expansão de cada task para mostrar description e cruz de apagar */
+/* Dimensão da janela do post-it totalmente expandida */
+.taskdeleted:hover {
+  height: 190px;
+  transition: all 0.5s ease-in-out;
+}
+/* Faz o texto do post-it aparecer */
+.taskdeleted:hover .post-it-text {
+  max-height: 190px;
+  transition: all 0.5s ease;
+}
+.taskdeleted:hover {
+  background-color: color-mix(in srgb, var(--grey), white 25%);
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+  transition: box-shadow 0.3s ease;
+}
+/* Definições da cruz que apaga a task */
+/* Não mostra na mini-janela do post-it */
+.taskdeletd .restoreButton {
+  opacity: 0;
+  transition: all 0.5s ease-in-out;
+}
+/* Mostra na mini-janela do post-it */
+.taskdeleted:hover .restoreButton {
+  opacity: 1;
+  transition: all 0.5s ease-in-out;
+}
+/* Posição do botão apagar */
 
+/* Animação do botão apagar */
+.apagarButton:hover {
+  rotate: 360deg;
+  transition: ease 0.01s;
+}
 .restoreButton {
   position: absolute; /* Posiciona o botão no canto superior esquerdo */
   bottom: 10px;
   left: 10px;
   font-size: 16px;
   cursor: pointer;
-  background-color: var(--green3);
-  color: white; 
   opacity: 0;
+  max-width: 17px;
+  aspect-ratio: 1;
+  transition: ease-on 0.01s;
   
 }
 .restoreButton:hover {
-  background-color: var(--green1);
-  opacity: 1;
+  rotate: 360deg;
   transition: ease 0.01s;
-  
+  opacity: 1;
+  transform: scale(1.5);
 }
 
