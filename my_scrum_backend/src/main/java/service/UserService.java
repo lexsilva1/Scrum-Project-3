@@ -113,7 +113,7 @@ public class UserService {
         } else if (!valid) {
             return Response.status(401).entity("All elements are required").build();
         }
-        if (!userBean.getUser(token).getRole().equals("Owner") && a.getUsername().equals(userBean.getUser(token).getUsername()) && (a.getRole() == null)) {
+        if (!userBean.getUser(token).getRole().equals("Owner") || a.getUsername().equals(userBean.getUser(token).getUsername()) && (a.getRole() == null)) {
             a.setRole(userBean.getUser(token).getRole());
             a.setPassword(userBean.getUser(token).getPassword());
             boolean updated = userBean.updateUser(token, a);
