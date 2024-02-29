@@ -121,6 +121,13 @@ public class TaskBean {
     public  List<TaskEntity> getTasksByUser(UserEntity userEntity) {
         return taskDao.findTasksByUser(userEntity);
     }
+    public boolean deleteAllTasksByUser(UserEntity userEntity) {
+        List<TaskEntity> tasks = taskDao.findTasksByUser(userEntity);
+        for(TaskEntity task: tasks){
+            task.setActive(false);
+        }
+        return true;
+    }
     public List<Task> convertToDtoList(List<TaskEntity> taskEntities) {
         List<Task> tasks = new ArrayList<>();
         for (TaskEntity taskEntity : taskEntities) {

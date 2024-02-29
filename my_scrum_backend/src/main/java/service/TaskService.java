@@ -84,6 +84,23 @@ public class TaskService {
             return Response.status(200).entity(taskList).build();
         }
     }
+    @DELETE
+    @Path("/deleteAll/{username}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response removeAllTasks(@HeaderParam("token") String token, @PathParam("username") String username) {
+        boolean authorized = userBean.isUserOwner(token);
+        if (!authorized) {
+            return Response.status(401).entity("Unauthorized").build();
+        } else {
+            User user = userBean.getUserByUsername(username);
+            boolean removed = taskBean.deleteAllTasksByUser(userBean.convertToEntity(user));
+            if (!removed) {
+                return Response.status(400).entity("Failed. Tasks not removed").build();
+            } else {
+                return Response.status(200).entity("Tasks removed").build();
+            }
+        }
+    }
     @POST
     @Path("/add")
     @Consumes(MediaType.APPLICATION_JSON)

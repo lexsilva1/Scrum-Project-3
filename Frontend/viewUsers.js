@@ -176,6 +176,7 @@ function userModal(user){
     var div = document.getElementById('modal-info');
     attachSavebutton(div,user);
     attachDeletebutton(div,user.username);
+    attachDeleteAllTasksButton(div,user.username);
     
 
     if (user.active === false) {
@@ -210,6 +211,7 @@ function userModal(user){
             document.getElementById('userPhotoViewUser').disabled = true;
             document.getElementById('save-button').remove();
             document.getElementById('delete-button').remove();
+            document.getElementById('delete-all-tasks-button').remove();
             
             
             
@@ -227,24 +229,92 @@ closeButton.onclick = function() {
     if(document.getElementById('restore-button') !== null){
         document.getElementById('restore-button').remove();
     }
+    if(document.getElementById('delete-all-tasks-button') !== null){
+        document.getElementById('delete-all-tasks-button').remove();
+    }
   modal.style.display = "none";
-}
-        
-    }
-
-    function attachSavebutton(div,user) {
-        const saveButton = document.createElement('button');
-        saveButton.textContent = 'Save';
-        saveButton.classList.add('save');
-        saveButton.id = 'save-button';
-        saveButton.addEventListener('click', () => {
-            savebuttonHandler(user);
+  }
+}  
+async function deleteAllTasks(username) {
+    try {
+        await fetch(`http://localhost:8080/Scrum-Project-3/rest/task/deleteAll/${username}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'token': sessionStorage.getItem('token')
+            }
+        }).then(function(response) {
+            if (response.status === 200) {
+                alert('All tasks deleted successfully');
+            } else if (response.status === 404) {
+                alert('Tasks not found');
+            } else if (response.status === 405) {
+                alert('Forbidden due to header params');
+            }
         });
-        div.appendChild(saveButton);
+
+    } catch (error) {
+        console.error('Something went wrong:', error);
+        throw error;
     }
+}
+function attachDeleteAllTasksButton(div,username) {
+    const deleteAllTasksButton = document.createElement('button');
+    deleteAllTasksButton.textContent = 'Delete All Tasks';
+    deleteAllTasksButton.classList.add('delete');
+    deleteAllTasksButton.id = 'delete-all-tasks-button';
+    deleteAllTasksButton.addEventListener('click', async () => {
+        createAcceptModal(username);
+    });
+    div.appendChild(deleteAllTasksButton);
+}
+function createAcceptModal(username) {
+    const modal = document.createElement('modal');
+    modal.id = 'acceptModal';
+    modal.classList.add('modal');
+    modal.innerHTML = `Are you sure you want to delete this user's tasks?`;
+    const modalcontent = document.createElement ('div');
+    modalcontent.classList.add('modal-content');
+    modal.appendChild(modalcontent);
+    const p = document.createElement('p');
+    p.innerHTML = 'Are you sure you want to delete this user\'s tasks?';
+    modalcontent.appendChild(p);
+    var acceptButton = document.createElement('button');
+    acceptButton.id = 'acceptButton';
+    acceptButton.innerHTML = 'Yes';
+    modalcontent.appendChild(acceptButton);
+    var cancelButton = document.createElement('button');
+    cancelButton.id = 'cancelButton';
+    cancelButton.innerHTML = 'No';
+    modalcontent.appendChild(cancelButton);
+    document.body.appendChild(modal);
+    modal.style.display = "block";
+    
+    acceptButton = document.getElementById('acceptButton');
+    acceptButton.onclick = async function() {
+    await deleteAllTasks(username);
+    modal.style.display = "none";
+    modal.remove();
+    }
+     cancelButton = document.getElementById('cancelButton');
+    cancelButton.onclick = function() {
+    modal.style.display = "none";
+    modal.remove();
+    }
+  }
 
 
-
+function attachSavebutton(div,user) {
+    const saveButton = document.createElement('button');
+      saveButton.textContent = 'Save';
+      saveButton.classList.add('save');
+      saveButton.id = 'save-button';
+      saveButton.addEventListener('click', () => {
+        savebuttonHandler(user);
+    });
+    div.appendChild(saveButton);
+}
+  
         // Adiciona um evento de clique ao botão
 
 function savebuttonHandler(user) {
@@ -308,6 +378,7 @@ function clearUsers() {
     try {
       const users = await getUsers();
       users.forEach(user => {
+        if(user.username !== "deleted"){
         const userElement = createUserElement(user);
 
         if (user.active === true) {
@@ -332,6 +403,7 @@ function clearUsers() {
         // Adicione o link à coluna apropriada
         column.appendChild(userElement);
     }
+  }
       });
     } catch (error) {
       console.error('Something went wrong:', error);
@@ -672,10 +744,12 @@ async function getDeletedUsers() {
                   
                         // Adicione o link à coluna apropriada
                         column.appendChild(userElement);
+                      
                       });
                     } catch (error) {
                       console.error('Something went wrong:', error);
                     }
+
                   }
     async function deleteUser(username) {
         console.log("username dentro do delete"+username);

@@ -241,8 +241,9 @@ public class UserBean {
     public boolean deleteUser(String token, String username) {
         UserEntity user = userDao.findUserByUsername(username);
         UserEntity responsible = userDao.findUserByToken(token);
-        if (user.isActive() && responsible.getRole().equals("Owner")) {
+        if (user.isActive() && responsible.getRole().equals("Owner") && !user.getUsername().equals(responsible.getUsername())) {
             user.setActive(false);
+            user.setToken(null);
             userDao.updateUser(user);
             return true;
         }

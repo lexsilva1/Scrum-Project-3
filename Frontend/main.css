@@ -443,8 +443,7 @@ main {
 
 .deleted-filter {
   position: relative;
-  left: 200px; /* Move the checkbox to the left */
-  top: -40px; /* Move the checkbox upwards */
+  left: 20px; /* Move the checkbox to the left */ /* Move the checkbox upwards */
 }
 
 input[type="checkbox"] {
@@ -1377,7 +1376,7 @@ aside {
   border-bottom: 2px solid var(--green3);
 }
 
-#addUser, #viewDeletedUsers {
+#addUser {
   display: block;
   width: 60%;
   padding: 10px; 
@@ -1391,9 +1390,23 @@ aside {
   border-radius: 5px;
 }
 
+
 #viewDeletedUsers {
   margin-top: 20px;
   margin-bottom: 20px;
+  display: block;
+  width: 60%;
+  padding: 10px; 
+  margin-top: 70px;
+  margin-left: 60px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: var(--green3);
+  color: white; 
+  border: none; 
+  border-radius: 5px;
+  position: absolute;
+  left:50px;
 }
 #backButton {
   position: absolute; 
