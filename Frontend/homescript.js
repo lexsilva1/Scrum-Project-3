@@ -90,7 +90,9 @@ async function fillCategoryFilter() {
   // Adiciona uma opção para cada categoria
   categories.forEach((category) => {
     const option = document.createElement("option");
+
     option.value = category.name;
+
     option.text = category.name;
     categoryFilter.appendChild(option);
   });
@@ -1058,7 +1060,7 @@ function createAddCategoryModal() {
  
 }
 
-//Função que cria a tabela com as categorias
+
 async function displayCategoriesInModal() {
   const categories = await getCategories();
   const modalContent = document.querySelector(
@@ -1083,6 +1085,7 @@ async function displayCategoriesInModal() {
     nameLabel.textContent = categories[i].name;
     nameLabel.className = "categoryNameLabel";
     nameCell.appendChild(nameLabel);
+
     row.appendChild(nameCell);
 
     const buttonsCell = document.createElement("td");
