@@ -663,7 +663,7 @@ match ao arredondamento do painel (home.html) */
 .modal button {
   text-align: center;
   margin: 0 auto;
-  width: 100px;
+  width: 110px;
   height: 32px;
   text-transform: uppercase;
   font-size: 12px;
@@ -1065,6 +1065,7 @@ footer {
   width: 800px; 
   height: 500px; 
   padding-top: 50px;
+  
 }
 
 #editCategoriesModal .modal-title {
@@ -1078,7 +1079,8 @@ footer {
 .table-container {
   width: 100%; /* Set the container width to 100% */
   position: relative; /* Set the position to relative */
-  top: -200px;
+  overflow: auto;
+  margin-bottom: 60px;
 }
 
 table {
@@ -1108,6 +1110,21 @@ table tr:last-child {
 input::placeholder {
   font-size: 16px; /* Adjust this value as needed */
 }
+
+
+#addCategoryModal .modal-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 300px; /* Or whatever width you want */
+  height: 300px; /* Or whatever height you want */
+}
+.add-category-input {
+  width: 100%; /* Or whatever width you want */
+  height: 40px; /* Or whatever height you want */
+}
+
+
 /*---------------------PAGINA REGISTO---------------------------------*/
 #registrySection {
   flex-grow: 1;

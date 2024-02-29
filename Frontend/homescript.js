@@ -480,8 +480,14 @@ async function loadDeletedTasks() {
     } else if (response.status === 401) {
       alert("Unauthorized");
     }
+  
   });
+  }
+});
 }
+
+
+
 async function restoreTask(id) {
   try {
     const response = await fetch(
@@ -949,29 +955,83 @@ document.addEventListener("DOMContentLoaded", function () {
   var modalCategories = document.createElement("div");
   var modalContent = document.createElement("div");
   var modalTitle = document.createElement("h2");
-  var closeModalSpan = document.createElement("span"); // Use a span instead of a button
-  var saveButton = document.createElement("button"); // Create a "Save" button
+  var closeModalSpan = document.createElement("span"); 
+  var saveButton = document.createElement("button"); 
 
   // Set the attributes and content of the elements
   modalCategories.id = "editCategoriesModal";
   modalCategories.className = "modal";
-  modalCategories.style.display = "none"; // The modal is initially hidden
+  modalCategories.style.display = "none"; 
   modalContent.className = "modal-content";
   modalTitle.textContent = "Edit Categories";
   closeModalSpan.id = "closeModalSpan";
-  closeModalSpan.textContent = "X"; // Change the button text to 'X'
+  closeModalSpan.textContent = "X"; 
   closeModalSpan.style.position = "absolute";
   closeModalSpan.style.top = "0";
   closeModalSpan.style.right = "0";
-  closeModalSpan.style.cursor = "pointer"; // Change the cursor to a pointer when hovering over the span
-  saveButton.id = "saveEditCategories"; // Set the id of the "Save" button
-  saveButton.textContent = "Save"; // Set the text of the "Save" button
+  closeModalSpan.style.cursor = "pointer"; 
+  saveButton.id = "saveEditCategories"; 
+  saveButton.textContent = "Save"; 
+
+  // Create the "Add Category" button
+const addCategoryButton = document.createElement("button");
+addCategoryButton.textContent = "Add Category";
+addCategoryButton.style.position = 'absolute';
+addCategoryButton.style.bottom = '10px';
+addCategoryButton.style.left = '10px';
 
   // Append the elements to the modal
   modalContent.appendChild(modalTitle);
   modalContent.appendChild(closeModalSpan);
-  modalContent.appendChild(saveButton); // Append the "Save" button to the modal content
+  modalContent.appendChild(saveButton); 
   modalCategories.appendChild(modalContent);
+  modalContent.appendChild(addCategoryButton);
+
+  const addCategoryModal = document.createElement("div");
+  const addCategoryModalContent = document.createElement("div");
+  const addCategoryModalTitle = document.createElement("h2");
+  const addCategoryCloseModalSpan = document.createElement("span");
+  const addCategorySaveButton = document.createElement("button");
+  const addCategoryNameInput = document.createElement("input");
+
+  // Set the attributes and content of the elements
+  addCategoryModal.id = "addCategoryModal";
+  addCategoryModal.className = "modal";
+  addCategoryModal.style.display = "none";
+  addCategoryModalContent.className = "modal-content";
+  addCategoryModalTitle.textContent = "Add Category";
+  addCategoryCloseModalSpan.textContent = "X";
+  addCategoryCloseModalSpan.style.position = "absolute";
+  addCategoryCloseModalSpan.style.top = "0";
+  addCategoryCloseModalSpan.style.right = "0";
+  addCategoryCloseModalSpan.style.cursor = "pointer";
+  addCategorySaveButton.textContent = "Save";
+  addCategoryNameInput.placeholder = "Category name";
+  addCategoryNameInput.className = "add-category-input";
+  // Append the elements to the add category modal
+  addCategoryModalContent.appendChild(addCategoryModalTitle);
+  addCategoryModalContent.appendChild(addCategoryCloseModalSpan);
+  addCategoryModalContent.appendChild(addCategoryNameInput);
+  addCategoryModalContent.appendChild(addCategorySaveButton);
+  addCategoryModal.appendChild(addCategoryModalContent);
+  document.body.appendChild(addCategoryModal);
+  addCategoryModal.style.zIndex = "1000";
+
+  addCategoryButton.addEventListener("click", function () {
+    addCategoryModal.style.display = "block";
+  });
+
+  addCategoryCloseModalSpan.addEventListener("click", function () {
+    addCategoryModal.style.display = "none";
+  });
+
+  addCategorySaveButton.addEventListener("click", async function () {
+    const categoryName = addCategoryNameInput.value;
+    await addCategory(categoryName); // Call the addCategory function with the category name
+    addCategoryModal.style.display = "none";
+    displayCategoriesInModal(); // Call the function to display the categories in the modal again
+  });
+
 
   // Append the modal to the body of the document
   document.body.appendChild(modalCategories);
@@ -983,13 +1043,47 @@ document.addEventListener("DOMContentLoaded", function () {
       modalCategories.style.display = "block";
     });
 
+    const saveButtonCategory = document.getElementById("saveEditCategories");
+
+    saveButtonCategory.addEventListener("click", async function () {
+      
+      let inputFields = document.getElementsByClassName("categoryNameInput");
+      let name;
+      let id;
+    for (let i = 0; i < inputFields.length; i++) {
+      let inputField = inputFields[i];
+      if (inputField.value === "") {
+        name = inputField.name; 
+        id = inputField.id;
+      } else {
+        name = inputField.value; 
+        id = inputField.id;
+      }
+      const category = {
+        name: name,
+        id: id
+      };
+      await updateCategory(category);
+    }
+      
+    
+      // Call the updateCategory function with the updated category data
+      
+    
+      // Close the modal
+      modalCategories.style.display = "none";
+    });
+
+
+
+
+
+
   // Add an event listener to the "Close" span to close the modal
   closeModalSpan.addEventListener("click", function () {
     fillCategoryFilter();
     fillTaskCategory();
     modalCategories.style.display = "none";
-    
-
     
   });
 });
@@ -1012,7 +1106,7 @@ async function displayCategoriesInModal() {
     tableContainer.className = "table-container";
     modalContent.appendChild(tableContainer);
   } else {
-    // If the table container already exists, clear its contents
+    
     tableContainer.innerHTML = "";
   }
 
@@ -1026,19 +1120,22 @@ async function displayCategoriesInModal() {
 
     // Create a cell for the category name
     const nameCell = document.createElement("td");
-    const nameInput = document.createElement("input"); // Create an input field
-    nameInput.placeholder = categories[i]; // Set the placeholder to the category name
-    nameCell.appendChild(nameInput); // Append the input field to the cell
+    const nameInput = document.createElement("input"); 
+    nameInput.placeholder = categories[i];
+    nameInput.name = categories[i].name; 
+    nameInput.id= categories[i].id;
+    nameInput.className = "categoryNameInput";
+    nameCell.appendChild(nameInput); 
     row.appendChild(nameCell);
 
-    // Create a cell for the delete button
+    
     const deleteCell = document.createElement("td");
-    deleteCell.className = "delete-cell"; // Add the 'delete-cell' class to the cell
+    deleteCell.className = "delete-cell"; 
     const deleteButton = document.createElement("button");
     deleteButton.textContent = "Delete";
     deleteButton.addEventListener("click", async function () {
-      await deleteCategory(nameInput.placeholder); // Call the deleteCategory function with the category name
-      displayCategoriesInModal(); // Call the function to display the categories in the modal again
+      await deleteCategory(nameInput.placeholder); 
+      displayCategoriesInModal(); 
     });
     deleteCell.appendChild(deleteButton);
     row.appendChild(deleteCell);
@@ -1092,5 +1189,67 @@ function clearModalCategories() {
   );
   if (tableContainer) {
     tableContainer.innerHTML = "";
+  }
+}
+
+async function addCategory(name) {
+  try {
+    const response = await fetch(`http://localhost:8080/Scrum-Project-3/rest/task/createCategory`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          token: sessionStorage.getItem("token"),
+        },
+        body: JSON.stringify({ name: name }),
+      }
+      
+    );
+
+    if (response.status === 201) {
+      alert("Category added");
+    } else if (response.status === 404) {
+      alert("Category not found");
+    } else if (response.status === 401) {
+      alert("Unauthorized");
+    } else {
+      // Handle other response status codes
+      console.error("Unexpected response:", response.status);
+    }
+  } catch (error) {
+    console.error("Error adding Category:", error);
+    // Handle fetch errors
+    alert("Error adding Category. Please try again.");
+  }
+}
+
+async function updateCategory (category) {
+  try {
+    const response = await fetch(`http://localhost:8080/Scrum-Project-3/rest/task/updateCategory`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          token: sessionStorage.getItem("token"),
+        },
+        body: JSON.stringify(category),
+      }
+      
+    );
+
+    if (response.status === 200) {
+      alert("Category updated");
+    } else if (response.status === 404) {
+      alert("Category not found");
+    } else if (response.status === 401) {
+      alert("Unauthorized");
+    } else {
+      // Handle other response status codes
+      console.error("Unexpected response:", response.status);
+    }
+  } catch (error) {
+    console.error("Error updating Category:", error);
+    // Handle fetch errors
+    alert("Error updating Category. Please try again.");
   }
 }
