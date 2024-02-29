@@ -352,32 +352,30 @@ function createTaskElement(task) {
     });
   });
 
-  descriprioncontainer.appendChild(displayDescription);
-  postIt.appendChild(taskTitle);
-  if (
-    sessionStorage.getItem("role") !== null &&
-    sessionStorage.getItem("role") !== "developer"
-  ) {
-    console.log(sessionStorage.getItem("role"));
-    postIt.appendChild(deleteButton);
-  }
-  taskElement.appendChild(postIt);
-  postIt.appendChild(descriprioncontainer);
-  taskElement.addEventListener("dblclick", taskElementDblClickHandler);
-  return taskElement;
+    descriprioncontainer.appendChild(displayDescription);
+    postIt.appendChild(taskTitle);
+    if (sessionStorage.getItem('role') !== null && sessionStorage.getItem('role') !== 'developer') {
+      console.log(sessionStorage.getItem('role'));
+      postIt.appendChild(deleteButton);
+    }
+    taskElement.appendChild(postIt);
+    postIt.appendChild(descriprioncontainer);
+    function taskElementDblClickHandler() {
+      sessionStorage.setItem("taskDescription", taskElement.description);
+      sessionStorage.setItem("taskTitle", taskElement.title);
+      sessionStorage.setItem("taskid", taskElement.id);
+      sessionStorage.setItem("taskStatus", taskElement.status);
+      sessionStorage.setItem("taskPriority", taskElement.priority);
+      sessionStorage.setItem("taskStartDate", task.startDate);
+      sessionStorage.setItem("taskEndDate", task.endDate);
+      sessionStorage.setItem("taskCategory", task.category);
+      window.location.href = 'task.html'; 
+    }
+    taskElement.addEventListener('dblclick', taskElementDblClickHandler);
+    return taskElement;
 }
 
-function taskElementDblClickHandler() {
-  sessionStorage.setItem("taskDescription", taskElement.description);
-  sessionStorage.setItem("taskTitle", taskElement.title);
-  sessionStorage.setItem("taskid", taskElement.id);
-  sessionStorage.setItem("taskStatus", taskElement.status);
-  sessionStorage.setItem("taskPriority", taskElement.priority);
-  sessionStorage.setItem("taskStartDate", task.startDate);
-  sessionStorage.setItem("taskEndDate", task.endDate);
-  sessionStorage.setItem("taskCategory", task.category);
-  window.location.href = "task.html";
-}
+
 
 async function loadTasks() {
   await fetch("http://localhost:8080/Scrum-Project-3/rest/task/all", {
@@ -424,25 +422,44 @@ async function loadDeletedTasks() {
     if (response.status === 200) {
       const taskArray = await response.json();
 
-      if (taskArray.length > 0) {
-        taskArray.forEach((task) => {
-          if (task.active === false) {
-            const taskElement = createTaskElement(task);
-            if (task.status === 10) {
-              document.getElementById("todo").appendChild(taskElement);
-            } else if (task.status === 20) {
-              document.getElementById("doing").appendChild(taskElement);
-            } else if (task.status === 30) {
-              document.getElementById("done").appendChild(taskElement);
-            }
-            taskElement.style.opacity = 0.5;
-            taskElement.removeEventListener(
-              "dblclick",
-              taskElementDblClickHandler
-            );
-            const resutaurar = document.createElement("button");
-            resutaurar.textContent = "Restaurar";
+    await fetch('http://localhost:8080/Scrum-Project-3/rest/task/all', {
+     method: 'GET',
+     headers: {
+       'Content-Type': 'application/json',
+       'token': sessionStorage.getItem('token')
+     }
+   }).then(async function(response){
+     if (response.status === 200){
+       const taskArray = await response.json();
+       
+       if (taskArray.length > 0) {
+         taskArray.forEach(task => {
+           if(task.active === false){
+           const taskElement = createTaskElement(task);
+           if (task.status === 10) {
+             document.getElementById('todo').appendChild(taskElement);
+           } else if (task.status === 20) {
+             document.getElementById('doing').appendChild(taskElement);
+           }else if (task.status === 30) {
+             document.getElementById('done').appendChild(taskElement);
+           }
+           taskElement.style.opacity = 0.5;
+           function taskElementDblClickHandler() {
+            sessionStorage.setItem("taskDescription", taskElement.description);
+            sessionStorage.setItem("taskTitle", taskElement.title);
+            sessionStorage.setItem("taskid", taskElement.id);
+            sessionStorage.setItem("taskStatus", taskElement.status);
+            sessionStorage.setItem("taskPriority", taskElement.priority);
+            sessionStorage.setItem("taskStartDate", task.startDate);
+            sessionStorage.setItem("taskEndDate", task.endDate);
+            sessionStorage.setItem("taskCategory", task.category);
+            window.location.href = 'task.html'; 
+          }
+           taskElement.removeEventListener('dblclick', taskElementDblClickHandler); 
+            const resutaurar =document.createElement('img');
+            resutaurar.src = 'multimedia/restore.png';
             resutaurar.className = "restoreButton";
+            taskElement.classList.add('taskdeleted');
             taskElement.appendChild(resutaurar);
             resutaurar.addEventListener("click", function () {
               restoreTask(taskElement.id);

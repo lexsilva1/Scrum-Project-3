@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dao.UserDao;
+import dto.PasswordDto;
 import dto.Task;
 import dto.UserDto;
 import entities.TaskEntity;
@@ -21,6 +22,7 @@ import dto.User;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import jakarta.json.bind.JsonbConfig;
+import jakarta.security.enterprise.credential.Password;
 
 @Singleton
 public class UserBean {
@@ -101,6 +103,25 @@ public class UserBean {
             return true;
         }
         return false;
+    }
+    public boolean updatePassword(String token, PasswordDto password) {
+        UserEntity a = userDao.findUserByToken(token);
+        if (a != null) {
+            if (a.getPassword().equals(password.getPassword())) {
+                a.setPassword(password.getNewPassword());
+                userDao.updateUser(a);
+                return true;
+            }
+        }
+        return false;
+    }
+    public boolean isPasswordValid(PasswordDto password) {
+        if (password.getPassword().isBlank() || password.getNewPassword().isBlank()) {
+            return false;
+        } else if (password.getPassword() == null || password.getNewPassword() == null) {
+            return false;
+        }
+        return true;
     }
 
     public boolean updateOtherUser(String username, User user) {
@@ -226,6 +247,15 @@ public class UserBean {
             return true;
         }
         if (responsible.getRole().equals("Owner") && !user.isActive()) {
+            if(doesUserHaveTasks(username)){
+                List<TaskEntity> tasks = taskDao.getTasksByUser(user);
+                UserEntity deletedUser = userDao.findUserByUsername("deleted");
+                for(TaskEntity task: tasks){
+                    task.setUser(deletedUser);
+                    taskDao.updateTask(task);
+                    userDao.remove(user);
+                }
+            }
             userDao.remove(user);
             return true;
         }

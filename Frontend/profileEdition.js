@@ -71,6 +71,13 @@ if(sessionStorage.getItem('token') === null || sessionStorage.getItem('token') =
             userPhoto : document.getElementById("profileImage").src = document.getElementById('photoUpload').value.trim(),
             userRole : user.userRole
             }
+            if(document.getElementById('editNewPassword').value !== user.password && document.getElementById('editNewPassword').value !== '' && document.getElementById('editNewPassword').value === document.getElementById('rewritePasswordField').value){
+                password = {
+                    password : document.getElementById('oldPassword').value,
+                    newPassword : document.getElementById('editNewPassword').value
+                }
+                updatePassword(password);
+            }
         confirmationDialog.close();
         updateUserData(user);
         window.location.href = 'home.html'
@@ -101,6 +108,31 @@ async function updateUserData(user){//chama o user aqui
             alert(response.status,'failed, user not updated')
         } else if(response.status == 200){
             sessionStorage.setItem('password',user.password);
+            alert(response.status,'user updated sucessfully')
+        }
+    })
+    } catch(error){
+        console.error('error',error);
+    }
+}
+async function updatePassword(password){//chama o user aqui
+    try{
+    await fetch(`http://localhost:8080/Scrum-Project-3/rest/user/updatePassword`,{
+        method: 'PUT',
+        headers:{
+            'Accept':'*/*',
+            'Content-Type':'application/json',
+            'token':sessionStorage.getItem('token')
+        },
+        body:JSON.stringify(password),
+    }).then(function(response){
+        if (response.status ==404){
+            alert(response.status, 'username not found')
+        } else if(response.status == 403){
+            alert(response.status,'forbidden due to header params')
+        } else if(response.status == 400){
+            alert(response.status,'failed, user not updated')
+        } else if(response.status == 200){
             alert(response.status,'user updated sucessfully')
         }
     })

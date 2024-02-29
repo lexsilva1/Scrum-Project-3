@@ -214,6 +214,21 @@ function userModal(user){
             
             
         }
+        var closeButton = document.querySelector('#myModalView .close');
+
+// Quando o usuário clica no botão de fechar (a cruz), fecha o modal
+closeButton.onclick = function() {
+    document.getElementById('firstNameViewUser').value = '';
+    document.getElementById('lastNameViewUser').value = '';
+    document.getElementById('emailViewUser').value = '';
+    document.getElementById('contactViewUser').value = '';
+    document.getElementById('imageURLViewUser').value = '';
+    document.getElementById('roleViewUser').value = '';
+    if(document.getElementById('restore-button') !== null){
+        document.getElementById('restore-button').remove();
+    }
+  modal.style.display = "none";
+}
         
     }
 
@@ -279,21 +294,7 @@ modal.style.display = "none";
     
 
 
-var closeButton = document.querySelector('#myModalView .close');
 
-// Quando o usuário clica no botão de fechar (a cruz), fecha o modal
-closeButton.onclick = function() {
-    document.getElementById('firstNameViewUser').value = '';
-    document.getElementById('lastNameViewUser').value = '';
-    document.getElementById('emailViewUser').value = '';
-    document.getElementById('contactViewUser').value = '';
-    document.getElementById('imageURLViewUser').value = '';
-    document.getElementById('roleViewUser').value = '';
-    if(document.getElementById('restore-button') !== null){
-        document.getElementById('restore-button').remove();
-    }
-  modal.style.display = "none";
-}
 
 
 function clearUsers() {
@@ -429,13 +430,32 @@ function showTime() {
 
       var modal = document.getElementById("myModal");
       var btn = document.getElementById("addUser");
-      var span = document.getElementsByClassName("close");
+      var span = document.getElementById("adduserclose");
+      var usernameModal = document.getElementById('usernameModal');
+      var firstNameModal = document.getElementById('firstNameModal');
+      var lastNameModal = document.getElementById('lastNameModal');
+      var emailModal = document.getElementById('emailModal');
+      var passwordModal = document.getElementById('passwordModal');
+      var rePasswordModal = document.getElementById('rePasswordModal');
+      var contactModal = document.getElementById('contactModal');
+      var userPictureModal = document.getElementById('userPictureModal');
+      var role = document.getElementById('role');
+
       
       btn.onclick = function() {
         modal.style.display = "block";
       }
       
       span.onclick = function() {
+      usernameModal.value = '';
+      firstNameModal.value = '';
+      lastNameModal.value = '';
+      emailModal.value = '';
+      passwordModal.value = '';
+      rePasswordModal.value = '';
+      contactModal.value = '';
+      userPictureModal.value = '';
+      role.value = '';
         modal.style.display = "none";
       }
       
@@ -505,7 +525,7 @@ function showTime() {
             };
             postUser(newUser);
             alert('user can be created' + newUser.username + newUser.role);
-            //window.location.href='index.html';
+            window.location.href='viewUsers.html';
         }
     });
       
