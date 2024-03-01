@@ -141,31 +141,31 @@ function setPriorityButtonSelected(button, priority) {
 }
 // Event listener para o botão de guardar
 const savebutton = document.getElementById("save-button");
-savebutton.addEventListener("click", () => {
-  console.log('save button clicked');
+savebutton.addEventListener("click",  () => {
     let taskDescription = document.getElementById("descricao-task").value.trim();
     let taskTitle = document.getElementById("titulo-task").value.trim();
-    
+    let enddate = document.getElementById('enddateEditTask').value;
     if (taskDescription === "" || taskTitle === "") {
         document.getElementById('warningMessage3').innerText = 'Your task must have a title and a description';
             return;
     } else if (document.getElementById('startdateEditTask').value === "" ) {
         document.getElementById('warningMessage3').innerText = 'Your task must have a start date';
             return;
-    }else if (document.getElementById('enddateEditTask').value !== "") {
-            if(document.getElementById('startdateEditTask').value > document.getElementById('enddateEditTask').value){
+    }else if (enddate !== "") {
+            if(document.getElementById('startdateEditTask').value > enddate){
             document.getElementById('warningMessage3').innerText = 'The start date must be before the end date';
             return;
             }
-        let enddate = document.getElementById('enddateEditTask').value;
-        if(enddate === ""){
-            document.getElementById('enddateEditTask').value = "2199-12-31";
+          
+          }else if(enddate === ""){
+            document.getElementById('enddateEditTask').value= "2199-12-31";
         }
+      
         console.log('updateTask');
         updateTask();
         // Limpa mensagem de erro
         document.getElementById('warningMessage3').innerText = '';
-
+      
     sessionStorage.removeItem("taskDescription");
     sessionStorage.removeItem("taskTitle");
     sessionStorage.removeItem("taskid");
@@ -178,8 +178,8 @@ savebutton.addEventListener("click", () => {
     sessionStorage.removeItem("username");
     sessionStorage.removeItem("taskCategory");
     window.location.href = 'home.html';
-    }
-});
+    
+  });
 
 const cancelbutton = document.getElementById("cancel-button");
 cancelbutton.addEventListener("click", () => {
