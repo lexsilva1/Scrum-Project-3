@@ -254,7 +254,6 @@ public class UserBean {
                 for(TaskEntity task: tasks){
                     task.setUser(deletedUser);
                     taskDao.updateTask(task);
-                    userDao.remove(user);
                 }
             }
             userDao.remove(user);

@@ -216,29 +216,6 @@ confirmButton.addEventListener("click", () => {
 });
 
 
-// Event listeners para os botões priority
-lowButton.addEventListener("click", () => setPriorityButtonSelected(lowButton, 100));
-mediumButton.addEventListener("click", () => setPriorityButtonSelected(mediumButton, 200));
-highButton.addEventListener("click", () => setPriorityButtonSelected(highButton, 300));
-} else {
-    todoButton.disabled = true;
-    doingButton.disabled = true;
-    doneButton.disabled = true;
-    lowButton.disabled = true;
-    mediumButton.disabled = true;
-    highButton.disabled = true;
-    document.getElementById('save-button').remove();
-    document.getElementById('cancel-button').remove();
-    document.getElementById('descricao-task').disabled = true;
-    document.getElementById('titulo-task').disabled = true;
-    document.getElementById('startdateEditTask').disabled=true;
-    document.getElementById('enddateEditTask').disabled=true;
-    document.getElementById('categoryEditTask').disabled=true;
-}
-
-
-
-
 // funçaõ de update das tasks
 async function updateTask() {
   console.log('updateTask');

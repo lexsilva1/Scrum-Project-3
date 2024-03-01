@@ -179,6 +179,7 @@ public class UserService {
     @Path("/delete/{username}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteUser(@HeaderParam("token") String token,@PathParam("username") String username){
+        System.out.println("username: "+username);
         boolean authorized = userBean.isUserOwner(token);
         if (!authorized) {
             return Response.status(405).entity("Forbidden").build();
