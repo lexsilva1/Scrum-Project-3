@@ -206,6 +206,7 @@ h1 {
   border-radius: 50%;
   position: relative;
   left: 200px;
+  object-fit: cover;
 }
 
 /* Username */
@@ -414,7 +415,7 @@ label[for="taskCategory"] {
 }
 /* Mensagem de erro por não preenchimento de 1 dos 2 campos, ou do botão de priority */
 #warningMessage2 {
-  color: var(--green3);
+  color: red;
   font-size: 14px;
   margin-top: 5px;
   text-align: center;
@@ -623,7 +624,7 @@ match ao arredondamento do painel (home.html) */
   overflow: hidden;
   opacity: 1;
   display: -webkit-box; /* Define o display como flexível */
-  -webkit-line-clamp: 6; /* número de linhas que o texto vai mostrar */
+  -webkit-line-clamp: 5; /* número de linhas que o texto vai mostrar */
   -webkit-box-orient: vertical;
   margin: 0;
 }
@@ -687,40 +688,52 @@ match ao arredondamento do painel (home.html) */
 /* Modal para confirmações - apagar tarefa no home.html, cancelar as alterações no task.html */
 
 #delete-modal {
-  background-color: var(--green3);
-  color: white;
-  width: 500px;
-  height: 200px;
-  border: none;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  border-radius: 5px;
+  background-color: rgba(0,0,0,0.4);
+  width: 100%; 
+  height: 100%; 
+  position: fixed; 
+  top: 0;
+  left: 0;
+  backdrop-filter: blur(5px); 
+  align-items: center; 
 }
 
 #delete-modal .modal-content {
-  margin: 0;
-  padding: 0;
-  border: none;
-  background: none;
-  width: 100%;
-  height: 100%;
-  position: relative;
-  margin-right: 200px;
-  margin-bottom: 100px;
+  position: absolute; 
+  top: 50%; 
+  left: 50%; 
+  transform: translate(-50%, -50%); 
+  width: 400px; 
+  height: 300px; 
 }
 #delete-button {
   position: absolute;
   bottom: 20px;
+  right: 30px;
 }
 
 #cancel-delete-button {
   position: absolute;
   bottom: 10px;
-  right: 40px;
+  right: 10px;
   border: white 1px solid;
 }
+
+
+
+
+#confirm-cancel-button {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+}
+
+#continue-editing-button {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+}
+
 
 .modal {
   bottom: 0;
@@ -1179,6 +1192,39 @@ footer {
   }
 }
 
+#cancel-modal {
+  background-color: rgba(0,0,0,0.4);
+  width: 100%; 
+  height: 100%; 
+  position: fixed; 
+  top: 0;
+  left: 0;
+  backdrop-filter: blur(5px); 
+  align-items: center; 
+}
+
+#cancel-modal .modal-content {
+  position: absolute; 
+  top: 50%; 
+  left: 50%; 
+  transform: translate(-50%, -50%); 
+  width: 300px; 
+  height: 200px; 
+}
+
+#confirm-cancel-button {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+}
+
+#continue-editing-button {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+}
+
+
 #editCategoriesModal .modal-content {
   display: flex;
   flex-direction: column;
@@ -1519,6 +1565,7 @@ input::placeholder {
   border-radius: 50%;
   position: relative;
   left: 8rem;
+  object-fit: cover;
 }
 #btnToEdit {
   position: relative;
@@ -1533,6 +1580,7 @@ input::placeholder {
   width: 250px;
   height: 250px;
   top: 80px;
+  object-fit: cover;
 }
 
 #profileImageLabelEdit {
@@ -1659,6 +1707,7 @@ li.link-bc a:hover {
   height: 50px;
   border-radius: 50%;
   margin-right: 10px;
+  object-fit: cover;
 }
 
 .userButton {
@@ -1967,6 +2016,12 @@ label[for="userPicturePreview"] {
   margin-bottom: 10px;
   border-color: var(--todo);
 }
+
+#roleViewUser {
+  width: 83%; 
+  height: 30px; 
+}
+
 
 .taskdeleted {
   position: relative;
