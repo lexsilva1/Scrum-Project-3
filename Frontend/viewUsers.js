@@ -24,6 +24,12 @@ if (
   window.location.href = "index.html";
 }
 
+document.getElementById("login-home").addEventListener("click", () => {
+  window.location.href = "profileEdition.html";
+});
+
+
+
 async function getUserDTO() {
   try {
     const response = await fetch(

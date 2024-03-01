@@ -124,8 +124,6 @@ async function fillTaskCategory() {
   }
 }
 
-
-
 // Adiciona os listeners de drag and drop a um painel
 panels.forEach((panel) => {
   panel.addEventListener("dragover", (e) => {
@@ -153,10 +151,6 @@ panels.forEach((panel) => {
     }
   });
 });
-
-
-
-
 
 // Definir os botões de priority
 const lowButton = document.getElementById("low-button-home");
@@ -346,6 +340,10 @@ function createTaskElement(task) {
   descriprioncontainer.className = "post-it-text";
   const displayDescription = document.createElement("p");
   displayDescription.textContent = task.description;
+  const taskCategory = document.createElement("h5");
+  taskCategory.textContent = "Categoria: " + task.category;
+  taskCategory.style.marginLeft = "10px";
+  taskCategory.style.marginTop = "-2px";
 
   const deleteButton = document.createElement("img");
   deleteButton.src = "multimedia/dark-cross-01.png";
@@ -358,20 +356,20 @@ function createTaskElement(task) {
 
     async function deleteButtonClickHandler() {
       await deleteTask(taskElement.id);
-      if(taskElement.classList.contains('taskdeleted')){
-      taskElement.remove();
-      deletebtn.removeEventListener("click", deleteButtonClickHandler);
-      clearTaskPanels();
-      await loadDeletedTasks();
-      deletemodal.style.display = "none";
-    }else{
-      taskElement.remove();
-      deletebtn.removeEventListener("click", deleteButtonClickHandler);
-      clearTaskPanels();
-      await loadTasks();
-      deletemodal.style.display = "none";
+      if (taskElement.classList.contains("taskdeleted")) {
+        taskElement.remove();
+        deletebtn.removeEventListener("click", deleteButtonClickHandler);
+        clearTaskPanels();
+        await loadDeletedTasks();
+        deletemodal.style.display = "none";
+      } else {
+        taskElement.remove();
+        deletebtn.removeEventListener("click", deleteButtonClickHandler);
+        clearTaskPanels();
+        await loadTasks();
+        deletemodal.style.display = "none";
+      }
     }
-  }
 
     deletebtn.addEventListener("click", deleteButtonClickHandler);
     const cancelbtn = document.getElementById("cancel-delete-button");
@@ -379,9 +377,10 @@ function createTaskElement(task) {
       deletemodal.style.display = "none";
     });
   });
-
+  descriprioncontainer.appendChild(taskCategory);
   descriprioncontainer.appendChild(displayDescription);
   postIt.appendChild(taskTitle);
+
   if (
     sessionStorage.getItem("role") !== null &&
     sessionStorage.getItem("role") !== "developer"
@@ -483,8 +482,11 @@ async function loadDeletedTasks() {
                 resutaurar.className = "restoreButton";
                 taskElement.classList.add("taskdeleted");
                 taskElement.appendChild(resutaurar);
-                if(sessionStorage.getItem('role') !== null && sessionStorage.getItem('role') === 'ScrumMaster'){
-                  document.getElementById('delete-button99').remove();
+                if (
+                  sessionStorage.getItem("role") !== null &&
+                  sessionStorage.getItem("role") === "ScrumMaster"
+                ) {
+                  document.getElementById("delete-button99").remove();
                 }
                 resutaurar.addEventListener("click", async function () {
                   restoreTask(taskElement.id);
@@ -1005,12 +1007,11 @@ function createCategoryModal() {
   modalCategories.style.display = "block";
   document.body.appendChild(modalCategories);
   displayCategoriesInModal();
-closeModalSpanCategories.addEventListener("click", function () {
-  fillCategoryFilter();
-  fillTaskCategory();
-  modalCategories.remove();
-});
-
+  closeModalSpanCategories.addEventListener("click", function () {
+    fillCategoryFilter();
+    fillTaskCategory();
+    modalCategories.remove();
+  });
 }
 
 const editButton = document.getElementById("editCategoriesButton");
@@ -1062,7 +1063,6 @@ function createAddCategoryModal() {
     await addCategory(categoryName);
     await displayCategoriesInModal();
     addCategoryModal.style.display = "none";
-    
   });
 }
 
@@ -1072,7 +1072,6 @@ async function displayCategoriesInModal() {
     "#editCategoriesModal .modal-content"
   );
   let tableContainer = document.querySelector(".table-container");
-  
 
   if (!tableContainer) {
     tableContainer = document.createElement("div");
@@ -1130,11 +1129,11 @@ async function displayCategoriesInModal() {
       cancelButton.textContent = "Cancel";
 
       // Add click events to the buttons
-      saveButton.addEventListener("click",async function () {
-        category ={
+      saveButton.addEventListener("click", async function () {
+        category = {
           id: categoryInput.id,
-          name: categoryInput.value
-        }
+          name: categoryInput.value,
+        };
         await updateCategory(category);
         clearModalCategories();
         await displayCategoriesInModal();
@@ -1161,26 +1160,27 @@ async function displayCategoriesInModal() {
   }
   tableContainer.appendChild(table);
 }
-function createdeleteCategoryButton(buttonsCell, i, categories){
+function createdeleteCategoryButton(buttonsCell, i, categories) {
   const deleteButton = document.createElement("button");
   deleteButton.innerHTML = "&#128465;";
   deleteButton.style.cursor = "pointer";
   deleteButton.style.color = "black";
   deleteButton.id = "deleteCategoryButton99";
-  deleteButton.addEventListener("click", async function () { // Add 'async' keyword here
+  deleteButton.addEventListener("click", async function () {
+    // Add 'async' keyword here
     var showModal = confirmationModal(
       "Do you want to delete the category?",
-      async function () { // Add 'async' keyword here
+      async function () {
+        // Add 'async' keyword here
         await deleteCategory(categories[i].name);
         clearModalCategories();
         displayCategoriesInModal();
-      },
+      }
     );
     showModal();
   });
   buttonsCell.appendChild(deleteButton);
 }
-
 
 //função para apagar categoria
 async function deleteCategory(name) {
@@ -1203,7 +1203,7 @@ async function deleteCategory(name) {
       alert("Category not found");
     } else if (response.status === 401) {
       alert("Unauthorized");
-    }else if (response.status === 409) {
+    } else if (response.status === 409) {
       alert("Category has tasks");
     } else {
       // Handle other response status codes
