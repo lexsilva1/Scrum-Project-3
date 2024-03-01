@@ -136,7 +136,8 @@ function attachRestorebutton(div,username) {
         displayUsers();
         checkbox.checked = false;
         restoreButton.remove();
-        modal.style.display = "none";   
+        modal.style.display = "none"; 
+        
     });
     div.appendChild(restoreButton);
 }
@@ -233,6 +234,7 @@ closeButton.onclick = function() {
         document.getElementById('delete-all-tasks-button').remove();
     }
   modal.style.display = "none";
+ 
   }
 }  
 async function deleteAllTasks(username) {

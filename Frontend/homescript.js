@@ -4,14 +4,18 @@ window.onload = async function () {
   loadTasks();
   updateDate();
   showTime();
+  const editButton = document.getElementById("editCategoriesButton");
   const names = user.name.split(" ");
   document.getElementById("profileImageHome").src = user.userPhoto;
   document.getElementById("login-home").innerHTML = names[0];
   fillUserFilter();
   fillCategoryFilter();
-  if (user.role === "developer") {
+  if (sessionStorage.getItem('role') === "developer") {
+    editButton.remove();
     document.getElementById("filter-container").remove();
     document.getElementById("viewUsersButton").remove();
+    
+
   }
 };
 

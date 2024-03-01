@@ -1,5 +1,4 @@
 package dto;
-import entities.CategoryEntity;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
