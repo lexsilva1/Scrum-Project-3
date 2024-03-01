@@ -151,9 +151,8 @@ function createAcceptModalDeleteUser(username) {
 
   acceptButton = document.getElementById("acceptButton");
   acceptButton.onclick = async function () {
-    clearUsers();
     deleteUser(username);
-    displayUsers();
+  
     
     modal.style.display = "none";
     modal.remove();

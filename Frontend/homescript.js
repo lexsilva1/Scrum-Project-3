@@ -123,6 +123,9 @@ async function fillTaskCategory() {
     alert("Error fetching categories. Please try again.");
   }
 }
+
+
+
 // Adiciona os listeners de drag and drop a um painel
 panels.forEach((panel) => {
   panel.addEventListener("dragover", (e) => {
@@ -150,6 +153,10 @@ panels.forEach((panel) => {
     }
   });
 });
+
+
+
+
 
 // Definir os botões de priority
 const lowButton = document.getElementById("low-button-home");
@@ -992,7 +999,7 @@ function createCategoryModal() {
 closeModalSpanCategories.addEventListener("click", function () {
   fillCategoryFilter();
   fillTaskCategory();
-  modalCategories.style.display = "none";
+  modalCategories.remove();
 });
 
 }
@@ -1044,8 +1051,9 @@ function createAddCategoryModal() {
   addCategorySaveButton.addEventListener("click", async function () {
     const categoryName = addCategoryNameInput.value;
     await addCategory(categoryName);
+    await displayCategoriesInModal();
     addCategoryModal.style.display = "none";
-    displayCategoriesInModal();
+    
   });
 }
 
@@ -1055,6 +1063,7 @@ async function displayCategoriesInModal() {
     "#editCategoriesModal .modal-content"
   );
   let tableContainer = document.querySelector(".table-container");
+  
 
   if (!tableContainer) {
     tableContainer = document.createElement("div");
@@ -1136,11 +1145,11 @@ async function displayCategoriesInModal() {
 function createdeleteCategoryButton(buttonsCell, i, categories){
   const deleteButton = document.createElement("button");
   deleteButton.innerHTML = "&#128465;";
-  deleteButton.addEventListener("click", function () {
+  deleteButton.addEventListener("click", async function () { // Add 'async' keyword here
     var showModal = confirmationModal(
       "Do you want to delete the category?",
-      function () {
-        deleteCategory(categories[i].name);
+      async function () { // Add 'async' keyword here
+        await deleteCategory(categories[i].name);
         clearModalCategories();
         displayCategoriesInModal();
       },
