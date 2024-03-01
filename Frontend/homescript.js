@@ -10,8 +10,11 @@ window.onload = async function () {
   fillUserFilter();
   fillCategoryFilter();
   if (user.role === "developer") {
-    document.getElementById("filter-container").remove();
-    document.getElementById("viewUsersButton").remove();
+    document.getElementById("filter-container").style.display = "none";
+    document.getElementById("viewUsersButton").style.display = "none";
+  }
+  if(user.role !== "Owner"){
+    document.getElementById("editCategoriesButton").style.display = "none";
   }
 };
 
@@ -827,9 +830,13 @@ async function getUserDTO() {
 }
 
 function clearTaskPanels() {
-  document.getElementById("todo").innerHTML = "";
-  document.getElementById("doing").innerHTML = "";
-  document.getElementById("done").innerHTML = "";
+  let panels = ["todo", "doing", "done"];
+  for (let panel of panels) {
+    let tasks = document.querySelectorAll(`#${panel} .task`);
+    for (let task of tasks) {
+      task.remove();
+    }
+  }
 }
 
 document

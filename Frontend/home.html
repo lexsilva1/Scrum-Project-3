@@ -29,26 +29,27 @@
             Logout
         </button>
     </header>
-    <div class="top-section">
+    
         <div id="filter-container">
             <div class="filter">
-                <label for="userFilter">Tasks by user:</label>
+                <label for="userFilter">Tasks by user</label>
                 <select id="userFilter">
-                    <!-- Opções de usuário serão preenchidas dinamicamente -->
+                    
                 </select>
             </div>
             <div class="filter">
-                <label for="categoryFilter">Tasks by category:</label>
+                <label for="categoryFilter">Tasks by category</label>
                 <select id="categoryFilter">
-                    <!-- Opções de categoria serão preenchidas dinamicamente -->
+                   
                 </select>
                 <div class="deleted-filter">
-                <input type="checkbox" id="deleted" name="deleted">Show deleted tasks</input>
+                    <label for="deleted">Show deleted tasks</label>
+                    <input type="checkbox" id="deleted" name="deleted">
                 </div>
             </div>
             <button id="viewUsersButton" onclick="window.location.href='viewUsers.html'">View Users</button>
         </div>
-    </div>
+    
     <div class="container"> <!--Container para o aside e o main-->
         <aside>
             <div class="add-task-container">
@@ -61,7 +62,7 @@
               <select id="taskCategory"> 
               </select> 
               <br>
-              <button id="editCategoriesButton">Edit Categories</button>
+              <button id="editCategoriesButton">See Categories</button>
               <label class="priority-label">Priority</label> 
               <div class="priority-buttons-home">
                 <button class="priority-button-home low" id="low-button-home">Low</button>
@@ -79,22 +80,17 @@
             </div>
           </aside>
     <main>
-      
-        
-        <div class="titulo-main">
+        <div class="panel" id="todo">
             <h2 class="main-home">To do</h2>
-            <div class="panel" id="todo">
-            </div>
+            
         </div>
-        <div class="titulo-main">
+        <div class="panel" id="doing">
             <h2 class="main-home">Doing</h2>
-            <div class="panel" id="doing">
-            </div>
+            
         </div>
-            <div class="titulo-main">
+        <div class="panel" id="done">
             <h2 class="main-home">Done</h2>
-            <div class="panel" id="done">
-            </div>
+            
         </div>
         <div id="delete-modal" class="modal">
             <div class="modal-content">
@@ -110,7 +106,7 @@
             <div class="label-left">&copy; José Alexandre Silva</div>
             <div class="label-right">Programação Avançada em Java</div>
             <div class="label-left">&copy; Inês Cunha</div>
-            <div class="label-right">Projeto 2</div>
+            <div class="label-right">Projeto 3</div>
         </div>
     </footer>
     <script src="homescript.js" defer></script>

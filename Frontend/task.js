@@ -2,7 +2,7 @@
 window.onload =async function () {
   const user = await getUserDTO();
   let names = user.name.split(" ");
-  document.getElementById('profileImageHome').src = user.userPhoto;
+  document.getElementById('profileImageEditTask').src = user.userPhoto;
   document.getElementById('usernameTask').innerHTML = names[0];
 
     const taskCreator = await getTaskCreator();
@@ -21,11 +21,10 @@ window.onload =async function () {
         document.getElementById('titulo-task').textContent = titulo; // Colocar o título no input title
         document.getElementById('descricao-task').textContent = descricao; // Colocar a descrição na text area
         document.getElementById('tasktitle').innerHTML = titulo; // Colocar o título no título da página
-        document.getElementById("task-bc").textContent = titulo; // Colocar o título no breadcrumb
-        document.getElementById("startdate").value = startdate; // Colocar a data de início no input startdate
+        document.getElementById("startdateEditTask").value = startdate; // Colocar a data de início no input startdate
         if(enddate !== "2199-12-31"){
-        document.getElementById("enddate").value = enddate; // Colocar a data de fim no input enddate
-        document.getElementById('category').value = category; // Colocar a categoria no input category
+        document.getElementById("enddateEditTask").value = enddate; // Colocar a data de fim no input enddate
+        document.getElementById('categoryEditTask').value = category; // Colocar a categoria no input category
     }
     }
 };
@@ -210,9 +209,9 @@ highButton.addEventListener("click", () => setPriorityButtonSelected(highButton,
     document.getElementById('cancel-button').remove();
     document.getElementById('descricao-task').disabled = true;
     document.getElementById('titulo-task').disabled = true;
-    document.getElementById('startdate').disabled=true;
-    document.getElementById('enddate').disabled=true;
-    document.getElementById('category').disabled=true;
+    document.getElementById('startdateEditTask').disabled=true;
+    document.getElementById('enddateEditTask').disabled=true;
+    document.getElementById('categoryEditTask').disabled=true;
 }
 
 

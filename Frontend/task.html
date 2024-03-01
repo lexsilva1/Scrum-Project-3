@@ -16,12 +16,12 @@
         </div>
     </div>
     <header>
-        <h1>Edit task</h1>
+        <h1>Welcome to Scrum</h1>
         <div class="username">
             <label id="usernameTask"> </label>
         </div>
         <div class="profileImageHome">
-            <img id="profileImageHome" src ="" alt="Avatar">
+            <img id="profileImageEditTask" src ="" alt="Avatar">
         </div>
         <button class="logout-button" onclick="location.href='index.html'">
             <img src="multimedia/logout.png" alt="Logout Icon">
@@ -33,31 +33,18 @@
             <div class="breadcrumb">
                 <ul>
                   <li class="link-bc" id="link-bc"><a href="home.html">Home</a></li>
-                  <li id="task-bc">Task</li>
                 </ul>
+                <label id="taskCreator">TASK CREATOR:</label>
               </div>
               <div>
-                <label for="titulo-task">Title</label> <!-- Adicionado -->
+                <label class="labelEditTask" for="titulo-task">TITLE</label> 
                 <textarea id="titulo-task">Task 1</textarea>
             </div>
             <div>
-                <label for="descricao-task">Description</label> <!-- Adicionado -->
+                <label class="labelEditTask" for="descricao-task">DESCRIPTION</label> 
                 <textarea class="text-task" id="descricao-task"></textarea>
             </div>
-            <div id="taskDate">
-                <div>
-                    <label for="startdate">Initial Date</label>
-                    <input class = "dateinput" id ="startdate" type ="date" placeholder="Start-date">
-                </div>
-                <div>
-                    <label for="enddate">Final Date</label>
-                    <input class = "dateinput" id ="enddate" type ="date" placeholder="End-date">
-                </div>
-                <div>
-                    <label for="category">Category</label>
-                    <select id="category"></select>
-                  </div>
-            </div>
+           
             <p id="warningMessage3"></p>
             <div class="task-save">
                 <button class="save-button" id="save-button">Save</button>
@@ -82,6 +69,20 @@
                         <button class="priority-button high" id="high-button">High</button>
                     </div>
                 </div>
+                <div id="taskDate">
+                    <div>
+                        <label class="labelEditTask" for="startdate">INITIAL DATE</label>
+                        <input class = "dateinput" id ="startdateEditTask" type ="date" placeholder="Start-date">
+                    </div>
+                    <div>
+                        <label class="labelEditTask" for="enddate">FINAL DATE</label>
+                        <input class = "dateinput" id ="enddateEditTask" type ="date" placeholder="End-date">
+                    </div>
+                    <div>
+                        <label class="labelEditTask" for="category">CATEGORY</label>
+                        <select id="categoryEditTask"></select>
+                      </div>
+                </div>
             </div>
         </div>
     </main>
@@ -90,7 +91,7 @@
             <div class="label-left">&copy; José Alexandre Silva</div>
             <div class="label-right">Programação Avançada em Java</div>
             <div class="label-left">&copy; Inês Cunha</div>
-            <div class="label-right">Projeto 2</div>
+            <div class="label-right">Projeto 3</div>
         </div>
     </footer>
     <script src="task.js" defer></script>
