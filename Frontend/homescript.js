@@ -1144,6 +1144,9 @@ async function displayCategoriesInModal() {
 function createdeleteCategoryButton(buttonsCell, i, categories){
   const deleteButton = document.createElement("button");
   deleteButton.innerHTML = "&#128465;";
+  deleteButton.style.cursor = "pointer";
+  deleteButton.style.color = "black";
+  deleteButton.id = "deleteCategoryButton99";
   deleteButton.addEventListener("click", async function () { // Add 'async' keyword here
     var showModal = confirmationModal(
       "Do you want to delete the category?",
@@ -1265,7 +1268,7 @@ async function updateCategory(category) {
   }
 }
 
-function confirmationModal(message, confirmCallback, cancelCallback) {
+function confirmationModal(message, confirmCallback) {
   // Create the confirmation modal and its elements
   var confirmationModal = document.createElement("div");
   var confirmationContent = document.createElement("div");
@@ -1302,7 +1305,6 @@ function confirmationModal(message, confirmCallback, cancelCallback) {
     confirmationModal.style.display = "none";
   });
   cancelButton.addEventListener("click", function () {
-    cancelCallback();
     confirmationModal.style.display = "none";
   });
 

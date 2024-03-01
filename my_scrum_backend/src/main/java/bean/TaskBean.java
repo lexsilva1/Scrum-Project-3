@@ -174,7 +174,7 @@ public class TaskBean {
                 tasksByCategory.add(task);
             }
         }
-        if(tasksByCategory == null) {
+        if(tasksByCategory.isEmpty()) {
             taskDao.removeCategory(taskDao.findCategoryByName(name));
             return true;
         }
