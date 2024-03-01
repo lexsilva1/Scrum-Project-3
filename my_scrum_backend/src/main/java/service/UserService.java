@@ -16,6 +16,7 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.hibernate.query.sqm.function.SelfRenderingOrderedSetAggregateFunctionSqlAstExpression;
+import utilities.EncryptHelper;
 
 
 @Path("/user")
@@ -24,6 +25,8 @@ public class UserService {
     private HttpServletRequest request;
     @Inject
     UserBean userBean;
+    @Inject
+    EncryptHelper encryptHelper;
     @GET
     @Path("/all")
     @Produces(MediaType.APPLICATION_JSON)

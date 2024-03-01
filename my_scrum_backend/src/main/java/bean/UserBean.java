@@ -23,6 +23,7 @@ import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import jakarta.json.bind.JsonbConfig;
 import jakarta.security.enterprise.credential.Password;
+import utilities.EncryptHelper;
 
 @Singleton
 public class UserBean {
@@ -33,8 +34,11 @@ public class UserBean {
     UserDao userDao;
     @EJB
     TaskBean taskDao;
+    @EJB
+    EncryptHelper EncryptHelper;
 
     public void addUser(User a) {
+        a.setPassword(EncryptHelper.encryptPassword(a.getPassword()));
         UserEntity userEntity = convertToEntity(a);
         userDao.persist(userEntity);
     }
@@ -107,8 +111,8 @@ public class UserBean {
     public boolean updatePassword(String token, PasswordDto password) {
         UserEntity a = userDao.findUserByToken(token);
         if (a != null) {
-            if (a.getPassword().equals(password.getPassword())) {
-                a.setPassword(password.getNewPassword());
+            if (a.getPassword().equals(EncryptHelper.encryptPassword(password.getPassword()))) {
+                a.setPassword(EncryptHelper.encryptPassword(password.getNewPassword()));
                 userDao.updateUser(a);
                 return true;
             }
@@ -142,9 +146,10 @@ public class UserBean {
 
     public String login(String username, String password) {
         UserEntity user = userDao.findUserByUsername(username);
+        String password1 = EncryptHelper.encryptPassword(password);
         if (user != null && user.isActive()) {
             String token;
-            if (user.getPassword().equals(password)) {
+            if (user.getPassword().equals(password1)) {
                 do {
                     token = generateToken();
                 } while (tokenExists(token));

@@ -221,7 +221,7 @@ document.getElementById("addTask").addEventListener("click", function () {
     startdate === ""
   ) {
     document.getElementById("warningMessage2").innerText =
-      "Fill in all fields and define a priority";
+      "Fill in all fields and define a priority and a category";
   } else if (enddate !== "") {
     if (startdate > enddate) {
       document.getElementById("warningMessage2").innerText =
