@@ -3,6 +3,8 @@ window.onload =async function () {
   const user = await getUserDTO();
   const task = await getTaskDTO();
   let names = user.name.split(" ");
+  var categories = await getCategories();
+  console.log(categories);
   document.getElementById('profileImageEditTask').src = user.userPhoto;
   document.getElementById('usernameTask').innerHTML = names[0];
 
@@ -19,13 +21,32 @@ window.onload =async function () {
     let enddate = task.endDate
     let category = task.category
     if (username) {
-        document.getElementById('titulo-task').textContent = titulo; // Colocar o título no input title
+      document.getElementById('taskCreator').textContent = 'Task Creator: ' +taskCreator.name;
+      document.getElementById('tasktitle').textContent = titulo;
         document.getElementById('descricao-task').textContent = descricao; // Colocar a descrição na text area
-        document.getElementById('tasktitle').innerHTML = titulo; // Colocar o título no título da página
+        document.getElementById('titulo-task').innerHTML = titulo; // Colocar o título no título da página
         document.getElementById("startdateEditTask").value = startdate; // Colocar a data de início no input startdate
         if(enddate !== "2199-12-31"){
         document.getElementById("enddateEditTask").value = enddate; // Colocar a data de fim no input enddate
         document.getElementById('categoryEditTask').value = category; // Colocar a categoria no input category
+    }
+       
+        console.log(categories);
+        var select = document.getElementById('categoryEditTask');
+    
+        // Limpa opções existentes
+        select.innerHTML = '';
+    
+        // Cria uma nova opção para cada categoria e adiciona à combobox
+        for (var i = 0; i < categories.length; i++) {
+          var option = document.createElement('option');
+          option.value = categories[i].name;
+          option.text = categories[i].name;
+          select.appendChild(option);
+        }
+        if(category !== null){
+          select.value = category;
+        }
     }
     if( sessionStorage.getItem('role') !== 'developer' || taskCreator.username === user.username){
       // Event listeners para os botões status
@@ -48,38 +69,14 @@ window.onload =async function () {
           document.getElementById('cancel-button').remove();
           document.getElementById('descricao-task').disabled = true;
           document.getElementById('titulo-task').disabled = true;
-          document.getElementById('startdate').disabled=true;
-          document.getElementById('enddate').disabled=true;
-          document.getElementById('category').disabled=true;
+          document.getElementById('startdateEditTask').disabled=true;
+          document.getElementById('enddateEditTask').disabled=true;
+          document.getElementById('categoryEditTask').disabled=true;
       }
     }
-};
 
-document.addEventListener('DOMContentLoaded', async function() {
-  try {
-    // Agora estamos usando await para esperar a promessa ser resolvida
-    var categories = await getCategories();
-    var select = document.getElementById('category');
 
-    // Limpa opções existentes
-    select.innerHTML = '';
 
-    // Cria uma nova opção para cada categoria e adiciona à combobox
-    for (var i = 0; i < categories.length; i++) {
-      var option = document.createElement('option');
-      option.value = categories[i];
-      option.text = categories[i];
-      select.appendChild(option);
-    }
-    if(sessionStorage.getItem("taskCategory") !== null){
-      select.value = sessionStorage.getItem("taskCategory");
-    }
-  } catch (error) {
-    console.error('Error:', error);
-    // Handle fetch errors
-    alert('Error fetching categories. Please try again.');
-  }
-});
 
 
 document.getElementById('link-bc').addEventListener('click', function() {
@@ -217,24 +214,7 @@ confirmButton.addEventListener("click", () => {
 
 
 // Event listeners para os botões priority
-lowButton.addEventListener("click", () => setPriorityButtonSelected(lowButton, 100));
-mediumButton.addEventListener("click", () => setPriorityButtonSelected(mediumButton, 200));
-highButton.addEventListener("click", () => setPriorityButtonSelected(highButton, 300));
-} else {
-    todoButton.disabled = true;
-    doingButton.disabled = true;
-    doneButton.disabled = true;
-    lowButton.disabled = true;
-    mediumButton.disabled = true;
-    highButton.disabled = true;
-    document.getElementById('save-button').remove();
-    document.getElementById('cancel-button').remove();
-    document.getElementById('descricao-task').disabled = true;
-    document.getElementById('titulo-task').disabled = true;
-    document.getElementById('startdateEditTask').disabled=true;
-    document.getElementById('enddateEditTask').disabled=true;
-    document.getElementById('categoryEditTask').disabled=true;
-}
+
 
 
 
@@ -353,7 +333,7 @@ async function getUserDTO(){
         } else {
           const Array = [];
           for (var i = 0; i < categoriesArray.length; i++) {
-            Array.push(categoriesArray[i].name);
+            Array.push(categoriesArray[i]);
           }
           return Array;
         }

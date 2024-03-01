@@ -96,8 +96,8 @@ public class TaskDao extends AbstractDao<TaskEntity>{
     }
     public List<TaskEntity> findTasksByCategory(String category) {
         try {
-            List<TaskEntity> taskEntityEntities = (List<TaskEntity>) em.createNamedQuery("Task.findTaskByCategory").setParameter("category", category).getResultList();
-            return taskEntityEntities;
+           return  (List<TaskEntity>) em.createNamedQuery("Task.findTaskByCategory").setParameter("category", category).getResultList();
+
         } catch (Exception e) {
             return null;
         }
@@ -118,12 +118,6 @@ public class TaskDao extends AbstractDao<TaskEntity>{
             return null;
         }
     }
-    public UserEntity findUserbyId(String id) {
-        try {
-            return (UserEntity) em.createNamedQuery("Task.findUserById").setParameter("id", id).getSingleResult();
-        } catch (NoResultException e) {
-            return null;
-        }
-    }
+
 
 }

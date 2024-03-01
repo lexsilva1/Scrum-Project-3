@@ -380,7 +380,7 @@ function clearUsers() {
     try {
       const users = await getUsers();
       users.forEach(user => {
-        if(user.username !== "deleted"){
+        if(user.username !== "deleted" && user.username !== "admin"){
         const userElement = createUserElement(user);
 
         if (user.active === true) {

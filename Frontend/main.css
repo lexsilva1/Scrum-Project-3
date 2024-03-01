@@ -332,6 +332,15 @@ label[for="taskCategory"] {
   border-radius: 5px; 
   margin-top: 20px;
 }
+#editCategoryModal{
+padding: 10px; 
+width:40%; 
+height:40%; 
+margin:0 auto; 
+display: flex; 
+flex-direction: column;
+justify-content: space-between;
+}
 
 /* Botões de priority no home.html */
 .task-buttons-home {

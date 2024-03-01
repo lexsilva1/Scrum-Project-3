@@ -142,6 +142,7 @@ public class TaskBean {
     TaskEntity taskEntity = taskDao.findTaskById(id);
         TaskCreator taskCreator = new TaskCreator();
         taskCreator.setUsername(taskEntity.getUser().getUsername());
+        taskCreator.setName(taskEntity.getUser().getName());
         return taskCreator;
     }
     public boolean categoryExists(String name) {
