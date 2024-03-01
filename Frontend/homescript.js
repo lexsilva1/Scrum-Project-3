@@ -4,6 +4,7 @@ window.onload = async function () {
   loadTasks();
   updateDate();
   showTime();
+  const editButton = document.getElementById("editCategoriesButton");
   const names = user.name.split(" ");
   document.getElementById("profileImageHome").src = user.userPhoto;
   document.getElementById("login-home").innerHTML = names[0];

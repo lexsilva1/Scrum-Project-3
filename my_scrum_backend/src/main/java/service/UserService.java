@@ -136,7 +136,6 @@ public class UserService {
     @Path("/updatePassword")
     @Produces(MediaType.APPLICATION_JSON)
     public Response updatePassword(@HeaderParam("token") String token, PasswordDto password) {
-        System.out.println("password "+password.getPassword());
         boolean authorized = userBean.isUserAuthorized(token);
         boolean valid = userBean.isPasswordValid(password);
         if (!authorized) {

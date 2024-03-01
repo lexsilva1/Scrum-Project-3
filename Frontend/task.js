@@ -1,6 +1,7 @@
 
 window.onload =async function () {
   const user = await getUserDTO();
+  const task = await getTaskDTO();
   let names = user.name.split(" ");
   document.getElementById('profileImageEditTask').src = user.userPhoto;
   document.getElementById('usernameTask').innerHTML = names[0];
@@ -10,13 +11,13 @@ window.onload =async function () {
     sessionStorage.setItem('role', user.role);
     sessionStorage.setItem('username', user.username);
     document.getElementById('usernameTask').textContent = names[0];
-    let username = sessionStorage.getItem("username"); // Obter o user da session storage
-    let descricao = sessionStorage.getItem("taskDescription"); // Obter a descrição da session storage
-    let titulo = sessionStorage.getItem("taskTitle"); // Obter o título da session storage
+    let username = user.username; // Obter o user da session storage
+    let descricao = task.description
+    let titulo = task.title
     let taskid = sessionStorage.getItem("taskid"); // Obter o id da task da session storage
-    let startdate = sessionStorage.getItem("taskStartDate"); // Obter a data de início da session storage
-    let enddate = sessionStorage.getItem("taskEndDate"); // Obter a data de fim da session storage
-    let category = sessionStorage.getItem("taskCategory"); // Obter a categoria da session storage
+    let startdate = task.startDate
+    let enddate = task.endDate
+    let category = task.category
     if (username) {
         document.getElementById('titulo-task').textContent = titulo; // Colocar o título no input title
         document.getElementById('descricao-task').textContent = descricao; // Colocar a descrição na text area
@@ -26,6 +27,31 @@ window.onload =async function () {
         document.getElementById("enddateEditTask").value = enddate; // Colocar a data de fim no input enddate
         document.getElementById('categoryEditTask').value = category; // Colocar a categoria no input category
     }
+    if( sessionStorage.getItem('role') !== 'developer' || taskCreator.username === user.username){
+      // Event listeners para os botões status
+      todoButton.addEventListener("click", () => setStatusButtonSelected(todoButton, "todo"));
+      doingButton.addEventListener("click", () => setStatusButtonSelected(doingButton, "doing"));
+      doneButton.addEventListener("click", () => setStatusButtonSelected(doneButton, "done"));
+      
+      // Event listeners para os botões priority
+      lowButton.addEventListener("click", () => setPriorityButtonSelected(lowButton, 100));
+      mediumButton.addEventListener("click", () => setPriorityButtonSelected(mediumButton, 200));
+      highButton.addEventListener("click", () => setPriorityButtonSelected(highButton, 300));
+      } else {
+          todoButton.disabled = true;
+          doingButton.disabled = true;
+          doneButton.disabled = true;
+          lowButton.disabled = true;
+          mediumButton.disabled = true;
+          highButton.disabled = true;
+          document.getElementById('save-button').remove();
+          document.getElementById('cancel-button').remove();
+          document.getElementById('descricao-task').disabled = true;
+          document.getElementById('titulo-task').disabled = true;
+          document.getElementById('startdate').disabled=true;
+          document.getElementById('enddate').disabled=true;
+          document.getElementById('category').disabled=true;
+      }
     }
 };
 
@@ -54,6 +80,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     alert('Error fetching categories. Please try again.');
   }
 });
+
 
 document.getElementById('link-bc').addEventListener('click', function() {
   sessionStorage.removeItem("taskDescription");
@@ -160,25 +187,25 @@ savebutton.addEventListener("click", () => {
 const cancelbutton = document.getElementById("cancel-button");
 cancelbutton.addEventListener("click", () => {
     // Abrir o modal de cancel
-    const cancelModal = document.getElementById("cancel-modal");
-    cancelModal.style.display = "block";
+const cancelModal = document.getElementById("cancel-modal");
+cancelModal.style.display = "block";
 
 
-    const cancelButton = document.getElementById("continue-editing-button");
-    cancelButton.addEventListener("click", () => {
-        window.location.href = 'task.html';
-    });
+const cancelButton = document.getElementById("continue-editing-button");
+cancelButton.addEventListener("click", () => {
+window.location.href = 'task.html';
+});
 
-    // Event listener para o botão de confirmação
-    const confirmButton = document.getElementById("confirm-cancel-button");
-    confirmButton.addEventListener("click", () => {
+// Event listener para o botão de confirmação
+const confirmButton = document.getElementById("confirm-cancel-button");
+confirmButton.addEventListener("click", () => {
         sessionStorage.removeItem("taskDescription");
         sessionStorage.removeItem("taskTitle");
         sessionStorage.removeItem("taskid");
         sessionStorage.removeItem("taskStatus");
         sessionStorage.removeItem("taskPriority");
-        sessionStorage.removeItem("taskStartdate");
-        sessionStorage.removeItem("taskEnddate");
+        sessionStorage.removeItem("taskStartDate");
+        sessionStorage.removeItem("taskEndDate");
         sessionStorage.removeItem("taskCreator");
         sessionStorage.removeItem("username");
         sessionStorage.removeItem("role");
@@ -188,11 +215,6 @@ cancelbutton.addEventListener("click", () => {
     cancelModal.style.display = "grid";
 });
 
-if (sessionStorage.getItem('taskCreator') === sessionStorage.getItem('username') || !sessionStorage.getItem('role') === 'Developer') {
-// Event listeners para os botões status
-todoButton.addEventListener("click", () => setStatusButtonSelected(todoButton, "todo"));
-doingButton.addEventListener("click", () => setStatusButtonSelected(doingButton, "doing"));
-doneButton.addEventListener("click", () => setStatusButtonSelected(doneButton, "done"));
 
 // Event listeners para os botões priority
 lowButton.addEventListener("click", () => setPriorityButtonSelected(lowButton, 100));
@@ -344,3 +366,24 @@ async function getUserDTO(){
       throw error;
     }
   }
+
+async function getTaskDTO() {
+  try {
+    const response = await fetch(`http://localhost:8080/Scrum-Project-3/rest/task/${sessionStorage.getItem('taskid')}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'token': sessionStorage.getItem('token')
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch task data');
+    }
+    const obj = await response.json();
+    return obj;
+  } catch (error) {
+    console.error('Something went wrong:', error);
+    throw error;
+  }
+}
