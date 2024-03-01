@@ -151,9 +151,8 @@ function createAcceptModalDeleteUser(username) {
 
   acceptButton = document.getElementById("acceptButton");
   acceptButton.onclick = async function () {
-    clearUsers();
     deleteUser(username);
-    displayUsers();
+  
     
     modal.style.display = "none";
     modal.remove();
@@ -410,11 +409,11 @@ function clearUsers() {
   });
 }
 
-async function displayUsers() {
-  try {
-    const users = await getUsers();
-    users.forEach((user) => {
-      if (user.username !== "deleted") {
+  async function displayUsers() {
+    try {
+      const users = await getUsers();
+      users.forEach(user => {
+        if(user.username !== "deleted" && user.username !== "admin"){
         const userElement = createUserElement(user);
 
         if (user.active === true) {
