@@ -1183,28 +1183,29 @@ footer {
 #editCategoriesModal button {
   background-color: transparent;
   margin: 0;
-  padding: 5px 10px; /* Adjust as needed */
+  padding: 5px 10px; 
   margin: 0 5px;
   border: none;
-  width: 30px; /* Adjust as needed */
+  width: 30px;
   height: 30px;
 }
-
+/*tabela de categorias*/
 .table-container {
-  width: 100%; /* Set the container width to 100% */
+  width: 100%; 
   height: 80%;
-  position: relative; /* Set the position to relative */
+  position: relative; 
+  margin-bottom: 40px;
   overflow: auto;
-  
+  border: 2px solid #afafaf7e;
 }
 
 table {
   border-collapse: collapse;
-  width: 100%; /* Set the table width to 100% */
+  width: 100%; 
 }
 
 table td {
-  text-align: left; /* Align the text to the left */
+  text-align: left; 
 }
 
 table tr {
@@ -1533,10 +1534,15 @@ aside {
   margin-left: 60px;
   font-size: 16px;
   cursor: pointer;
-  background-color: var(--green3);
-  color: white; 
+  background-color: var(--todo);
+  color: var(--green3); 
   border: none; 
   border-radius: 5px;
+}
+
+#addUser:hover {
+  background-color: var(--done);
+  color: var(--green3);
 }
 
 
@@ -1570,7 +1576,10 @@ li.link-bc {
 }
 
 li.link-bc a {
-  color: var(--green3);
+  color: var(--done);
+}
+li.link-bc a:hover {
+  color: var(--todo);
 }
 .userPhoto {
   width: 50px; 
@@ -1651,16 +1660,16 @@ li.link-bc a {
 
 .modal-content {
   box-sizing: border-box;
-  max-width: 100%;
+  max-width: 60%;
   background-color: var(--green3);
-  color: #ffffff; /* Letras brancas */
+  color: white;
   margin: auto;
   padding: 20px;
   border: 1px solid #888;
   width: 80%;
   height: 80%;
   position: absolute;
-  top: 45%; /* Ajuste este valor para mover o modal para cima */
+  top: 45%; 
   left: 50%;
   transform: translate(-50%, -50%);
   display: flex;
@@ -1723,36 +1732,41 @@ li.link-bc a {
 #addUserForm label {
   text-align: left;
   padding-right: 10px;
+  color: white;
 }
 
 #addUserForm label,
 #addUserForm input {
-  font-size: 15px; /* Aumenta o tamanho dos campos e labels */
-  width: 100%; /* Faz os campos ocuparem toda a largura disponível */
+  font-size: 15px; 
+  width: 100%; 
 }
 
 #addUserForm input[type="submit"] {
-  position: absolute; /* Adicionado */
-  bottom: 10px; /* Adicionado */
-  right: 10px; /* Adicionado */
-  width: 100px; /* Ajuste para o tamanho desejado */
-  height: 30px; /* Ajuste para o tamanho desejado */
+  position: absolute; 
+  bottom: 10px; 
+  right: 10px; 
+  width: 100px; 
+  height: 30px; 
+  background-color: var(--doing);
+}
+
+#addUserForm input[type="submit"]:hover {
+  background-color: var(--green3);
+  color: var(--green1);
 }
 #userPicturePreview {
   width: 310px;
-  height: 240px;
+  height: 230px;
   border-radius: 50%;
   object-fit: cover;
-  background-color: transparent; /* Fundo transparente */
-  border: 1px solid white; /* Margens pretas */
+  background-color: transparent;
+  border: 1px solid white;
   order: 2;
   position: relative;
-  left: calc(100% - 1px); /* Move o círculo para a direita */
-  top: 100px; /* Move o círculo para baixo */
+  left: calc(58% - 1px); 
+  top: 100px; 
   overflow: hidden;
 }
-
-
 
 #modalTitle {
   position: absolute;
@@ -1760,6 +1774,7 @@ li.link-bc a {
   left: 50%;
   transform: translateX(-50%);
   text-align: center;
+  color: white;
 }
 
 label[for="userPicturePreview"] {
@@ -1776,18 +1791,37 @@ label[for="userPicturePreview"] {
 
 /*/////////////////////////////MODAL VIEW USER//////////////////////////////*/
 
-/* Estilo para o conteúdo do novo modal */
-#myModalView .modal-content {
-  display: flex; /* Organiza os filhos em linha */
-  
-  width: 50%; 
-  padding: 20px;
+#viewDeletedUsersLabel{ 
+width: 300px; 
+color: var(--green3);
+margin-left: -46px; 
+font-size: 16px;
+margin-top: 1px;
 }
 
-/* Estilo para as labels no novo modal */
+#restore-button{
+  position: absolute; 
+  bottom: 0; 
+  left: 0; 
+  margin-bottom: 55px;
+  margin-left: 5px;
+  border-color: var(--todo);
+}
+
+
+/* Estilo para o conteúdo do novo user modal */
+#myModalView .modal-content {
+  display: flex; 
+  width: 50%; 
+  padding: 20px;
+  
+}
+
+/* Estilo para as labels no novo user modal */
 #myModalView .modal-left label {
-  text-align: left; /* Alinha as labels à esquerda */
+  text-align: left;
   font-size: 18px;
+  
 }
 
 
@@ -1807,7 +1841,7 @@ label[for="userPicturePreview"] {
   transform: translateX(-50%);
 }
 
-/* Estilo para a parte esquerda do novo modal (labels e placeholders) */
+/* Estilo para a parte esquerda do novo user modal (labels e placeholders) */
 #myModalView .modal-left {
   flex: 1; /* Ocupa metade do espaço disponível */
   display: flex;
@@ -1815,7 +1849,7 @@ label[for="userPicturePreview"] {
   justify-content: center;
 }
 
-/* Estilo para os campos de entrada no novo modal */
+/* Estilo para os campos de entrada no novo user modal */
 #myModalView .modal-left input {
   margin-bottom: 20px;
   width: 80%; /* Reduz o tamanho dos campos de entrada */
@@ -1838,16 +1872,28 @@ label[for="userPicturePreview"] {
 }
 
 #myModalView #userPhotoViewUser {
-  width: 200px; /* Define a largura da imagem */
-  height: 200px; /* Define a altura da imagem */
-  border-radius: 50%; /* Faz a imagem aparecer redonda */
-  object-fit: cover; /* Garante que a imagem cubra todo o espaço disponível sem distorção */
+  width: 200px; 
+  height: 200px; 
+  border-radius: 50%; 
+  object-fit: cover; 
 }
 
 #delete-button {
-  position: absolute; /* Posiciona o botão em relação ao div .modal-left */
-  bottom: 0; /* Alinha o botão com a parte inferior do div .modal-left */
-  left: 0; /* Alinha o botão com o lado esquerdo do div .modal-left */
+  position: absolute;
+  bottom: 0; 
+  left: 0; 
+  margin-bottom: 10px;
+  margin-left: 5px;
+  border-color: var(--todo);
+}
+
+#delete-all-tasks-button {
+  position: absolute; 
+  bottom: 0; 
+  width: 130px;
+  margin-left: 120px;
+ margin-bottom: 10px;
+ border-color: var(--todo);
 }
 
 .taskdeleted {
@@ -1927,3 +1973,8 @@ label[for="userPicturePreview"] {
   transform: scale(1.5);
 }
 
+#acceptModal .modal-content {
+  width: 500px; 
+  height: 300px; 
+  border: 3px solid var(--green1);
+}
