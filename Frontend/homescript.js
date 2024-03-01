@@ -971,13 +971,9 @@ function createCategoryModal() {
 
   // Criar o botão para adicionar uma categoria
   const addCategoryButton = document.createElement("button");
+  addCategoryButton.id = "addCategoryButton";
   addCategoryButton.textContent = "Add Category";
-  addCategoryButton.style.position = "absolute";
-  addCategoryButton.style.bottom = "10px";
-  addCategoryButton.style.left = "10px";
-  addCategoryButton.style.cursor = "pointer";
-  addCategoryButton.style.width = "150px";
-  addCategoryButton.style.height = "50px";
+
   addCategoryButton.addEventListener("click", function () {
     createAddCategoryModal();
   });
@@ -1067,6 +1063,7 @@ async function displayCategoriesInModal() {
     nameLabel.textContent = categories[i].name;
     nameLabel.className = "categoryNameLabel";
     nameLabel.style.fontWeight = "bold";
+    nameLabel.style.color = "black";
     nameCell.appendChild(nameLabel);
 
     row.appendChild(nameCell);
@@ -1077,6 +1074,8 @@ async function displayCategoriesInModal() {
     const editButton = document.createElement("button");
     editButton.innerHTML = "&#9998;";
     editButton.style.marginRight = "10px";
+    editButton.style.cursor = "pointer";
+    editButton.style.color = "black";
     editButton.addEventListener("click", function () {
       // Create the edit category modal and its elements
       var editCategoryModal = document.createElement("div");
@@ -1131,6 +1130,8 @@ async function displayCategoriesInModal() {
 
     const deleteButton = document.createElement("button");
     deleteButton.innerHTML = "&#128465;";
+    deleteButton.style.cursor = "pointer";
+    deleteButton.style.color = "black";
     deleteButton.addEventListener("click", function () {
       var showModal = confirmationModal(
         "Do you want to delete the category?",
