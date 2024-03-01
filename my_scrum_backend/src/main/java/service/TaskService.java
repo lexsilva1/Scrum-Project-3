@@ -322,8 +322,8 @@ public class TaskService {
         if (!authorized) {
             return Response.status(401).entity("Unauthorized").build();
         } else {
-            TaskCreator username = taskBean.findUserById(id);
-            return Response.status(200).entity(username).build();
+            TaskCreator creator = taskBean.findUserById(id);
+            return Response.status(200).entity(creator).build();
         }
     }
 }

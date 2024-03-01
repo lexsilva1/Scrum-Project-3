@@ -142,6 +142,7 @@ public class TaskBean {
     TaskEntity taskEntity = taskDao.findTaskById(id);
         TaskCreator taskCreator = new TaskCreator();
         taskCreator.setUsername(taskEntity.getUser().getUsername());
+        taskCreator.setName(taskEntity.getUser().getName());
         return taskCreator;
     }
     public boolean categoryExists(String name) {
@@ -166,8 +167,14 @@ public class TaskBean {
         taskDao.createCategory(categoryEntity);
     }
     public boolean removeCategory(String name) {
-        List <TaskEntity> tasks = taskDao.findTasksByCategory(name);
-        if(tasks == null) {
+        List<TaskEntity> tasks = taskDao.findAll();
+        List<TaskEntity> tasksByCategory = new ArrayList<>();
+        for(TaskEntity task : tasks) {
+            if(task.getCategory().getName().equals(name)) {
+                tasksByCategory.add(task);
+            }
+        }
+        if(tasksByCategory == null) {
             taskDao.removeCategory(taskDao.findCategoryByName(name));
             return true;
         }

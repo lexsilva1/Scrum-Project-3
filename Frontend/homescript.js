@@ -123,6 +123,9 @@ async function fillTaskCategory() {
     alert("Error fetching categories. Please try again.");
   }
 }
+
+
+
 // Adiciona os listeners de drag and drop a um painel
 panels.forEach((panel) => {
   panel.addEventListener("dragover", (e) => {
@@ -150,6 +153,10 @@ panels.forEach((panel) => {
     }
   });
 });
+
+
+
+
 
 // Definir os botões de priority
 const lowButton = document.getElementById("low-button-home");
@@ -343,6 +350,7 @@ function createTaskElement(task) {
   const deleteButton = document.createElement("img");
   deleteButton.src = "multimedia/dark-cross-01.png";
   deleteButton.className = "apagarButton";
+  deleteButton.id = "delete-button99";
   deleteButton.addEventListener("click", function () {
     const deletemodal = document.getElementById("delete-modal");
     deletemodal.style.display = "grid";
@@ -352,8 +360,8 @@ function createTaskElement(task) {
       deleteTask(taskElement.id);
       taskElement.remove();
       deletebtn.removeEventListener("click", deleteButtonClickHandler);
-      clearModalCategories();
-      await displayCategoriesInModal();
+      clearTaskPanels();
+      await loadTasks();
       deletemodal.style.display = "none";
     }
 
@@ -465,6 +473,9 @@ async function loadDeletedTasks() {
                 resutaurar.className = "restoreButton";
                 taskElement.classList.add("taskdeleted");
                 taskElement.appendChild(resutaurar);
+                if(sessionStorage.getItem('role') !== null && sessionStorage.getItem('role') === 'ScrumMaster'){
+                  document.getElementById('delete-button99').remove();
+                }
                 resutaurar.addEventListener("click", function () {
                   restoreTask(taskElement.id);
                   taskElement.remove();
@@ -981,10 +992,12 @@ function createCategoryModal() {
   modalCategories.style.display = "block";
   document.body.appendChild(modalCategories);
   displayCategoriesInModal();
-  closeModalSpanCategories.addEventListener("click", function () {
-    fillTaskCategory();
-    modalCategories.style.display = "none";
-  });
+closeModalSpanCategories.addEventListener("click", function () {
+  fillCategoryFilter();
+  fillTaskCategory();
+  modalCategories.remove();
+});
+
 }
 
 const editButton = document.getElementById("editCategoriesButton");
@@ -1034,8 +1047,9 @@ function createAddCategoryModal() {
   addCategorySaveButton.addEventListener("click", async function () {
     const categoryName = addCategoryNameInput.value;
     await addCategory(categoryName);
+    await displayCategoriesInModal();
     addCategoryModal.style.display = "none";
-    displayCategoriesInModal();
+    
   });
 }
 
@@ -1045,6 +1059,7 @@ async function displayCategoriesInModal() {
     "#editCategoriesModal .modal-content"
   );
   let tableContainer = document.querySelector(".table-container");
+  
 
   if (!tableContainer) {
     tableContainer = document.createElement("div");
@@ -1091,13 +1106,6 @@ async function displayCategoriesInModal() {
       editCategoryModal.style.display = "block";
 
       editCategoryContent.className = "modal-content";
-      editCategoryContent.style.padding = "10px";
-      editCategoryContent.style.width = "40%";
-      editCategoryContent.style.height = "40%";
-      editCategoryContent.style.margin = "0 auto";
-      editCategoryContent.style.display = "flex";
-      editCategoryContent.style.flexDirection = "column";
-      editCategoryContent.style.justifyContent = "space-between";
 
       editCategoryTitle.textContent = "Edit Category";
       categoryLabel.textContent = categories[i].name;
@@ -1127,31 +1135,29 @@ async function displayCategoriesInModal() {
       document.body.appendChild(editCategoryModal);
     });
     buttonsCell.appendChild(editButton);
-
-    const deleteButton = document.createElement("button");
-    deleteButton.innerHTML = "&#128465;";
-    deleteButton.style.cursor = "pointer";
-    deleteButton.style.color = "black";
-    deleteButton.addEventListener("click", function () {
-      var showModal = confirmationModal(
-        "Do you want to delete the category?",
-        function () {
-          deleteCategory(categories[i].name);
-          clearModalCategories();
-          displayCategoriesInModal();
-        },
-        function () {}
-      );
-      showModal();
-    });
-
-    buttonsCell.appendChild(deleteButton);
-
+    createdeleteCategoryButton(buttonsCell, i, categories);
     row.appendChild(buttonsCell);
     table.appendChild(row);
   }
   tableContainer.appendChild(table);
 }
+function createdeleteCategoryButton(buttonsCell, i, categories){
+  const deleteButton = document.createElement("button");
+  deleteButton.innerHTML = "&#128465;";
+  deleteButton.addEventListener("click", async function () { // Add 'async' keyword here
+    var showModal = confirmationModal(
+      "Do you want to delete the category?",
+      async function () { // Add 'async' keyword here
+        await deleteCategory(categories[i].name);
+        clearModalCategories();
+        displayCategoriesInModal();
+      },
+    );
+    showModal();
+  });
+  buttonsCell.appendChild(deleteButton);
+}
+
 
 //função para apagar categoria
 async function deleteCategory(name) {
@@ -1174,6 +1180,8 @@ async function deleteCategory(name) {
       alert("Category not found");
     } else if (response.status === 401) {
       alert("Unauthorized");
+    }else if (response.status === 409) {
+      alert("Category has tasks");
     } else {
       // Handle other response status codes
       console.error("Unexpected response:", response.status);

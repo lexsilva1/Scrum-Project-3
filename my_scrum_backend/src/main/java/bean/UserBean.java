@@ -306,7 +306,36 @@ public class UserBean {
             return false;
         }
     }
+    public void createDefaultUsers() {
+        if(userDao.findUserByUsername("admin") == null) {
+            UserEntity userEntity = new UserEntity();
+            userEntity.setUsername("admin");
+            userEntity.setName("admin");
+            userEntity.setEmail("coiso@cenas.com");
+            userEntity.setPassword("admin");
+            userEntity.setContactNumber("123456789");
+            userEntity.setUserPhoto("https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png");
+            userEntity.setRole("Owner");
+            userEntity.setActive(true);
+            userDao.persist(userEntity);
+        }
+        if(userDao.findUserByUsername("deleted") == null) {
+
+            UserEntity userEntity1 = new UserEntity();
+            userEntity1.setUsername("deleted");
+            userEntity1.setName("Deleted");
+            userEntity1.setEmail("ThrowFeces@ppl.com");
+            userEntity1.setPassword("deleted");
+            userEntity1.setContactNumber("123456789");
+            userEntity1.setUserPhoto("https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png");
+            userEntity1.setRole("developer");
+            userEntity1.setActive(true);
+            userDao.persist(userEntity1);
+        }
+    }
 }
+
+
 
 
 
