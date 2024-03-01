@@ -172,14 +172,16 @@ public class TaskService {
             boolean notavailable = taskBean.categoryExists(category.getName());
             if (notavailable) {
                 return Response.status(409).entity("Category name is not available").build();
-                }
             }
-        //JsonObject jsonObject = Json.createReader(new StringReader(category.getId())).readObject();
-       // int newActiveStatus = jsonObject.getInt("status");
-            CategoryEntity categoryEntity = taskBean.findCategoryById(category.getId());
-            taskBean.updateCategory(categoryEntity);
-            return Response.status(201).entity("Category updated").build();
         }
+        CategoryEntity categoryEntity = taskBean.findCategoryById(category.getId());
+        categoryEntity.setName(category.getName());
+        if (taskBean.updateCategory(categoryEntity)) {
+            return Response.status(200).entity("Category updated").build();
+        }else{
+            return Response.status(400).entity("Failed. Category not updated").build();
+        }
+    }
 
     @DELETE
     @Path("/deleteCategory/{name}")

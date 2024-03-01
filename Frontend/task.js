@@ -85,8 +85,8 @@ document.getElementById('link-bc').addEventListener('click', function() {
   sessionStorage.removeItem("taskid");
   sessionStorage.removeItem("taskStatus");
   sessionStorage.removeItem("taskPriority");
-  sessionStorage.removeItem("taskStartDate");
-  sessionStorage.removeItem("taskEndDate");
+  sessionStorage.removeItem("taskstartdate");
+  sessionStorage.removeItem("taskenddate");
   sessionStorage.removeItem("taskCreator");
   sessionStorage.removeItem("role");
   sessionStorage.removeItem("username");
@@ -149,17 +149,17 @@ savebutton.addEventListener("click", () => {
     if (taskDescription === "" || taskTitle === "") {
         document.getElementById('warningMessage3').innerText = 'Your task must have a title and a description';
             return;
-    } else if (document.getElementById('startdate').value === "" ) {
+    } else if (document.getElementById('startdateEditTask').value === "" ) {
         document.getElementById('warningMessage3').innerText = 'Your task must have a start date';
             return;
-    }else if (document.getElementById('enddate').value !== "") {
-            if(document.getElementById('startdate').value > document.getElementById('enddate').value){
+    }else if (document.getElementById('enddateEditTask').value !== "") {
+            if(document.getElementById('startdateEditTask').value > document.getElementById('enddateEditTask').value){
             document.getElementById('warningMessage3').innerText = 'The start date must be before the end date';
             return;
             }
-        let enddate = document.getElementById('enddate').value;
+        let enddate = document.getElementById('enddateEditTask').value;
         if(enddate === ""){
-            document.getElementById('enddate').value = "2199-12-31";
+            document.getElementById('enddateEditTask').value = "2199-12-31";
         }
         console.log('updateTask');
         updateTask();
@@ -171,8 +171,8 @@ savebutton.addEventListener("click", () => {
     sessionStorage.removeItem("taskid");
     sessionStorage.removeItem("taskStatus");
     sessionStorage.removeItem("taskPriority");
-    sessionStorage.removeItem("taskStartDate");
-    sessionStorage.removeItem("taskEndDate");
+    sessionStorage.removeItem("taskstartdate");
+    sessionStorage.removeItem("taskenddate");
     sessionStorage.removeItem("taskCreator");
     sessionStorage.removeItem("role");
     sessionStorage.removeItem("username");
@@ -201,8 +201,8 @@ confirmButton.addEventListener("click", () => {
         sessionStorage.removeItem("taskid");
         sessionStorage.removeItem("taskStatus");
         sessionStorage.removeItem("taskPriority");
-        sessionStorage.removeItem("taskStartDate");
-        sessionStorage.removeItem("taskEndDate");
+        sessionStorage.removeItem("taskstartdate");
+        sessionStorage.removeItem("taskenddate");
         sessionStorage.removeItem("taskCreator");
         sessionStorage.removeItem("username");
         sessionStorage.removeItem("role");
@@ -237,9 +237,9 @@ async function updateTask() {
          description: document.getElementById("descricao-task").value.trim(),
          status: taskElementstatus,
          priority: sessionStorage.getItem("taskPriority"),
-         startDate: document.getElementById('startdate').value,
-         endDate: document.getElementById('enddate').value,
-         category	: document.getElementById('category').value
+         startDate: document.getElementById('startdateEditTask').value,
+         endDate: document.getElementById('enddateEditTask').value,
+         category	: document.getElementById('categoryEditTask').value
         };
    
      try {

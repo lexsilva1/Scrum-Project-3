@@ -1110,6 +1110,7 @@ async function displayCategoriesInModal() {
       editCategoryTitle.textContent = "Edit Category";
       categoryLabel.textContent = categories[i].name;
       categoryInput.type = "text";
+      categoryInput.id = categories[i].id;
       categoryInput.placeholder = "New category name";
 
       saveButton.textContent = "Save";
@@ -1117,7 +1118,11 @@ async function displayCategoriesInModal() {
 
       // Add click events to the buttons
       saveButton.addEventListener("click", function () {
-        updateCategory(categoryInput.value);
+        category ={
+          id: categoryInput.id,
+          name: categoryInput.value
+        }
+        updateCategory(category);
         editCategoryModal.style.display = "none";
       });
       cancelButton.addEventListener("click", function () {
