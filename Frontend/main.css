@@ -696,6 +696,46 @@ match ao arredondamento do painel (home.html) */
   transition: ease 0.01s;
 }
 /* Modal para confirmações - apagar tarefa no home.html, cancelar as alterações no task.html */
+
+#delete-modal {
+  background-color: var(--green3);
+  color: white;
+  width: 500px; 
+  height: 200px;
+  border: none; 
+  position: fixed; 
+  top: 50%;
+  left: 50%; 
+  transform: translate(-50%, -50%);
+  border-radius: 5px;
+}
+
+#delete-modal .modal-content {
+  margin: 0; 
+  padding: 0; 
+  border: none; 
+  background: none; 
+  width: 100%; 
+  height: 100%; 
+  position: relative; 
+  margin-right: 200px;
+  margin-bottom: 100px;
+}
+#delete-button {
+  position: absolute;
+  bottom: 20px;
+ 
+}
+
+#cancel-delete-button {
+  position: absolute;
+  bottom: 10px;
+  right: 40px;
+  border: white 1px solid;
+}
+
+
+
 .modal {
   bottom: 0;
   height: 100%;
@@ -1347,13 +1387,63 @@ input::placeholder {
 
 
 /*----------------------------PAGINA DE EDIÇÃO----------------------*/
-#confirmChanges{
-  top: 9.375rem;
-  height: 9.375rem;
-  width: 15.625rem;
-  position: absolute;
-  z-index: 1;
+#confirmChanges {
+  background-color: var(--green3);
+  color: white; 
+  width: 400px; 
+  height: 200px; 
+  border: none; 
+  position: fixed; 
+  top: 35%;
+  left: 32%;
+  transform: translate(-50%, -50%);
+  border-radius: 5px;
 }
+
+#confirmChangesButton {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background-color: var(--green1);
+  color: var(--green3);
+  width: 60px;
+  height: 30px;
+  border-radius: 5px;
+}
+
+#declineChangesButton {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  background-color: var(--green1);
+  color: var(--green3);
+  width: 60px;
+  height: 30px;
+  border-radius: 5px;
+}
+
+#confirmChangesButton:hover, #declineChangesButton:hover {
+  background-color: var(--green3);
+  color: var(--green1);
+}
+
+#confirmChanges::backdrop {
+  background: rgba(0, 0, 0, 0.5); 
+  backdrop-filter: blur(5px);
+}
+
+#confirmChanges form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+
+
+
+
 #editSection{
   display:flex;
   text-align: center;

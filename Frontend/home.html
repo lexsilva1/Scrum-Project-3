@@ -1,114 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Your Scrum</title>
-    <link  type="text/css" rel="stylesheet" href="main.css">
-    <link rel="icon" href="multimedia/favicon.png" type="image/x-icon">
-</head>
-<body>
+    <link type="text/css" rel="stylesheet" href="main.css" />
+    <link rel="icon" href="multimedia/favicon.png" type="image/x-icon" />
+  </head>
+  <body>
     <header>
-        <h1>Welcome to Scrum</h1>
-        <div class="container clock">
-            <div class="display-date">
-              <span id="day">day</span>,
-              <span id="daynum">00</span>
-              <span id="month">month</span>
-              <span id="year">0000</span>
-            </div>
-            <div class="display-time">
-            </div>
+      <h1>Welcome to Scrum</h1>
+      <div class="container clock">
+        <div class="display-date">
+          <span id="day">day</span>,
+          <span id="daynum">00</span>
+          <span id="month">month</span>
+          <span id="year">0000</span>
         </div>
-        <div class="username">
-            <img id="profileImageHome" src ="" alt="Avatar">
-            <label class="logout-button" id="login-home"></label>
-        </div>
-        <button class="logout-button" id="logout">
-            <img src="multimedia/logout.png" alt="Logout Icon">
-            Logout
-        </button>
+        <div class="display-time"></div>
+      </div>
+      <div class="username">
+        <img id="profileImageHome" src="" alt="Avatar" />
+        <label class="logout-button" id="login-home"></label>
+      </div>
+      <button class="logout-button" id="logout">
+        <img src="multimedia/logout.png" alt="Logout Icon" />
+        Logout
+      </button>
     </header>
-    
-        <div id="filter-container">
-            <div class="filter">
-                <label for="userFilter">Tasks by user</label>
-                <select id="userFilter">
-                    
-                </select>
-            </div>
-            <div class="filter">
-                <label for="categoryFilter">Tasks by category</label>
-                <select id="categoryFilter">
-                   
-                </select>
-                <div class="deleted-filter">
-                    <label for="deleted">Show deleted tasks</label>
-                    <input type="checkbox" id="deleted" name="deleted">
-                </div>
-            </div>
-            <button id="viewUsersButton" onclick="window.location.href='viewUsers.html'">View Users</button>
+
+    <div id="filter-container">
+      <div class="filter">
+        <label for="userFilter">Tasks by user</label>
+        <select id="userFilter"></select>
+      </div>
+      <div class="filter">
+        <label for="categoryFilter">Tasks by category</label>
+        <select id="categoryFilter"></select>
+        <div class="deleted-filter">
+          <label for="deleted">Show deleted tasks</label>
+          <input type="checkbox" id="deleted" name="deleted" />
         </div>
-    
-    <div class="container"> <!--Container para o aside e o main-->
-        <aside>
-            <div class="add-task-container">
-              <h3>Add task</h3>
-              <label for="taskName">Title</label> 
-              <input type="text" id="taskName" placeholder="Title (required)" maxlength="15">
-              <label for="taskDescription">Description</label> 
-              <textarea id="taskDescription" placeholder="Description (required)"></textarea>
-              <label for="taskCategory">Category</label> 
-              <select id="taskCategory"> 
-              </select> 
-              <br>
-              <button id="editCategoriesButton">See Categories</button>
-              <label class="priority-label">Priority</label> 
-              <div class="priority-buttons-home">
-                <button class="priority-button-home low" id="low-button-home">Low</button>
-                <button class="priority-button-home medium" id="medium-button-home">Medium</button>
-                <button class="priority-button-home high" id="high-button-home">High</button>
-              </div>
-              <div id="taskDate">
-                <label for="startdate">Initial Date</label> 
-                <input class = "dateinput" id ="startdate" type ="date" placeholder="Start-date">
-                <label for="enddate">Final Date</label> 
-                <input class = "dateinput" id ="enddate" type ="date" placeholder="End-date">
-              </div>
-              <button id="addTask">Add task</button>
-              <p id="warningMessage2"></p>
-            </div>
-          </aside>
-    <main>
+      </div>
+      <button
+        id="viewUsersButton"
+        onclick="window.location.href='viewUsers.html'"
+      >
+        View Users
+      </button>
+    </div>
+
+    <div class="container">
+      <!--Container para o aside e o main-->
+      <aside>
+        <div class="add-task-container">
+          <h3>Add task</h3>
+          <label for="taskName">Title</label>
+          <input
+            type="text"
+            id="taskName"
+            placeholder="Title (required)"
+            maxlength="15"
+          />
+          <label for="taskDescription">Description</label>
+          <textarea
+            id="taskDescription"
+            placeholder="Description (required)"
+          ></textarea>
+          <label for="taskCategory">Category</label>
+          <select id="taskCategory"></select>
+          <br />
+          <button id="editCategoriesButton">See Categories</button>
+          <label class="priority-label">Priority</label>
+          <div class="priority-buttons-home">
+            <button class="priority-button-home low" id="low-button-home">
+              Low
+            </button>
+            <button class="priority-button-home medium" id="medium-button-home">
+              Medium
+            </button>
+            <button class="priority-button-home high" id="high-button-home">
+              High
+            </button>
+          </div>
+          <div id="taskDate">
+            <label for="startdate">Initial Date</label>
+            <input
+              class="dateinput"
+              id="startdate"
+              type="date"
+              placeholder="Start-date"
+            />
+            <label for="enddate">Final Date</label>
+            <input
+              class="dateinput"
+              id="enddate"
+              type="date"
+              placeholder="End-date"
+            />
+          </div>
+          <button id="addTask">Add task</button>
+          <p id="warningMessage2"></p>
+        </div>
+      </aside>
+      <main>
         <div class="panel" id="todo">
-            <h2 class="main-home">To do</h2>
-            
+          <h2 class="main-home">To do</h2>
         </div>
         <div class="panel" id="doing">
-            <h2 class="main-home">Doing</h2>
-            
+          <h2 class="main-home">Doing</h2>
         </div>
         <div class="panel" id="done">
-            <h2 class="main-home">Done</h2>
-            
+          <h2 class="main-home">Done</h2>
         </div>
         <div id="delete-modal" class="modal">
-            <div class="modal-content">
-                <p>Are you sure you want to delete this task?</p>
-                <button id="delete-button">Delete</button>
-                <button id="cancel-delete-button">Cancel</button>
-            </div>
+          <div class="modal-content">
+            <p>Are you sure you want to delete this task?</p>
+            <button id="delete-button">Delete</button>
+            <button id="cancel-delete-button">Cancel</button>
+          </div>
         </div>
-    </main>
+      </main>
     </div>
     <footer>
-        <div class="footer-content">
-            <div class="label-left">&copy; José Alexandre Silva</div>
-            <div class="label-right">Programação Avançada em Java</div>
-            <div class="label-left">&copy; Inês Cunha</div>
-            <div class="label-right">Projeto 3</div>
-        </div>
+      <div class="footer-content">
+        <div class="label-left">&copy; José Alexandre Silva</div>
+        <div class="label-right">Programação Avançada em Java</div>
+        <div class="label-left">&copy; Inês Cunha</div>
+        <div class="label-right">Projeto 3</div>
+      </div>
     </footer>
     <script src="homescript.js" defer></script>
-</body>
+  </body>
 </html>
