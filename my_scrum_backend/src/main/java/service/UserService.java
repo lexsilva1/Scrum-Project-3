@@ -154,15 +154,21 @@ public class UserService {
     @GET
     @Path("/login")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response login(@HeaderParam("username") String username, @HeaderParam("password") String password){
-        String token = userBean.login(username, password);
-        if (token==null) {
-            return Response.status(404).entity("User with this username and password is not found").build();
-        }else {
+    public Response login(@HeaderParam("username") String username, @HeaderParam("password") String password) {
+        User user = userBean.getUserByUsername(username);
+        if(!user.isActive()){
+            return Response.status(403).entity("User is not active").build();
+        } else {
+            String token = userBean.login(username, password);
+            if (token == null) {
+                return Response.status(404).entity("User with this username and password is not found").build();
+            } else {
+
             return Response.status(200).entity(token).build();
 
         }
     }
+}
     @GET
     @Path("/logout")
     @Produces(MediaType.APPLICATION_JSON)

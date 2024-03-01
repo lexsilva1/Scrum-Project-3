@@ -1144,11 +1144,8 @@ async function displayCategoriesInModal() {
 function createdeleteCategoryButton(buttonsCell, i, categories){
   const deleteButton = document.createElement("button");
   deleteButton.innerHTML = "&#128465;";
-  deleteButton.addEventListener("click", async function () { // Add 'async' keyword here
-    var showModal = confirmationModal(
-      "Do you want to delete the category?",
-      async function () { // Add 'async' keyword here
-        await deleteCategory(categories[i].name);
+  deleteButton.addEventListener("click", async function () { 
+    var showModal = confirmationModal("Do you want to delete the category?",async function () {await deleteCategory(categories[i].name);
         clearModalCategories();
         displayCategoriesInModal();
       },
