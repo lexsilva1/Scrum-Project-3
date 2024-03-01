@@ -357,13 +357,21 @@ function createTaskElement(task) {
     const deletebtn = document.getElementById("delete-button");
 
     async function deleteButtonClickHandler() {
-      deleteTask(taskElement.id);
+      await deleteTask(taskElement.id);
+      if(taskElement.classList.contains('taskdeleted')){
+      taskElement.remove();
+      deletebtn.removeEventListener("click", deleteButtonClickHandler);
+      clearTaskPanels();
+      await loadDeletedTasks();
+      deletemodal.style.display = "none";
+    }else{
       taskElement.remove();
       deletebtn.removeEventListener("click", deleteButtonClickHandler);
       clearTaskPanels();
       await loadTasks();
       deletemodal.style.display = "none";
     }
+  }
 
     deletebtn.addEventListener("click", deleteButtonClickHandler);
     const cancelbtn = document.getElementById("cancel-delete-button");
@@ -410,6 +418,7 @@ async function loadTasks() {
     },
   }).then(async function (response) {
     if (response.status === 200) {
+      clearTaskPanels();
       const taskArray = await response.json();
 
       if (taskArray.length > 0) {
@@ -454,6 +463,7 @@ async function loadDeletedTasks() {
         },
       }).then(async function (response) {
         if (response.status === 200) {
+          clearTaskPanels();
           const taskArray = await response.json();
 
           if (taskArray.length > 0) {
@@ -476,9 +486,11 @@ async function loadDeletedTasks() {
                 if(sessionStorage.getItem('role') !== null && sessionStorage.getItem('role') === 'ScrumMaster'){
                   document.getElementById('delete-button99').remove();
                 }
-                resutaurar.addEventListener("click", function () {
+                resutaurar.addEventListener("click", async function () {
                   restoreTask(taskElement.id);
+                  taskElement.classList.remove("taskdeleted");
                   taskElement.remove();
+                  await loadDeletedTasks();
                 });
               }
             });
@@ -537,6 +549,7 @@ async function deleteTask(id) {
 
     if (response.ok) {
       alert("Task deleted");
+      clearTaskPanels();
     } else if (response.status === 404) {
       alert("Task not found");
     } else if (response.status === 401) {
@@ -1117,12 +1130,14 @@ async function displayCategoriesInModal() {
       cancelButton.textContent = "Cancel";
 
       // Add click events to the buttons
-      saveButton.addEventListener("click", function () {
+      saveButton.addEventListener("click",async function () {
         category ={
           id: categoryInput.id,
           name: categoryInput.value
         }
-        updateCategory(category);
+        await updateCategory(category);
+        clearModalCategories();
+        await displayCategoriesInModal();
         editCategoryModal.style.display = "none";
       });
       cancelButton.addEventListener("click", function () {

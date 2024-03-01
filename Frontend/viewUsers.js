@@ -238,7 +238,7 @@ function userModal(user) {
   document.getElementById("emailViewUser").placeholder = user.email;
   document.getElementById("contactViewUser").placeholder = user.contactNumber;
   document.getElementById("imageURLViewUser").placeholder = user.userPhoto;
-  document.getElementById("roleViewUser").placeholder = user.role;
+  document.getElementById("roleViewUser").value = user.role;
   document.getElementById("userPhotoViewUser").src = user.userPhoto;
 
   if (sessionStorage.getItem("role") !== "Owner") {
@@ -272,6 +272,7 @@ function userModal(user) {
       document.getElementById("delete-all-tasks-button").remove();
     }
     modal.style.display = "none";
+    
   };
 }
 async function deleteAllTasks(username) {
@@ -786,7 +787,8 @@ async function displayDeletedUsers() {
           console.error("Unknown role:", user.role);
           return;
       }
-
+        userElement.classList.add("deleted");
+        userElement.style.opacity = "0.5";
       // Adicione o link à coluna apropriada
       column.appendChild(userElement);
     });

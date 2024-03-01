@@ -210,9 +210,7 @@ public class TaskService {
     public Response updateTask(Task task, @HeaderParam("token") String token) {
         boolean authorized = userBean.isUserAuthorized(token);
     User user = userBean.getUser(token);
-        System.out.println("username do token "+user.getUsername());
         TaskEntity taskEntity = taskBean.convertToEntity(task);
-        System.out.println("username da taskEntity "+ taskEntity.getUser().getUsername());
         if (!authorized) {
             return Response.status(401).entity("Unauthorized").build();
         } else {
