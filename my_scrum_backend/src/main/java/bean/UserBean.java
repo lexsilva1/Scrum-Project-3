@@ -318,7 +318,7 @@ public class UserBean {
             userEntity.setUsername("admin");
             userEntity.setName("admin");
             userEntity.setEmail("coiso@cenas.com");
-            userEntity.setPassword("admin");
+            userEntity.setPassword(EncryptHelper.encryptPassword("admin"));
             userEntity.setContactNumber("123456789");
             userEntity.setUserPhoto("https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png");
             userEntity.setRole("Owner");
@@ -331,7 +331,7 @@ public class UserBean {
             userEntity1.setUsername("deleted");
             userEntity1.setName("Deleted");
             userEntity1.setEmail("ThrowFeces@ppl.com");
-            userEntity1.setPassword("deleted");
+            userEntity1.setPassword(EncryptHelper.encryptPassword("deleted"));
             userEntity1.setContactNumber("123456789");
             userEntity1.setUserPhoto("https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png");
             userEntity1.setRole("developer");

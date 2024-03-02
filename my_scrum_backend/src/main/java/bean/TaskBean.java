@@ -28,6 +28,10 @@ public class TaskBean {
     TaskDao taskDao;
     @EJB
     UserDao userDao;
+
+    public TaskBean(TaskDao taskDao) {
+        this.taskDao = taskDao;
+    }
     public boolean isTaskValid(Task task) {
         if (task.getTitle().isBlank() || task.getDescription().isBlank() || task.getStartDate() == null || task.getEndDate() == null || task.getCategory() == null) {
             return false;
@@ -48,6 +52,7 @@ public class TaskBean {
         taskEntity.setEndDate(task.getEndDate());
         taskEntity.setUser(taskDao.findTaskById(task.getId()).getUser());
         taskEntity.setActive(true);
+        taskEntity.setUser(taskDao.findTaskById(task.getId()).getUser());
         return taskEntity;
     }
     public TaskEntity createTaskEntity(dto.Task task, String username) {
