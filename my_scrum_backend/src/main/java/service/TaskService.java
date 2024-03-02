@@ -133,7 +133,6 @@ public class TaskService {
         if (!authorized) {
             return Response.status(401).entity("Unauthorized").build();
         } else {
-            System.out.println("id: " + id);
             boolean restored = taskBean.restoreTask(id);
             if (!restored) {
                 return Response.status(400).entity("Failed. Task not restored").build();
@@ -208,8 +207,9 @@ public class TaskService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateTask(Task task, @HeaderParam("token") String token) {
+        System.out.println("update task" + task.getCategory());
         boolean authorized = userBean.isUserAuthorized(token);
-    User user = userBean.getUser(token);
+        User user = userBean.getUser(token);
         TaskEntity taskEntity = taskBean.convertToEntity(task);
         if (!authorized) {
             return Response.status(401).entity("Unauthorized").build();
@@ -296,7 +296,6 @@ public class TaskService {
         } else {
             ArrayList<Category> categoryList = new ArrayList<>();
             for (CategoryEntity categoryEntity : taskBean.getAllCategories()) {
-                System.out.println("id "+categoryEntity.getId());
                 categoryList.add(taskBean.convertCatToDto(categoryEntity));
             }
             return Response.status(200).entity(categoryList).build();

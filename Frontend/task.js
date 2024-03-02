@@ -58,6 +58,10 @@ window.onload =async function () {
       lowButton.addEventListener("click", () => setPriorityButtonSelected(lowButton, 100));
       mediumButton.addEventListener("click", () => setPriorityButtonSelected(mediumButton, 200));
       highButton.addEventListener("click", () => setPriorityButtonSelected(highButton, 300));
+
+      select.addEventListener("change", () => {
+        sessionStorage.setItem("taskCategory", select.value);
+      });
       } else {
           todoButton.disabled = true;
           doingButton.disabled = true;
@@ -223,6 +227,7 @@ confirmButton.addEventListener("click", () => {
 async function updateTask() {
   console.log('updateTask');
     let taskElementstatus=sessionStorage.getItem("taskStatus");
+    let taskCategory = sessionStorage.getItem("taskCategory");
 
     if(taskElementstatus === "todo"){
       taskElementstatus = 10
@@ -239,7 +244,7 @@ async function updateTask() {
          priority: sessionStorage.getItem("taskPriority"),
          startDate: document.getElementById('startdateEditTask').value,
          endDate: document.getElementById('enddateEditTask').value,
-         category	: document.getElementById('categoryEditTask').value
+         category	: taskCategory
         };
    
      try {

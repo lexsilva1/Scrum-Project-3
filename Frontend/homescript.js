@@ -1346,3 +1346,4 @@ function confirmationModal(message, confirmCallback) {
 
   return showModal;
 }
+//export { createTaskElement };

@@ -5,6 +5,7 @@ import entities.UserEntity;
 import entities.CategoryEntity;
 import entities.TaskEntity;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import dao.TaskDao;
@@ -231,6 +232,7 @@ public class TaskBean {
             a.setStatus(task.getStatus());
             a.setStartDate(task.getStartDate());
             a.setEndDate(task.getEndDate());
+            a.setCategory(task.getCategory());
             taskDao.updateTask(a);
             return true;
         }
@@ -256,5 +258,69 @@ public class TaskBean {
     }
     public void setInitialId(Task task){
         task.setId("Task" + System.currentTimeMillis());}
-
+public void createDefaultCategories(){
+        if(taskDao.findCategoryByName("Testing") == null){
+            CategoryEntity categoryEntity = new CategoryEntity();
+            categoryEntity.setName("Testing");
+            categoryEntity.setCreator("System");
+            taskDao.createCategory(categoryEntity);
+        }
+        if(taskDao.findCategoryByName("Backend") == null){
+            CategoryEntity categoryEntity = new CategoryEntity();
+            categoryEntity.setName("Backend");
+            categoryEntity.setCreator("System");
+            taskDao.createCategory(categoryEntity);
+        }
+        if(taskDao.findCategoryByName("Frontend") == null){
+            CategoryEntity categoryEntity = new CategoryEntity();
+            categoryEntity.setName("Frontend");
+            categoryEntity.setCreator("System");
+            taskDao.createCategory(categoryEntity);
+        }
 }
+    public void createDefaultTasks() {
+    if (taskDao.findTaskById("Task1") == null) {
+        TaskEntity taskEntity = new TaskEntity();
+        taskEntity.setId("Task1");
+        taskEntity.setTitle("KAIZEN");
+        taskEntity.setDescription("Continuous improvement");
+        taskEntity.setStatus(20);
+        taskEntity.setCategory(taskDao.findCategoryByName("Testing"));
+        taskEntity.setStartDate(LocalDate.now());
+        taskEntity.setPriority(100);
+        taskEntity.setEndDate(LocalDate.of(2199, 12, 31));
+        taskEntity.setUser(userDao.findUserByUsername("admin"));
+        taskEntity.setActive(true);
+        taskDao.createTask(taskEntity);
+    }
+    if (taskDao.findTaskById("Task2") == null) {
+        TaskEntity taskEntity = new TaskEntity();
+        taskEntity.setId("Task2");
+        taskEntity.setTitle("Refactor");
+        taskEntity.setDescription("Refactor the code");
+        taskEntity.setStatus(10);
+        taskEntity.setCategory(taskDao.findCategoryByName("Backend"));
+        taskEntity.setStartDate(LocalDate.now());
+        taskEntity.setPriority(200);
+        taskEntity.setEndDate(LocalDate.of(2199, 12, 31));
+        taskEntity.setUser(userDao.findUserByUsername("admin"));
+        taskEntity.setActive(true);
+        taskDao.createTask(taskEntity);
+    }
+    if (taskDao.findTaskById("Task3") == null) {
+        TaskEntity taskEntity = new TaskEntity();
+        taskEntity.setId("Task3");
+        taskEntity.setTitle("Create new page");
+        taskEntity.setDescription("Create a new page");
+        taskEntity.setStatus(30);
+        taskEntity.setCategory(taskDao.findCategoryByName("Frontend"));
+        taskEntity.setStartDate(LocalDate.now());
+        taskEntity.setPriority(300);
+        taskEntity.setEndDate(LocalDate.of(2199, 12, 31));
+        taskEntity.setUser(userDao.findUserByUsername("admin"));
+        taskEntity.setActive(true);
+        taskDao.createTask(taskEntity);
+    }
+}
+}
+

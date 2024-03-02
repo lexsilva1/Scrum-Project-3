@@ -9,12 +9,15 @@ import jakarta.inject.Inject;
 public class StartupBean {
     @Inject
     UserBean userBean;
+    @Inject
+    TaskBean taskBean;
 
 
     @PostConstruct
     public void init() {
 
         userBean.createDefaultUsers();
-
+        taskBean.createDefaultCategories();
+        taskBean.createDefaultTasks();
     }
 }
