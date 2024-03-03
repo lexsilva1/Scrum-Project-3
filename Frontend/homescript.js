@@ -241,29 +241,25 @@ if(document.getElementsByClassName("checked").length===0){
  
 
 // Event listener do botão add task para criar uma nova task e colocá-la no painel To Do (default para qualquer task criada)
-document.getElementById("addTask").addEventListener("click", function () {
-  var Description = taskDescription.value.trim();
-  var Name = taskName.value.trim();
+document.getElementById("addTask").addEventListener("click", async function () {
+  var Description = document.getElementById("taskDescription").value.trim();
+  var Name = document.getElementById("taskName").value.trim();
   var category = document.getElementById("taskCategory").value;
   var priority = taskPriority;
   var startdate = document.getElementById("startdate").value;
   var enddate = document.getElementById("enddate").value;
-  if (
-    Name === "" ||
-    Description === "" ||
-    category === "" ||
-    priority === null ||
-    startdate === ""
-  ) {
+  if (enddate === "") {
+    enddate = "2199-12-31";
+  }
+  if (Name === "" || Description === "" || category === "" || priority === null || startdate === "") {
     document.getElementById("warningMessage2").innerText =
       "Fill in all fields and define a priority and a category";
   } else if (enddate !== "") {
     if (startdate > enddate) {
       document.getElementById("warningMessage2").innerText =
         "Start date must be before end date";
+      return; // Exit the function if start date is greater than end date
     }
-  } else {
-    document.getElementById("warningMessage2").innerText = "";
   }
   if (
     Name.trim() !== "" &&
@@ -272,9 +268,7 @@ document.getElementById("addTask").addEventListener("click", function () {
     priority !== null &&
     startdate !== ""
   ) {
-    if (enddate === "") {
-      enddate = "2199-12-31";
-    }
+
     const task = createTask(
       Name,
       Description,
@@ -283,7 +277,7 @@ document.getElementById("addTask").addEventListener("click", function () {
       startdate,
       enddate
     );
-    postTask(task);
+    await postTask(task);
     clearTaskPanels();
     loadTasks();
     // Limpar os input fields depois de adicionar a task

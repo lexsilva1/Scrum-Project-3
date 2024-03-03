@@ -713,13 +713,13 @@ async function saveUserProfileChanges(user) {
       body: JSON.stringify(user),
     }).then(function (response) {
       if (response.status == 404) {
-        createAlertModal(response.status, "username not found");
+        createAlertModal("username not found");
       } else if (response.status == 405) {
-        createAlertModal(response.status, "forbidden due to header params");
+        createAlertModal("forbidden due to header params");
       } else if (response.status == 400) {
-        createAlertModal(response.status, "failed, user not updated");
+        createAlertModal("failed, user not updated");
       } else if (response.status == 200) {
-        createAcceptModal(response.status, "user updated sucessfully");
+        createAlertModal( "user updated sucessfully");
       }
     });
   } catch (error) {
