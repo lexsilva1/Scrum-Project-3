@@ -1126,12 +1126,11 @@ async function displayCategoriesInModal() {
       var saveButton = document.createElement("button");
       var cancelButton = document.createElement("button");
 
-      editCategoryModal.id = "editCategoryModal";
+      //editCategoryModal.id = "editCategoryModal";
       editCategoryModal.className = "modal";
       editCategoryModal.style.display = "block";
-
       editCategoryContent.className = "modal-content";
-
+      editCategoryContent.id = "editCategoryModal"
       editCategoryTitle.textContent = "Edit Category";
       categoryLabel.textContent = categories[i].name;
       categoryInput.type = "text";
@@ -1139,7 +1138,9 @@ async function displayCategoriesInModal() {
       categoryInput.placeholder = "New category name";
 
       saveButton.textContent = "Save";
+      saveButton.id = "saveButtonEditCategoryModal";
       cancelButton.textContent = "Cancel";
+      cancelButton.id = "cancelButtonEditCategoryModal";
 
       // Add click events to the buttons
       saveButton.addEventListener("click", async function () {

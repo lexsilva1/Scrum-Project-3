@@ -100,7 +100,7 @@ document.getElementById('userPhotoUrl').addEventListener('input', function() {
     alertMessage.style.textAlign = "center";
     alertMessage.style.marginTop = "70px";
     closeButton.textContent = "Close";
-    closeButton.style.marginRight = "100px";
+    closeButton.style.marginRight = "160px";
   
     closeButton.addEventListener("click", function () {
       alertModal.style.display = "none";
