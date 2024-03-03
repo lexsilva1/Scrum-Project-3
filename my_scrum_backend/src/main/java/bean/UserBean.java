@@ -320,7 +320,7 @@ public class UserBean {
             userEntity.setEmail("coiso@cenas.com");
             userEntity.setPassword(EncryptHelper.encryptPassword("admin"));
             userEntity.setContactNumber("123456789");
-            userEntity.setUserPhoto("https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png");
+            userEntity.setUserPhoto("https://cdn-icons-png.freepik.com/512/10015/10015419.png");
             userEntity.setRole("Owner");
             userEntity.setActive(true);
             userDao.persist(userEntity);
