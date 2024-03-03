@@ -54,9 +54,10 @@ async function postUser(newUser){
             },
             body: JSON.stringify(newUser),
         }).then(function (response) {
-            if (response.status == 200) {
-            createAlertModal('user is added successfully :)');
-            } else {
+            if (response.status == 201) {
+            } else if (response.status == 409) {
+                createAlertModal('username already exists');
+            } else if (response.status == 400) {
             createAlertModal('something went wrong :(');
             console.log(response.status);
             }
@@ -66,11 +67,13 @@ catch (error) {
     console.error('Error:', error);
 }
 }
+
 //carregar cancel leva à pagina login
 document.getElementById('cancelRegistryButton').addEventListener('click',()=>{
     window.location.href='index.html'
 })
 
+//função que mostra a imagem do utilizador
 document.getElementById('userPhotoUrl').addEventListener('input', function() {
     document.getElementById('profileImage').src = this.value;
   });

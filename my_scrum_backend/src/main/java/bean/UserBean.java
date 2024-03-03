@@ -128,21 +128,10 @@ public class UserBean {
         return true;
     }
 
-    public boolean updateOtherUser(String username, User user) {
+public boolean findOtherUserByUsername(String username) {
         UserEntity a = userDao.findUserByUsername(username);
-        if (a != null) {
-            a.setUsername(user.getUsername());
-            a.setName(user.getName());
-            a.setEmail(user.getEmail());
-            a.setContactNumber(user.getContactNumber());
-            a.setUserPhoto(user.getUserPhoto());
-            a.setRole(user.getRole());
-            a.setActive(user.isActive());
-            userDao.updateUser(a);
-            return true;
-        }
-        return false;
-    }
+      return a != null;
+}
 
     public String login(String username, String password) {
         UserEntity user = userDao.findUserByUsername(username);

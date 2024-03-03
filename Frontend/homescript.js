@@ -477,24 +477,12 @@ async function loadTasks() {
           }
         });
       }
-    } else if (response.status === 404) {
-      createAlertModal("User not found");
     } else if (response.status === 401) {
       createAlertModal("Unauthorized");
     }
   });
 }
 async function loadDeletedTasks() {
-  await fetch("http://localhost:8080/Scrum-Project-3/rest/task/all", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      token: sessionStorage.getItem("token"),
-    },
-  }).then(async function (response) {
-    if (response.status === 200) {
-      const taskArray = await response.json();
-
       await fetch("http://localhost:8080/Scrum-Project-3/rest/task/all", {
         method: "GET",
         headers: {
@@ -537,16 +525,12 @@ async function loadDeletedTasks() {
                 });
               }
             });
-          } else if (response.status === 404) {
-            createAlertModal("User not found");
           } else if (response.status === 401) {
             createAlertModal("Unauthorized");
           }
         }
       });
     }
-  });
-}
 
 async function restoreTask(id) {
   try {
@@ -561,22 +545,19 @@ async function restoreTask(id) {
       }
     );
 
-    if (response.ok) {
+    if (response.status === 200) {
       createAlertModal("Task restored");
-    } else if (response.status === 404) {
-      createAlertModal("Task not found");
+    } else if (response.status === 400) {
+      createAlertModal("Failed. Task not restored.");
     } else if (response.status === 401) {
       createAlertModal("Unauthorized");
-    } else {
-      // Handle other response status codes
-      console.error("Unexpected response:", response.status);
-    }
+    } 
   } catch (error) {
-    console.error("Error restoring task:", error);
-    // Handle fetch errors
     createAlertModal("Error restoring task. Please try again.");
   }
 }
+
+//Função para apagar uma task
 async function deleteTask(id) {
   try {
     const response = await fetch(
@@ -590,23 +571,20 @@ async function deleteTask(id) {
       }
     );
 
-    if (response.ok) {
+    if (response.status === 200) {
       createAlertModal("Task deleted");
       clearTaskPanels();
-    } else if (response.status === 404) {
-      createAlertModal("Task not found");
+    } else if (response.status === 400) {
+      createAlertModal("Failed. Task not blocked.");
     } else if (response.status === 401) {
       createAlertModal("Unauthorized");
-    } else {
-      // Handle other response status codes
-      console.error("Unexpected response:", response.status);
     }
   } catch (error) {
-    console.error("Error deleting task:", error);
-    // Handle fetch errors
     createAlertModal("Error deleting task. Please try again.");
   }
 }
+
+//Função para atualizar o status de uma task
 async function updateStatus(taskElement) {
   let taskElementstatus;
   if (taskElement.status === "todo") {
@@ -633,22 +611,19 @@ async function updateStatus(taskElement) {
       }
     );
 
-    if (response.ok) {
-      createAlertModal("Task updated");
-    } else if (response.status === 404) {
-      createAlertModal("Task not found");
+    if (response.status === 200) {
+      console.log("Task updated");
+    } else if (response.status === 400) {
+      createAlertModal("Failed. Status not changed.");
     } else if (response.status === 401) {
       createAlertModal("Unauthorized");
-    } else {
-      // Handle other response status codes
-      console.error("Unexpected response:", response.status);
-    }
+    } 
   } catch (error) {
-    console.error("Error updating task:", error);
-    // Handle fetch errors
     createAlertModal("Error updating task. Please try again.");
   }
 }
+
+//Função para atualizar uma task
 async function updateTask(taskElement) {
   let taskElementstatus;
   if (taskElement.status === "todo") {
@@ -681,21 +656,16 @@ async function updateTask(taskElement) {
       }
     );
 
-    if (response.ok) {
+    if (response.status === 200) {
       createAlertModal("Task updated");
       clearTaskPanels();
       loadTasks();
-    } else if (response.status === 404) {
-      createAlertModal("Task not found");
+    } else if (response.status === 400) {
+      createAlertModal("Failed. Task not updated.");
     } else if (response.status === 401) {
       createAlertModal("Unauthorized");
-    } else {
-      // Handle other response status codes
-      console.error("Unexpected response:", response.status);
-    }
+    } 
   } catch (error) {
-    console.error("Error updating task:", error);
-    // Handle fetch errors
     createAlertModal("Error updating task. Please try again.");
   }
 }
@@ -753,19 +723,23 @@ function updateDate() {
   }
 }
 
+// Quando o botão com o nome do utilizador é clicado, redireciona para a página de edição de perfil
 document.getElementById("login-home").addEventListener("click", () => {
   window.location.href = "profileEdition.html";
 });
 
+// Quando o botão de logout é clicado, chama a função logout
 document.getElementById("logout").addEventListener("click", () => {
   logout();
 });
 
+//Função para limpar o sessionStorage e o localStorage quando a janela é fechada
 window.onclose = function () {
   sessionStorage.clear();
   localStorage.clear();
 };
 
+//Função do logout
 async function logout() {
   await fetch("http://localhost:8080/Scrum-Project-3/rest/user/logout", {
     method: "GET",
@@ -787,11 +761,9 @@ async function logout() {
     } else if (response.status === 405) {
       sessionStorage.clear();
       window.location.href = "index.html";
-      // User not found
-      console.log("User not found");
     } else {
       // Something went wrong
-      console.log("Something went wrong");
+      console.log(response.status);
       sessionStorage.clear();
       window.location.href = "index.html";
     }
@@ -800,6 +772,7 @@ async function logout() {
   window.location.href = "index.html";
 }
 
+//Função para ir buscar as categorias
 async function getCategories() {
   try {
     const response = await fetch(
@@ -815,7 +788,6 @@ async function getCategories() {
 
     if (response.status === 200) {
       const categoriesArray = await response.json();
-      console.log(categoriesArray);
       if (categoriesArray.length === 0) {
         createAlertModal("Categories not found");
       } else {
@@ -825,15 +797,15 @@ async function getCategories() {
         }
         return Array;
       }
-    } else if (response.status === 404) {
-      createAlertModal("Categories not found");
+    } else if (response.status === 401) {
+      createAlertModal("Unauthorized");
     }
   } catch (error) {
     console.error("Something went wrong:", error);
     throw error;
   }
 }
-
+//Função para ir buscar os utilizadores
 async function getUsers() {
   try {
     const response = await fetch(
@@ -858,8 +830,10 @@ async function getUsers() {
         }
         return Array;
       }
-    } else if (response.status === 404) {
-      createAlertModal("Users not found");
+    } else if (response.status === 403) {
+      alert("Unauthorized");
+      sessionStorage.clear();
+      window.location.href = "index.html";
     }
   } catch (error) {
     console.error("Something went wrong:", error);
@@ -867,6 +841,7 @@ async function getUsers() {
   }
 }
 
+//Função para ir buscar os dados do utilizador
 async function getUserDTO() {
   try {
     const response = await fetch(
@@ -881,12 +856,14 @@ async function getUserDTO() {
       }
     );
 
-    if (!response.ok) {
-      throw new Error("Failed to fetch user data");
-    }
-
+    if (response.status === 403) {
+      alert("Unauthorized");
+      sessionStorage.clear();
+      window.location.href = "index.html";
+    } else if (response.status === 200) {
     const obj = await response.json();
     return obj;
+  }
   } catch (error) {
     console.error("Something went wrong:", error);
     // Re-throw the error or return a rejected promise
@@ -894,6 +871,7 @@ async function getUserDTO() {
   }
 }
 
+//Função para limpar os painéis das tarefas
 function clearTaskPanels() {
   let panels = ["todo", "doing", "done"];
   for (let panel of panels) {
@@ -932,6 +910,7 @@ document
     }
   });
 
+  //Função para ir buscar as tarefas de um utilizador
 async function getTasksByUser(username) {
   try {
     const response = await fetch(
@@ -944,12 +923,12 @@ async function getTasksByUser(username) {
         },
       }
     );
-    if (!response.ok) {
-      throw new Error("Failed to fetch user data");
-    }
-
+    if (response.status === 401) {
+      createAlertModal("Unauthorized");
+    }else if (response.status === 200) {
     const obj = await response.json();
     return obj;
+    }
   } catch (error) {
     console.error("Something went wrong:", error);
     // Re-throw the error or return a rejected promise
@@ -986,6 +965,7 @@ document
     }
   });
 
+  //Função para ir buscar as tarefas de uma categoria
 async function getTasksByCategory(category) {
   try {
     const response = await fetch(
@@ -998,12 +978,12 @@ async function getTasksByCategory(category) {
         },
       }
     );
-    if (!response.ok) {
-      throw new Error("Failed to fetch user data");
-    }
-
+    if (response.status === 401) {
+      createAlertModal("Unauthorized");
+    } else if (response.status === 200) {
     const obj = await response.json();
     return obj;
+    }
   } catch (error) {
     console.error("Something went wrong:", error);
     // Re-throw the error or return a rejected promise
@@ -1012,7 +992,6 @@ async function getTasksByCategory(category) {
 }
 
 // modal das categorias
-
 function createCategoryModal() {
   var modalCategories = document.createElement("modal");
   var modalContent = document.createElement("div");
@@ -1105,6 +1084,7 @@ function createAddCategoryModal() {
   });
 }
 
+//Função para colocar as categorias no modal
 async function displayCategoriesInModal() {
   const categories = await getCategories();
   const modalContent = document.querySelector(
@@ -1199,6 +1179,8 @@ async function displayCategoriesInModal() {
   }
   tableContainer.appendChild(table);
 }
+
+//Função para criar o botão de apagar categoria
 function createdeleteCategoryButton(buttonsCell, i, categories) {
   const deleteButton = document.createElement("button");
   deleteButton.innerHTML = "&#128465;";
@@ -1255,6 +1237,7 @@ async function deleteCategory(name) {
   }
 }
 
+//função para limpar as categorias do modal
 function clearModalCategories() {
   const tableContainer = document.querySelector(
     "#editCategoriesModal .table-container"
@@ -1281,8 +1264,8 @@ async function addCategory(name) {
 
     if (response.status === 201) {
       createAlertModal("Category added");
-    } else if (response.status === 404) {
-      createAlertModal("Category not found");
+    } else if (response.status === 409) {
+      createAlertModal("Name not available");
     } else if (response.status === 401) {
       createAlertModal("Unauthorized");
     } else {
@@ -1295,6 +1278,7 @@ async function addCategory(name) {
     createAlertModal("Error adding Category. Please try again.");
   }
 }
+
 //função para fazer update da categoria
 async function updateCategory(category) {
   try {
@@ -1312,10 +1296,12 @@ async function updateCategory(category) {
 
     if (response.status === 200) {
       createAlertModal("Category updated");
-    } else if (response.status === 404) {
-      createAlertModal("Category not found");
+    } else if (response.status === 409) {
+      createAlertModal("Name not available");
     } else if (response.status === 401) {
       createAlertModal("Unauthorized");
+    }else if (response.status === 400) {
+      createAlertModal("Category not updated. Please try again.");
     } else {
       // Handle other response status codes
       console.error("Unexpected response:", response.status);
@@ -1327,6 +1313,7 @@ async function updateCategory(category) {
   }
 }
 
+//modal de confirmação
 function confirmationModal(message, confirmCallback) {
   // Create the confirmation modal and its elements
   var confirmationModal = document.createElement("div");
@@ -1385,6 +1372,8 @@ function confirmationModal(message, confirmCallback) {
 
   return showModal;
 }
+
+//modal de alerta
 function createAlertModal(message) {
   var alertModal = document.createElement("div");
   var alertContent = document.createElement("div");
@@ -1419,41 +1408,4 @@ function createAlertModal(message) {
 
   alertModal.style.display = "block";
 }
-function createWelcomeModal(name,tasksPending){
-  var welcomeModal = document.createElement("div");
-  var welcomeContent = document.createElement("div");
-  var welcomeMessage = document.createElement("p");
-  var taskspending = document.createElement("p");
-  var closeButton = document.createElement("button");
 
-  welcomeModal.id = "welcomeModal";
-  welcomeModal.className = "modal";
-  welcomeModal.style.display = "none";
-  welcomeContent.className = "modal-content";
-  welcomeContent.style.padding = "10px";
-  welcomeContent.style.width = "30%";
-  welcomeContent.style.height = "30%";
-  welcomeContent.style.margin = "0 auto";
-  welcomeContent.style.display = "flex";
-  welcomeContent.style.flexDirection = "column";
-  welcomeContent.style.justifyContent = "space-between";
-  welcomeMessage.textContent = "Welcome " + name;
-  welcomeMessage.style.textAlign = "center";
-  welcomeMessage.style.marginTop = "70px";
-  taskspending.textContent = "You have " + tasksPending + " tasks pending";
-  taskspending.style.textAlign = "center";
-  taskspending.style.marginTop = "70px";
-  closeButton.textContent = "Close";
-  closeButton.style.marginRight = "100px";
-
-  closeButton.addEventListener("click", function () {
-    welcomeModal.style.display = "none";
-  });
-
-  welcomeContent.appendChild(welcomeMessage);
-  welcomeContent.appendChild(closeButton);
-  welcomeModal.appendChild(welcomeContent);
-  document.body.appendChild(welcomeModal);
-
-  welcomeModal.style.display = "block";
-}

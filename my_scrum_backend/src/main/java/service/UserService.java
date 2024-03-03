@@ -33,7 +33,7 @@ public class UserService {
     public Response getUsers(@HeaderParam("token") String token) {
         boolean user = userBean.tokenExists(token);
         if (!user) {
-            return Response.status(404).entity("User with this token is not found").build();
+            return Response.status(403).entity("User with this token is not found").build();
         }else {
             List<UserEntity> users = userBean.getUsers();
             return Response.status(200).entity(users).build();
@@ -93,7 +93,7 @@ public class UserService {
     @Path("/{username}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUser(@HeaderParam("token")String token, @PathParam("username")String username) {
-        boolean exists = userBean.userExists(username);
+        boolean exists = userBean.findOtherUserByUsername(username);
         if (!exists){
             return Response.status(404).entity("User with this username is not found").build();
         }else if(userBean.getUser(token).getRole().equals("developer") && !userBean.getUser(token).getUsername().equals(username)){
@@ -114,7 +114,7 @@ public class UserService {
         if (!user) {
             return Response.status(404).entity("User with this username is not found").build();
         } else if (!valid) {
-            return Response.status(401).entity("All elements are required").build();
+            return Response.status(406).entity("All elements are required").build();
         }
         if (!userBean.getUser(token).getRole().equals("Owner") || a.getUsername().equals(userBean.getUser(token).getUsername()) && (a.getRole() == null)) {
             a.setRole(userBean.getUser(token).getRole());
@@ -144,7 +144,7 @@ public class UserService {
         if (!authorized) {
             return Response.status(403).entity("Forbidden").build();
         }else if (!valid) {
-            return Response.status(400).entity("Password is not valid").build();
+            return Response.status(406).entity("Password is not valid").build();
         }else {
             boolean updated = userBean.updatePassword(token, password);
             if (!updated) {
@@ -191,7 +191,7 @@ public class UserService {
         System.out.println("username: "+username);
         boolean authorized = userBean.isUserOwner(token);
         if (!authorized) {
-            return Response.status(405).entity("Forbidden").build();
+            return Response.status(403).entity("Forbidden").build();
         }else {
 
             if(userBean.deleteUser(token,username)){
@@ -207,7 +207,7 @@ public class UserService {
     public Response myProfile(@HeaderParam("token") String token) {
         boolean authorized = userBean.isUserAuthorized(token);
         if (!authorized) {
-            return Response.status(405).entity("Forbidden").build();
+            return Response.status(403).entity("Forbidden").build();
         }else {
             User user = userBean.getUser(token);
             UserDto userDto = userBean.convertUsertoUserDto(user);

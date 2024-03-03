@@ -85,7 +85,7 @@ if(sessionStorage.getItem('token') === null || sessionStorage.getItem('token') =
 
 
 
-
+//função que atualiza utilizador
 async function updateUserData(user){//chama o user aqui
     try{
     await fetch(`http://localhost:8080/Scrum-Project-3/rest/user/update`,{
@@ -99,8 +99,8 @@ async function updateUserData(user){//chama o user aqui
     }).then(function(response){
         if (response.status ==404){
             createAlertModal(response.status, 'username not found')
-        } else if(response.status == 405){
-            createAlertModal(response.status,'forbidden due to header params')
+        } else if(response.status == 406){
+            createAlertModal(response.status,'failed, all fields must be filled')
         } else if(response.status == 400){
             createAlertModal(response.status,'failed, user not updated')
         } else if(response.status == 200){
@@ -112,6 +112,8 @@ async function updateUserData(user){//chama o user aqui
         console.error('error',error);
     }
 }
+
+//função que atualiza password
 async function updatePassword(password){//chama o user aqui
     try{
     await fetch(`http://localhost:8080/Scrum-Project-3/rest/user/updatePassword`,{
@@ -131,6 +133,8 @@ async function updatePassword(password){//chama o user aqui
             createAlertModal(response.status,'failed, user not updated')
         } else if(response.status == 200){
             createAlertModal(response.status,'user updated sucessfully')
+        } else if(response.status == 406){
+            createAlertModal(response.status,'invalid password format')
         }
     })
     } catch(error){
@@ -154,12 +158,14 @@ async function getUserDTO(){
       }
     });
   
-      if (!response.ok) {
-        throw new Error('Failed to fetch user data');
-      }
-      
+      if (response.status === 403) {
+        alert('unauthorized access');
+        sessionStorage.clear();
+        window.location.href = 'index.html';
+      } else if (response.status === 200) {
       const obj = await response.json();
       return obj;
+    }
       
     } catch (error) {
       console.error('Something went wrong:', error);
@@ -175,6 +181,8 @@ async function getUserDTO(){
     // Atualize a fonte da imagem para o novo URL
     document.getElementById('profileImageEdit').src = newUrl;
 });
+
+//função que cria modal de alerta
 function createAlertModal(message) {
     var alertModal = document.createElement("div");
     var alertContent = document.createElement("div");

@@ -79,10 +79,7 @@ window.onload =async function () {
       }
     }
 
-
-
-
-
+//Quando se carrega no botão de voltar, limpa a session storage e volta para o home.html(botao "Home")
 document.getElementById('link-bc').addEventListener('click', function() {
   sessionStorage.removeItem("taskDescription");
   sessionStorage.removeItem("taskTitle");
@@ -128,6 +125,7 @@ if(taskPriority == 100){
 } else if(taskPriority == 300){
     highButton.classList.add("selected");
 }
+
 // Função para definir o estado no grupo de botões status
 function setStatusButtonSelected(button, status) {
     const buttons = [todoButton, doingButton, doneButton];
@@ -257,12 +255,16 @@ async function updateTask() {
          body: JSON.stringify(task)
        });
    
-       if (response.ok) {
+       if (response.status === 200) {
          createAlertModal('Task updated');
        } else if (response.status === 404) {
-         createAlertModal('Task not found');
+         createAlertModal('Category not found');
        } else if (response.status === 401) {
          createAlertModal('Unauthorized');
+       } else if (response.status === 403) {
+          createAlertModal('Forbidden');
+       } else if (response.status === 406) {
+          createAlertModal('All fields must be filled in');
        } else {
          // Handle other response status codes
          console.error('Unexpected response:', response.status);
@@ -286,13 +288,16 @@ async function getUserDTO(){
     }
   });
 
-    if (!response.ok) {
-      throw new Error('Failed to fetch user data');
-    }
+    if (response.status === 403) {
+      alert('Forbidden');
+      sessionStorage.clear();
+      window.location.href = 'index.html';
+    }else if (response.status === 200) {
     
     const obj = await response.json();
     return obj;
-    
+    }
+
   } catch (error) {
     console.error('Something went wrong:', error);
     // Re-throw the error or return a rejected promise
@@ -308,11 +313,12 @@ async function getUserDTO(){
             'token': sessionStorage.getItem('token')
           }
         });
-        if (!response.ok){
-        throw new Error ('failed to fetch task data');
-        }
+        if (response.status === 401){
+        alert('Unauthorized');
+        }else if (response.status === 200){
         const obj = await response.json();
         return obj;
+        }
     } catch (error){
         console.error('something went wrong', error);
         throw error;
@@ -341,15 +347,15 @@ async function getUserDTO(){
           return Array;
         }
       
-      } else if (response.status === 404) {
-        createAlertModal('Categories not found');
+      } else if (response.status === 401) {
+        createAlertModal('Unauthorized');
       }
     } catch (error) {
       console.error('Something went wrong:', error);
       throw error;
     }
   }
-
+//função para ir buscar a task
 async function getTaskDTO() {
   try {
     const response = await fetch(`http://localhost:8080/Scrum-Project-3/rest/task/${sessionStorage.getItem('taskid')}`, {
@@ -360,16 +366,19 @@ async function getTaskDTO() {
       }
     });
 
-    if (!response.ok) {
-      throw new Error('Failed to fetch task data');
-    }
+    if (response.status === 401) {
+      throw new Error('Unauthorized');
+    } else if (response.status === 200) {
     const obj = await response.json();
     return obj;
+    }
   } catch (error) {
     console.error('Something went wrong:', error);
     throw error;
   }
 }
+
+//função que cria o modal de alerta
 function createAlertModal(message) {
   var alertModal = document.createElement("div");
   var alertContent = document.createElement("div");

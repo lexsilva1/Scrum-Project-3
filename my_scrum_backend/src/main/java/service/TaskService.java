@@ -153,7 +153,7 @@ public class TaskService {
         } else {
             boolean available = taskBean.categoryExists(category.getName());
             if (available) {
-                return Response.status(400).entity("Name not available").build();
+                return Response.status(409).entity("Name not available").build();
             }
             taskBean.createCategory(category.getName(), user.getUsername());
             return Response.status(201).entity("Category created").build();
@@ -217,9 +217,9 @@ public class TaskService {
             boolean valid = taskBean.isTaskValid(task);
             boolean categoryExists = taskBean.categoryExists(task.getCategory());
             if (!valid) {
-                return Response.status(400).entity("All elements are required").build();
+                return Response.status(406).entity("All elements are required").build();
             }else if (!categoryExists){
-                return Response.status(400).entity("Category does not exist").build();
+                return Response.status(404).entity("Category does not exist").build();
             }else if(!user.getUsername().equals(taskEntity.getUser().getUsername()) && user.getRole().equals("Developer")){
                 return Response.status(403).entity("Forbidden").build();
             }

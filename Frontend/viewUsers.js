@@ -29,7 +29,7 @@ document.getElementById("login-home").addEventListener("click", () => {
 });
 
 
-
+//função para ir buscar o userDto
 async function getUserDTO() {
   try {
     const response = await fetch(
@@ -44,12 +44,14 @@ async function getUserDTO() {
       }
     );
 
-    if (!response.ok) {
-      throw new Error("Failed to fetch user data");
+    if (response.status === 403) {
+      throw new Error("Unauthorized access");
     }
+    else if (response.status === 200) {
 
     const obj = await response.json();
     return obj;
+  }
   } catch (error) {
     console.error("Something went wrong:", error);
     // Re-throw the error or return a rejected promise
@@ -57,6 +59,7 @@ async function getUserDTO() {
   }
 }
 
+//função para ir buscar todos os users
 async function getUsers() {
   try {
     const response = await fetch(
@@ -81,8 +84,8 @@ async function getUsers() {
         }
         return Array;
       }
-    } else if (response.status === 404) {
-      createAlertModal("Users not found");
+    } else if (response.status === 403) {
+      createAlertModal("Unauthorized access");
     }
   } catch (error) {
     console.error("Something went wrong:", error);
@@ -90,6 +93,7 @@ async function getUsers() {
   }
 }
 
+//função para criar um elemento user
 function createUserElement(user) {
   const userElement = document.createElement("div");
   userElement.username = user.username;
@@ -99,9 +103,8 @@ function createUserElement(user) {
   userElement.contactNumber = user.contactNumber;
   userElement.userPhoto = user.userPhoto;
   userElement.active = user.active;
-  userElement.classList.add("user", "user-element"); // Adicione a classe 'user-element' aqui
+  userElement.classList.add("user", "user-element"); 
 
-  // Create an image element for the user's photo
   const img = document.createElement("img");
   img.src = user.userPhoto;
   img.classList.add("userPhoto");
@@ -111,7 +114,7 @@ function createUserElement(user) {
   button.textContent = user.name;
   button.classList.add("userButton");
   button.addEventListener("click", () => {
-    // Pass the user object to the userModal function
+    
     userModal(userElement);
   });
   userElement.appendChild(button);
@@ -119,6 +122,7 @@ function createUserElement(user) {
   return userElement;
 }
 
+//função para adicionar botão de delete
 function attachDeletebutton(div, username) {
   const deleteButton = document.createElement("button");
   const checkbox = document.getElementById("viewDeletedUsers");
@@ -134,6 +138,7 @@ function attachDeletebutton(div, username) {
   div.appendChild(deleteButton);
 }
 
+//função para criar modal de aceitação de delete user
 function createAcceptModalDeleteUser(username) {
   const modal = document.createElement("modal");
   modal.id = "acceptModal";
@@ -170,6 +175,7 @@ function createAcceptModalDeleteUser(username) {
   };
 }
 
+//função para adicionar botão de restore
 function attachRestorebutton(div, username) {
   const restoreButton = document.createElement("button");
   const modal = document.getElementById("myModalView");
@@ -189,6 +195,7 @@ function attachRestorebutton(div, username) {
   div.appendChild(restoreButton);
 }
 
+//função para restaurar user
 async function restoreUser(username) {
   try {
     await fetch(
@@ -217,6 +224,7 @@ async function restoreUser(username) {
   }
 }
 
+//função para criar o modal do perfil do user
 function userModal(user) {
   let names = user.name.split(" ");
   var modal = document.getElementById("myModalView");
@@ -281,6 +289,8 @@ function userModal(user) {
     
   };
 }
+
+//função para apagar todas as tasks de um user
 async function deleteAllTasks(username) {
   try {
     await fetch(
@@ -295,10 +305,10 @@ async function deleteAllTasks(username) {
     ).then(function (response) {
       if (response.status === 200) {
         createAlertModal("All tasks deleted successfully");
-      } else if (response.status === 404) {
-        createAlertModal("Tasks not found");
-      } else if (response.status === 405) {
-        createAlertModal("Forbidden due to header params");
+      } else if (response.status === 401) {
+        createAlertModal("Unauthorized access");
+      } else if (response.status === 400) {
+        createAlertModal("Failed, tasks not deleted");
       }
     });
   } catch (error) {
@@ -306,6 +316,8 @@ async function deleteAllTasks(username) {
     throw error;
   }
 }
+
+//função para adicionar botão de delete all tasks
 function attachDeleteAllTasksButton(div, username) {
   const deleteAllTasksButton = document.createElement("button");
   deleteAllTasksButton.textContent = "Delete All Tasks";
@@ -316,6 +328,8 @@ function attachDeleteAllTasksButton(div, username) {
   });
   div.appendChild(deleteAllTasksButton);
 }
+
+//função para criar modal de aceitação de delete all tasks
 function createAcceptModal(username) {
   const modal = document.createElement("modal");
   modal.id = "acceptModal";
@@ -350,6 +364,7 @@ function createAcceptModal(username) {
   };
 }
 
+//função para adicionar botão de save
 function attachSavebutton(div, user) {
   const saveButton = document.createElement("button");
   saveButton.textContent = "Save";
@@ -361,8 +376,8 @@ function attachSavebutton(div, user) {
   div.appendChild(saveButton);
 }
 
-// Adiciona um evento de clique ao botão
 
+//função para guardar as alterações do user
 function savebuttonHandler(user) {
   const modal = document.getElementById("myModalView");
   let names = user.name.split(" ");
@@ -416,6 +431,7 @@ function clearUsers() {
   });
 }
 
+//função para mostrar os users
   async function displayUsers() {
     try {
       const users = await getUsers();
@@ -455,6 +471,7 @@ document.getElementById("logout").addEventListener("click", () => {
   logout();
 });
 
+//função para fazer logout
 async function logout() {
   await fetch("http://localhost:8080/Scrum-Project-3/rest/user/logout", {
     method: "GET",
@@ -653,6 +670,8 @@ document.getElementById("newUser").addEventListener("click", () => {
   }
 });
 
+
+//função para criar um novo user
 async function postUser(newUser) {
   // Send POST request with newUser data
   try {
@@ -675,6 +694,8 @@ async function postUser(newUser) {
     console.error("Error:", error);
   }
 }
+
+//função para ir buscar um userDto
 async function getAnotherUserDto(username) {
   try {
     const response = await fetch(
@@ -701,6 +722,8 @@ async function getAnotherUserDto(username) {
     throw error;
   }
 }
+
+//função para salvar as alterações do user
 async function saveUserProfileChanges(user) {
   try {
     await fetch(`http://localhost:8080/Scrum-Project-3/rest/user/update`, {
@@ -740,6 +763,7 @@ viewDeletedUsersBox.addEventListener("click", () => {
   }
 });
 
+//função para ir buscar os users eliminados
 async function getDeletedUsers() {
   try {
     const response = await fetch(
@@ -773,6 +797,7 @@ async function getDeletedUsers() {
   }
 }
 
+//função para mostrar os users eliminados
 async function displayDeletedUsers() {
   try {
     const users = await getDeletedUsers();
@@ -804,6 +829,8 @@ async function displayDeletedUsers() {
     createAlertModal("Something went wrong:", error);
   }
 }
+
+//função para apagar um user
 async function deleteUser(username) {
   try {
     const response = await fetch(
@@ -831,6 +858,8 @@ async function deleteUser(username) {
     throw error;
   }
 }
+
+//função para criar um modal de alerta
 function createAlertModal(message) {
   var alertModal = document.createElement("div");
   var alertContent = document.createElement("div");
