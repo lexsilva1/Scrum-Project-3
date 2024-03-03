@@ -175,6 +175,7 @@ h1 {
   font-size: 20px;
   color: var(--light-grey);
 }
+
 /* Definições do relógio */
 .container.clock {
   justify-content: center;
@@ -491,6 +492,18 @@ main {
   justify-content: space-between;
   width: fit-content;
   margin-left: 120px;
+}
+#deleted{
+  background-color: var(--done);
+  color: black;
+  padding: 5px 10px;
+  text-align: center;
+  display: inline-block;
+  font-size: 14px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-top: 20px;
 }
 .deleted-filter input[type="checkbox"] {
   margin-left: -90px;

@@ -49,6 +49,17 @@ test("Create a task with invalid start date", () => {
     });
 });
 
+test("Create a task with no end date", () => {
+    const task = createTask("Estudar", "Estudar React", "Estudo", 100, "2021-09-01", "");
+    expect(task).toEqual({
+        title: "Estudar",
+        description: "Estudar React",
+        category: "Estudo",
+        priority: 100,
+        startDate: "2021-09-01",
+        endDate: "",
+    });
+});
 
 
 

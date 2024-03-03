@@ -73,7 +73,7 @@ async function getUsers() {
     if (response.status === 200) {
       const usersArray = await response.json();
       if (usersArray.length === 0) {
-        alert("Users not found");
+        createAlertModal("Users not found");
       } else {
         const Array = [];
         for (var i = 0; i < usersArray.length; i++) {
@@ -82,7 +82,7 @@ async function getUsers() {
         return Array;
       }
     } else if (response.status === 404) {
-      alert("Users not found");
+      createAlertModal("Users not found");
     }
   } catch (error) {
     console.error("Something went wrong:", error);
@@ -203,11 +203,11 @@ async function restoreUser(username) {
       }
     ).then(function (response) {
       if (response.status === 200) {
-        alert("User restored successfully");
+        createAlertModal("User restored successfully");
       } else if (response.status === 404) {
-        alert("User not found");
+        createAlertModal("User not found");
       } else if (response.status === 405) {
-        alert("Forbidden due to header params");
+        createAlertModal("Forbidden due to header params");
       }
     });
   } catch (error) {
@@ -294,11 +294,11 @@ async function deleteAllTasks(username) {
       }
     ).then(function (response) {
       if (response.status === 200) {
-        alert("All tasks deleted successfully");
+        createAlertModal("All tasks deleted successfully");
       } else if (response.status === 404) {
-        alert("Tasks not found");
+        createAlertModal("Tasks not found");
       } else if (response.status === 405) {
-        alert("Forbidden due to header params");
+        createAlertModal("Forbidden due to header params");
       }
     });
   } catch (error) {
@@ -479,10 +479,10 @@ async function logout() {
       sessionStorage.clear();
       window.location.href = "index.html";
       // User not found
-      alert("Unauthorized User");
+      createAlertModal("Unauthorized User");
     } else {
       // Something went wrong
-      alert("Something went wrong :(");
+      createAlertModal("Something went wrong :(");
       sessionStorage.clear();
       window.location.href = "index.html";
     }
@@ -628,12 +628,12 @@ document.getElementById("newUser").addEventListener("click", () => {
     document.getElementById("userPictureModal").value.trim() === "" ||
     document.getElementById("role").value.trim() === ""
   ) {
-    alert("Please fill all fields");
+    createAlertModal("Please fill all fields");
   } else if (
     document.getElementById("passwordModal").value.trim() !==
     document.getElementById("rePasswordModal").value.trim()
   ) {
-    alert("Passwords do not match");
+    createAlertModal("Passwords do not match");
   } else {
     let newUser = {
       username: document.getElementById("usernameModal").value.trim(),
@@ -648,7 +648,7 @@ document.getElementById("newUser").addEventListener("click", () => {
       role: document.getElementById("role").value.trim(),
     };
     postUser(newUser);
-    alert("user can be created" + newUser.username + newUser.role);
+    createAlertModal("User created as a  "+ newUser.role);
     window.location.href = "viewUsers.html";
   }
 });
@@ -665,10 +665,10 @@ async function postUser(newUser) {
       body: JSON.stringify(newUser),
     }).then(function (response) {
       if (response.status == 201) {
-        alert("user is added successfully :)");
+        createAlertModal("user is added successfully :)");
       } else {
         console.log(response.status);
-        alert("something went wrong :( " + response.status);
+        createAlertModal("something went wrong :( " + response.status);
       }
     });
   } catch (error) {
@@ -696,7 +696,7 @@ async function getAnotherUserDto(username) {
     const obj = await response.json();
     return obj;
   } catch (error) {
-    console.error("Something went wrong:", error);
+    createAlertModal("Something went wrong:", error);
     // Re-throw the error or return a rejected promise
     throw error;
   }
@@ -713,13 +713,13 @@ async function saveUserProfileChanges(user) {
       body: JSON.stringify(user),
     }).then(function (response) {
       if (response.status == 404) {
-        alert(response.status, "username not found");
+        createAlertModal(response.status, "username not found");
       } else if (response.status == 405) {
-        alert(response.status, "forbidden due to header params");
+        createAlertModal(response.status, "forbidden due to header params");
       } else if (response.status == 400) {
-        alert(response.status, "failed, user not updated");
+        createAlertModal(response.status, "failed, user not updated");
       } else if (response.status == 200) {
-        alert(response.status, "user updated sucessfully");
+        createAcceptModal(response.status, "user updated sucessfully");
       }
     });
   } catch (error) {
@@ -727,14 +727,16 @@ async function saveUserProfileChanges(user) {
   }
 }
 
-const viewDeletedUsersBox = document.getElementById("viewDeletedUsers");
-viewDeletedUsersBox.addEventListener("change", () => {
-  if (viewDeletedUsersBox.checked === true) {
+const viewDeletedUsersBox = document.getElementById("deleted");
+viewDeletedUsersBox.addEventListener("click", () => {
+  if (!viewDeletedUsersBox.classList.contains("selected")) {
     clearUsers();
     displayDeletedUsers();
+    viewDeletedUsersBox.classList.add("selected");
   } else {
     clearUsers();
     displayUsers();
+    viewDeletedUsersBox.classList.remove("selected");
   }
 });
 
@@ -763,7 +765,7 @@ async function getDeletedUsers() {
       }
       return deletedUsers;
     } else if (response.status === 404) {
-      alert("Users not found");
+      createAlertModal("Users not found");
     }
   } catch (error) {
     console.error("Something went wrong:", error);
@@ -790,7 +792,7 @@ async function displayDeletedUsers() {
           column = document.getElementById("productOwnerColumn");
           break;
         default:
-          console.error("Unknown role:", user.role);
+          createAlertModal("Unknown role:", user.role);
           return;
       }
         userElement.classList.add("deleted");
@@ -799,11 +801,10 @@ async function displayDeletedUsers() {
       column.appendChild(userElement);
     });
   } catch (error) {
-    console.error("Something went wrong:", error);
+    createAlertModal("Something went wrong:", error);
   }
 }
 async function deleteUser(username) {
-  console.log("username dentro do delete" + username);
   try {
     const response = await fetch(
       `http://localhost:8080/Scrum-Project-3/rest/user/delete/${username}`,
@@ -817,16 +818,50 @@ async function deleteUser(username) {
     );
 
     if (response.status === 200) {
-      alert("User deleted successfully");
+      createAcceptModal("User deleted successfully");
       clearUsers();
       displayUsers();
     } else if (response.status === 404) {
-      alert("User not found");
+      createAcceptModal("User not found");
     } else if (response.status === 405) {
-      alert("Forbidden due to header params");
+      createAcceptModal("Forbidden due to header params");
     }
   } catch (error) {
     console.error("Something went wrong:", error);
     throw error;
   }
+}
+function createAlertModal(message) {
+  var alertModal = document.createElement("div");
+  var alertContent = document.createElement("div");
+  var alertMessage = document.createElement("p");
+  var closeButton = document.createElement("button");
+
+  alertModal.id = "alertModal";
+  alertModal.className = "modal";
+  alertModal.style.display = "none";
+  alertContent.className = "modal-content";
+  alertContent.style.padding = "10px";
+  alertContent.style.width = "30%";
+  alertContent.style.height = "30%";
+  alertContent.style.margin = "0 auto";
+  alertContent.style.display = "flex";
+  alertContent.style.flexDirection = "column";
+  alertContent.style.justifyContent = "space-between";
+  alertMessage.textContent = message;
+  alertMessage.style.textAlign = "center";
+  alertMessage.style.marginTop = "70px";
+  closeButton.textContent = "Close";
+  closeButton.style.marginRight = "100px";
+
+  closeButton.addEventListener("click", function () {
+    alertModal.style.display = "none";
+  });
+
+  alertContent.appendChild(alertMessage);
+  alertContent.appendChild(closeButton);
+  alertModal.appendChild(alertContent);
+  document.body.appendChild(alertModal);
+
+  alertModal.style.display = "block";
 }

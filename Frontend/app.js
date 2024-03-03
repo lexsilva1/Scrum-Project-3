@@ -41,7 +41,7 @@ async function login(loginValue, passwordValue) {
                 window.location.href = 'home.html';
             } else if (response.status === 404) {
                 // User not found
-                alert('User not found');
+                createAlertModal('User not found');
             } else if (response.status === 403) {  
                 // Something went wrong
                 warningModal();
@@ -93,3 +93,37 @@ function warningModal() {
       modal.remove();
     };
 }
+function createAlertModal(message) {
+    var alertModal = document.createElement("div");
+    var alertContent = document.createElement("div");
+    var alertMessage = document.createElement("p");
+    var closeButton = document.createElement("button");
+  
+    alertModal.id = "alertModal";
+    alertModal.className = "modal";
+    alertModal.style.display = "none";
+    alertContent.className = "modal-content";
+    alertContent.style.padding = "10px";
+    alertContent.style.width = "30%";
+    alertContent.style.height = "30%";
+    alertContent.style.margin = "0 auto";
+    alertContent.style.display = "flex";
+    alertContent.style.flexDirection = "column";
+    alertContent.style.justifyContent = "space-between";
+    alertMessage.textContent = message;
+    alertMessage.style.textAlign = "center";
+    alertMessage.style.marginTop = "70px";
+    closeButton.textContent = "Close";
+    closeButton.style.marginRight = "100px";
+  
+    closeButton.addEventListener("click", function () {
+      alertModal.style.display = "none";
+    });
+  
+    alertContent.appendChild(alertMessage);
+    alertContent.appendChild(closeButton);
+    alertModal.appendChild(alertContent);
+    document.body.appendChild(alertModal);
+  
+    alertModal.style.display = "block";
+  }

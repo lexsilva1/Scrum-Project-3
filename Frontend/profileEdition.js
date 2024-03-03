@@ -52,7 +52,7 @@ if(sessionStorage.getItem('token') === null || sessionStorage.getItem('token') =
                 document.getElementById('editNewPassword').value = document.getElementById('rewritePasswordField').value; 
                 confirmationDialog.showModal();            
             } else {
-                alert('falhou na verificação da password');
+                createAlertModal('falhou na verificação da password');
             }
         }
     })
@@ -98,14 +98,14 @@ async function updateUserData(user){//chama o user aqui
         body:JSON.stringify(user),
     }).then(function(response){
         if (response.status ==404){
-            alert(response.status, 'username not found')
+            createAlertModal(response.status, 'username not found')
         } else if(response.status == 405){
-            alert(response.status,'forbidden due to header params')
+            createAlertModal(response.status,'forbidden due to header params')
         } else if(response.status == 400){
-            alert(response.status,'failed, user not updated')
+            createAlertModal(response.status,'failed, user not updated')
         } else if(response.status == 200){
             sessionStorage.setItem('password',user.password);
-            alert(response.status,'user updated sucessfully')
+            createAlertModal(response.status,'user updated sucessfully')
         }
     })
     } catch(error){
@@ -124,13 +124,13 @@ async function updatePassword(password){//chama o user aqui
         body:JSON.stringify(password),
     }).then(function(response){
         if (response.status ==404){
-            alert(response.status, 'username not found')
+            createAlertModal(response.status, 'username not found')
         } else if(response.status == 403){
-            alert(response.status,'forbidden due to header params')
+            createAlertModal(response.status,'forbidden due to header params')
         } else if(response.status == 400){
-            alert(response.status,'failed, user not updated')
+            createAlertModal(response.status,'failed, user not updated')
         } else if(response.status == 200){
-            alert(response.status,'user updated sucessfully')
+            createAlertModal(response.status,'user updated sucessfully')
         }
     })
     } catch(error){
@@ -175,3 +175,37 @@ async function getUserDTO(){
     // Atualize a fonte da imagem para o novo URL
     document.getElementById('profileImageEdit').src = newUrl;
 });
+function createAlertModal(message) {
+    var alertModal = document.createElement("div");
+    var alertContent = document.createElement("div");
+    var alertMessage = document.createElement("p");
+    var closeButton = document.createElement("button");
+  
+    alertModal.id = "alertModal";
+    alertModal.className = "modal";
+    alertModal.style.display = "none";
+    alertContent.className = "modal-content";
+    alertContent.style.padding = "10px";
+    alertContent.style.width = "30%";
+    alertContent.style.height = "30%";
+    alertContent.style.margin = "0 auto";
+    alertContent.style.display = "flex";
+    alertContent.style.flexDirection = "column";
+    alertContent.style.justifyContent = "space-between";
+    alertMessage.textContent = message;
+    alertMessage.style.textAlign = "center";
+    alertMessage.style.marginTop = "70px";
+    closeButton.textContent = "Close";
+    closeButton.style.marginRight = "100px";
+  
+    closeButton.addEventListener("click", function () {
+      alertModal.style.display = "none";
+    });
+  
+    alertContent.appendChild(alertMessage);
+    alertContent.appendChild(closeButton);
+    alertModal.appendChild(alertContent);
+    document.body.appendChild(alertModal);
+  
+    alertModal.style.display = "block";
+  }

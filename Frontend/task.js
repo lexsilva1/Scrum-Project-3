@@ -225,7 +225,6 @@ confirmButton.addEventListener("click", () => {
 
 // funçaõ de update das tasks
 async function updateTask() {
-  console.log('updateTask');
     let taskElementstatus=sessionStorage.getItem("taskStatus");
     let taskCategory = sessionStorage.getItem("taskCategory");
 
@@ -259,11 +258,11 @@ async function updateTask() {
        });
    
        if (response.ok) {
-         console.log('Task updated');
+         createAlertModal('Task updated');
        } else if (response.status === 404) {
-         console.log('Task not found');
+         createAlertModal('Task not found');
        } else if (response.status === 401) {
-         console.log('Unauthorized');
+         createAlertModal('Unauthorized');
        } else {
          // Handle other response status codes
          console.error('Unexpected response:', response.status);
@@ -271,7 +270,7 @@ async function updateTask() {
      } catch (error) {
        console.error('Error updating task:', error);
        // Handle fetch errors
-       alert('Error updating task. Please try again.');
+       createAlertModal('Error updating task. Please try again.');
      }
    }
 
@@ -332,9 +331,8 @@ async function getUserDTO(){
   
       if (response.status === 200) {
         const categoriesArray = await response.json();
-        console.log(categoriesArray);
         if(categoriesArray.length === 0){
-          alert('Categories not found');
+          createAlertModal('Categories not found');
         } else {
           const Array = [];
           for (var i = 0; i < categoriesArray.length; i++) {
@@ -344,7 +342,7 @@ async function getUserDTO(){
         }
       
       } else if (response.status === 404) {
-        alert('Categories not found');
+        createAlertModal('Categories not found');
       }
     } catch (error) {
       console.error('Something went wrong:', error);
@@ -371,4 +369,38 @@ async function getTaskDTO() {
     console.error('Something went wrong:', error);
     throw error;
   }
+}
+function createAlertModal(message) {
+  var alertModal = document.createElement("div");
+  var alertContent = document.createElement("div");
+  var alertMessage = document.createElement("p");
+  var closeButton = document.createElement("button");
+
+  alertModal.id = "alertModal";
+  alertModal.className = "modal";
+  alertModal.style.display = "none";
+  alertContent.className = "modal-content";
+  alertContent.style.padding = "10px";
+  alertContent.style.width = "30%";
+  alertContent.style.height = "30%";
+  alertContent.style.margin = "0 auto";
+  alertContent.style.display = "flex";
+  alertContent.style.flexDirection = "column";
+  alertContent.style.justifyContent = "space-between";
+  alertMessage.textContent = message;
+  alertMessage.style.textAlign = "center";
+  alertMessage.style.marginTop = "70px";
+  closeButton.textContent = "Close";
+  closeButton.style.marginRight = "100px";
+
+  closeButton.addEventListener("click", function () {
+    alertModal.style.display = "none";
+  });
+
+  alertContent.appendChild(alertMessage);
+  alertContent.appendChild(closeButton);
+  alertModal.appendChild(alertContent);
+  document.body.appendChild(alertModal);
+
+  alertModal.style.display = "block";
 }
