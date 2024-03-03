@@ -496,14 +496,15 @@ main {
 #deleted{
   background-color: var(--done);
   color: black;
-  padding: 5px 10px;
   text-align: center;
+  padding: 5px 10px;
   display: inline-block;
   font-size: 14px;
   margin: 4px 2px;
   cursor: pointer;
   border-radius: 5px;
-  margin-top: 20px;
+  margin-top: -3px;
+  height: 30px;
 }
 .deleted-filter input[type="checkbox"] {
   margin-left: -90px;
@@ -518,7 +519,7 @@ input[type="checkbox"] {
   min-width: 100px;
   height: 40px;
   float: right;
-  margin-left: 7rem;
+  margin-left: 20rem;
   color: var(--green3);
   background-color: transparent;
   font-weight: bold;
