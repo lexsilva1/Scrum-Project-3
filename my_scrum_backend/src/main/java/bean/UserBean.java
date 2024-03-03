@@ -245,6 +245,10 @@ public class UserBean {
     }
 
     public boolean deleteUser(String token, String username) {
+        if(username.equals("admin") || username.equals("deleted")){
+            return false;
+        }
+
         UserEntity user = userDao.findUserByUsername(username);
         UserEntity responsible = userDao.findUserByToken(token);
         if (user.isActive() && responsible.getRole().equals("Owner") && !user.getUsername().equals(responsible.getUsername())) {

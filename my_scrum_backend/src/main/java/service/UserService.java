@@ -43,7 +43,6 @@ public class UserService {
     @Path("/register")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addUser(User a) {
-        System.out.println("role: "+a.getRole());
        boolean valid = userBean.isUserValid(a);
         if (!valid) {
             return Response.status(400).entity("All elements are required are required").build();
@@ -80,15 +79,6 @@ public class UserService {
         return Response.status(200).entity(user1.getUserPhoto()).build();
     }
 
-    @DELETE
-    @Path("/delete")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response removeUser(@QueryParam("id")String id) {
-        boolean deleted = userBean.removeUser(id);
-        if (!deleted)
-            return Response.status(404).entity("User with this idea is not found").build();
-        return Response.status(200).entity("deleted").build();
-    }
     @GET
     @Path("/{username}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -108,7 +98,6 @@ public class UserService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateUser(@HeaderParam("token") String token, User a) {
-        System.out.println("username "+a.getUsername());
         boolean user = userBean.userNameExists(a.getUsername());
         boolean valid = userBean.isUserValid(a);
         if (!user) {

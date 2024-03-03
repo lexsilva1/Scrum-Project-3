@@ -207,7 +207,6 @@ public class TaskService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateTask(Task task, @HeaderParam("token") String token) {
-        System.out.println("update task" + task.getCategory());
         boolean authorized = userBean.isUserAuthorized(token);
         User user = userBean.getUser(token);
         TaskEntity taskEntity = taskBean.convertToEntity(task);
