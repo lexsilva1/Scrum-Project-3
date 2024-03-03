@@ -225,6 +225,7 @@ for (var i = 0; i < mytasks.length; i++) {
 
 
 mytasks.addEventListener("click",function(){
+  document.getElementById("deleted").classList.remove("selected");
 if(document.getElementsByClassName("checked").length===0){
     mytasks.classList.add("checked");
     clearTaskPanels();
@@ -879,6 +880,7 @@ function clearTaskPanels() {
 document
   .getElementById("userFilter")
   .addEventListener("change", async function () {
+    document.getElementById("deleted").classList.remove("selected");
     const selectedUser = this.value;
     if (selectedUser === "") {
       clearTaskPanels();
@@ -933,7 +935,7 @@ async function getTasksByUser(username) {
 document
   .getElementById("categoryFilter")
   .addEventListener("change", async function () {
-    console.log(this.value);
+    document.getElementById("deleted").classList.remove("selected");
     const selectedCategory = this.value;
     if (selectedCategory === "") {
       clearModalCategories();
