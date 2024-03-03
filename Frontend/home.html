@@ -20,6 +20,7 @@
         <div class="display-time"></div>
       </div>
       <div class="username">
+        <label class = "logout-button" id = "mytasks">My Tasks</label>
         <img id="profileImageHome" src="" alt="Avatar" />
         <label class="logout-button" id="login-home"></label>
       </div>
@@ -38,8 +39,9 @@
         <label for="categoryFilter">Tasks by category</label>
         <select id="categoryFilter"></select>
         <div class="deleted-filter">
-          <label for="deleted">Show deleted tasks</label>
-          <input type="checkbox" id="deleted" name="deleted" />
+          <!--<label for="deleted">Show deleted tasks</label>-->
+          <!--<input type="checkbox" id="deleted" name="deleted" />-->
+          <button id="deleted" class="status-button doing">deleted</button>
         </div>
       </div>
       <button
@@ -55,14 +57,14 @@
       <aside>
         <div class="add-task-container">
           <h3>Add task</h3>
-          <label for="taskName">Title</label>
+         <!-- <label for="taskName">Title</label>-->
           <input
             type="text"
             id="taskName"
             placeholder="Title (required)"
             maxlength="15"
           />
-          <label for="taskDescription">Description</label>
+          <!--<label for="taskDescription">Description</label>-->
           <textarea
             id="taskDescription"
             placeholder="Description (required)"

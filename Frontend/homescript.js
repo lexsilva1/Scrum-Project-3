@@ -21,13 +21,15 @@ window.onload = async function () {
 
 //checkbox para mostrar tarefas apagadas
 const deletebox = document.getElementById("deleted");
-deletebox.addEventListener("change", () => {
-  if (deletebox.checked === true) {
+deletebox.addEventListener("click", () => {
+  if (!deletebox.classList.contains("selected")) {
     clearTaskPanels();
     loadDeletedTasks();
+    deletebox.classList.add("selected");
   } else {
     clearTaskPanels();
     loadTasks();
+    deletebox.classList.remove("selected");
   }
 });
 
@@ -68,13 +70,17 @@ async function fillUserFilter() {
   defaultOption.value = "";
   defaultOption.text = "";
   userFilter.appendChild(defaultOption);
-
+  const userlogged = await getUserDTO();
   // Adiciona uma opção para cada usuário
   users.forEach((user) => {
     const option = document.createElement("option");
     option.value = user.username;
     option.text = user.name;
+
     userFilter.appendChild(option);
+    if (user.username === userlogged.username) {
+      userFilter.removeChild(option);
+    }
   });
 }
 
@@ -199,6 +205,41 @@ function getDragAfterElement(panel, y) {
   ).element;
 }
 
+
+let mytasks = document.getElementById("mytasks");
+
+async function getmytasks() {
+const mytasks = await getUserDTO().then(user=>getTasksByUser(user.username));
+for (var i = 0; i < mytasks.length; i++) {
+    const taskElement = createTaskElement(mytasks[i]);
+    if (mytasks[i].status === 10) {
+        document.getElementById("todo").appendChild(taskElement);
+    } else if (mytasks[i].status === 20) {
+        document.getElementById("doing").appendChild(taskElement);
+    } else if (mytasks[i].status === 30) {
+        document.getElementById("done").appendChild(taskElement);
+    }
+    attachDragAndDropListeners(taskElement);
+}
+}
+
+
+mytasks.addEventListener("click",function(){
+if(document.getElementsByClassName("checked").length===0){
+    mytasks.classList.add("checked");
+    clearTaskPanels();
+    getmytasks();
+    mytasks.innerHTML = "All tasks";
+}else{
+    clearTaskPanels();
+    loadTasks();
+    mytasks.innerHTML = "My tasks";
+    mytasks.classList.remove("checked");
+}
+});
+
+ 
+
 // Event listener do botão add task para criar uma nova task e colocá-la no painel To Do (default para qualquer task criada)
 document.getElementById("addTask").addEventListener("click", function () {
   var Description = taskDescription.value.trim();
@@ -300,7 +341,7 @@ async function postTask(task) {
       }
       attachDragAndDropListeners(taskElement);
     } else if (response.status === 404) {
-      alert("User not found");
+      createAlertModal("User not found");
     }
   });
 }
@@ -437,9 +478,9 @@ async function loadTasks() {
         });
       }
     } else if (response.status === 404) {
-      alert("User not found");
+      createAlertModal("User not found");
     } else if (response.status === 401) {
-      alert("Unauthorized");
+      createAlertModal("Unauthorized");
     }
   });
 }
@@ -497,9 +538,9 @@ async function loadDeletedTasks() {
               }
             });
           } else if (response.status === 404) {
-            alert("User not found");
+            createAlertModal("User not found");
           } else if (response.status === 401) {
-            alert("Unauthorized");
+            createAlertModal("Unauthorized");
           }
         }
       });
@@ -521,11 +562,11 @@ async function restoreTask(id) {
     );
 
     if (response.ok) {
-      alert("Task restored");
+      createAlertModal("Task restored");
     } else if (response.status === 404) {
-      alert("Task not found");
+      createAlertModal("Task not found");
     } else if (response.status === 401) {
-      alert("Unauthorized");
+      createAlertModal("Unauthorized");
     } else {
       // Handle other response status codes
       console.error("Unexpected response:", response.status);
@@ -533,7 +574,7 @@ async function restoreTask(id) {
   } catch (error) {
     console.error("Error restoring task:", error);
     // Handle fetch errors
-    alert("Error restoring task. Please try again.");
+    createAlertModal("Error restoring task. Please try again.");
   }
 }
 async function deleteTask(id) {
@@ -550,12 +591,12 @@ async function deleteTask(id) {
     );
 
     if (response.ok) {
-      alert("Task deleted");
+      createAlertModal("Task deleted");
       clearTaskPanels();
     } else if (response.status === 404) {
-      alert("Task not found");
+      createAlertModal("Task not found");
     } else if (response.status === 401) {
-      alert("Unauthorized");
+      createAlertModal("Unauthorized");
     } else {
       // Handle other response status codes
       console.error("Unexpected response:", response.status);
@@ -563,7 +604,7 @@ async function deleteTask(id) {
   } catch (error) {
     console.error("Error deleting task:", error);
     // Handle fetch errors
-    alert("Error deleting task. Please try again.");
+    createAlertModal("Error deleting task. Please try again.");
   }
 }
 async function updateStatus(taskElement) {
@@ -593,11 +634,11 @@ async function updateStatus(taskElement) {
     );
 
     if (response.ok) {
-      console.log("Task updated");
+      createAlertModal("Task updated");
     } else if (response.status === 404) {
-      console.log("Task not found");
+      createAlertModal("Task not found");
     } else if (response.status === 401) {
-      console.log("Unauthorized");
+      createAlertModal("Unauthorized");
     } else {
       // Handle other response status codes
       console.error("Unexpected response:", response.status);
@@ -605,7 +646,7 @@ async function updateStatus(taskElement) {
   } catch (error) {
     console.error("Error updating task:", error);
     // Handle fetch errors
-    alert("Error updating task. Please try again.");
+    createAlertModal("Error updating task. Please try again.");
   }
 }
 async function updateTask(taskElement) {
@@ -641,13 +682,13 @@ async function updateTask(taskElement) {
     );
 
     if (response.ok) {
-      console.log("Task updated");
+      createAlertModal("Task updated");
       clearTaskPanels();
       loadTasks();
     } else if (response.status === 404) {
-      console.log("Task not found");
+      createAlertModal("Task not found");
     } else if (response.status === 401) {
-      console.log("Unauthorized");
+      createAlertModal("Unauthorized");
     } else {
       // Handle other response status codes
       console.error("Unexpected response:", response.status);
@@ -655,7 +696,7 @@ async function updateTask(taskElement) {
   } catch (error) {
     console.error("Error updating task:", error);
     // Handle fetch errors
-    alert("Error updating task. Please try again.");
+    createAlertModal("Error updating task. Please try again.");
   }
 }
 // Elemento html onde vai ser mostrada a hora
@@ -735,8 +776,6 @@ async function logout() {
     },
   }).then(function (response) {
     if (response.status === 200) {
-      // User is logged in successfully
-      alert("User is logged out successfully :)");
       const tasks = document.querySelectorAll(".task");
       if (tasks.length > 0) {
         tasks.forEach((task) => {
@@ -749,10 +788,10 @@ async function logout() {
       sessionStorage.clear();
       window.location.href = "index.html";
       // User not found
-      alert("Unauthorized User");
+      console.log("User not found");
     } else {
       // Something went wrong
-      alert("Something went wrong :(");
+      console.log("Something went wrong");
       sessionStorage.clear();
       window.location.href = "index.html";
     }
@@ -778,7 +817,7 @@ async function getCategories() {
       const categoriesArray = await response.json();
       console.log(categoriesArray);
       if (categoriesArray.length === 0) {
-        alert("Categories not found");
+        createAlertModal("Categories not found");
       } else {
         const Array = [];
         for (var i = 0; i < categoriesArray.length; i++) {
@@ -787,7 +826,7 @@ async function getCategories() {
         return Array;
       }
     } else if (response.status === 404) {
-      alert("Categories not found");
+      createAlertModal("Categories not found");
     }
   } catch (error) {
     console.error("Something went wrong:", error);
@@ -811,7 +850,7 @@ async function getUsers() {
     if (response.status === 200) {
       const usersArray = await response.json();
       if (usersArray.length === 0) {
-        alert("Users not found");
+        createAlertModal("Users not found");
       } else {
         const Array = [];
         for (var i = 0; i < usersArray.length; i++) {
@@ -820,7 +859,7 @@ async function getUsers() {
         return Array;
       }
     } else if (response.status === 404) {
-      alert("Users not found");
+      createAlertModal("Users not found");
     }
   } catch (error) {
     console.error("Something went wrong:", error);
@@ -1198,13 +1237,13 @@ async function deleteCategory(name) {
     );
 
     if (response.status === 200) {
-      alert("Category deleted");
+      createAlertModal("Category deleted");
     } else if (response.status === 404) {
-      alert("Category not found");
+      createAlertModal("Category not found");
     } else if (response.status === 401) {
-      alert("Unauthorized");
+      createAlertModal("Unauthorized");
     } else if (response.status === 409) {
-      alert("Category has tasks");
+      createAlertModal("Category has tasks");
     } else {
       // Handle other response status codes
       console.error("Unexpected response:", response.status);
@@ -1212,7 +1251,7 @@ async function deleteCategory(name) {
   } catch (error) {
     console.error("Error deleting Category:", error);
     // Handle fetch errors
-    alert("Error deleting Category. Please try again.");
+    createAlertModal("Error deleting Category. Please try again.");
   }
 }
 
@@ -1241,11 +1280,11 @@ async function addCategory(name) {
     );
 
     if (response.status === 201) {
-      alert("Category added");
+      createAlertModal("Category added");
     } else if (response.status === 404) {
-      alert("Category not found");
+      createAlertModal("Category not found");
     } else if (response.status === 401) {
-      alert("Unauthorized");
+      createAlertModal("Unauthorized");
     } else {
       // Handle other response status codes
       console.error("Unexpected response:", response.status);
@@ -1253,7 +1292,7 @@ async function addCategory(name) {
   } catch (error) {
     console.error("Error adding Category:", error);
     // Handle fetch errors
-    alert("Error adding Category. Please try again.");
+    createAlertModal("Error adding Category. Please try again.");
   }
 }
 //função para fazer update da categoria
@@ -1272,11 +1311,11 @@ async function updateCategory(category) {
     );
 
     if (response.status === 200) {
-      alert("Category updated");
+      createAlertModal("Category updated");
     } else if (response.status === 404) {
-      alert("Category not found");
+      createAlertModal("Category not found");
     } else if (response.status === 401) {
-      alert("Unauthorized");
+      createAlertModal("Unauthorized");
     } else {
       // Handle other response status codes
       console.error("Unexpected response:", response.status);
@@ -1346,4 +1385,75 @@ function confirmationModal(message, confirmCallback) {
 
   return showModal;
 }
-//export { createTaskElement };
+function createAlertModal(message) {
+  var alertModal = document.createElement("div");
+  var alertContent = document.createElement("div");
+  var alertMessage = document.createElement("p");
+  var closeButton = document.createElement("button");
+
+  alertModal.id = "alertModal";
+  alertModal.className = "modal";
+  alertModal.style.display = "none";
+  alertContent.className = "modal-content";
+  alertContent.style.padding = "10px";
+  alertContent.style.width = "30%";
+  alertContent.style.height = "30%";
+  alertContent.style.margin = "0 auto";
+  alertContent.style.display = "flex";
+  alertContent.style.flexDirection = "column";
+  alertContent.style.justifyContent = "space-between";
+  alertMessage.textContent = message;
+  alertMessage.style.textAlign = "center";
+  alertMessage.style.marginTop = "70px";
+  closeButton.textContent = "Close";
+  closeButton.style.marginRight = "100px";
+
+  closeButton.addEventListener("click", function () {
+    alertModal.style.display = "none";
+  });
+
+  alertContent.appendChild(alertMessage);
+  alertContent.appendChild(closeButton);
+  alertModal.appendChild(alertContent);
+  document.body.appendChild(alertModal);
+
+  alertModal.style.display = "block";
+}
+function createWelcomeModal(name,tasksPending){
+  var welcomeModal = document.createElement("div");
+  var welcomeContent = document.createElement("div");
+  var welcomeMessage = document.createElement("p");
+  var taskspending = document.createElement("p");
+  var closeButton = document.createElement("button");
+
+  welcomeModal.id = "welcomeModal";
+  welcomeModal.className = "modal";
+  welcomeModal.style.display = "none";
+  welcomeContent.className = "modal-content";
+  welcomeContent.style.padding = "10px";
+  welcomeContent.style.width = "30%";
+  welcomeContent.style.height = "30%";
+  welcomeContent.style.margin = "0 auto";
+  welcomeContent.style.display = "flex";
+  welcomeContent.style.flexDirection = "column";
+  welcomeContent.style.justifyContent = "space-between";
+  welcomeMessage.textContent = "Welcome " + name;
+  welcomeMessage.style.textAlign = "center";
+  welcomeMessage.style.marginTop = "70px";
+  taskspending.textContent = "You have " + tasksPending + " tasks pending";
+  taskspending.style.textAlign = "center";
+  taskspending.style.marginTop = "70px";
+  closeButton.textContent = "Close";
+  closeButton.style.marginRight = "100px";
+
+  closeButton.addEventListener("click", function () {
+    welcomeModal.style.display = "none";
+  });
+
+  welcomeContent.appendChild(welcomeMessage);
+  welcomeContent.appendChild(closeButton);
+  welcomeModal.appendChild(welcomeContent);
+  document.body.appendChild(welcomeModal);
+
+  welcomeModal.style.display = "block";
+}

@@ -12,7 +12,7 @@ document.getElementById('submitRegistryButton').addEventListener('click',(e)=>{
     }
     console.log(userImage);
     if (document.getElementById('userPassword').value.trim() != document.getElementById('userRewrittenPassword').value.trim()){
-        alert('Passwords do not match');
+        createAlertModal('Passwords do not match');
     } else {
     let newUser = {
         id : 'user'+Math.floor(Math.random()*1000),
@@ -33,11 +33,11 @@ document.getElementById('submitRegistryButton').addEventListener('click',(e)=>{
         //password checks with rewritten password 
         const passwordCheck = newUser.password === document.getElementById('userRewrittenPassword').value;
         if (emptyFields.length === 0 && passwordCheck){
-            alert('user can be created');
+            createAlertModal('user can be created');
             postUser(newUser);
             window.location.href='index.html';
         } else {
-            alert('please fill empty fields');
+            createAlertModal('please fill empty fields');
         }   
 }
 })
@@ -55,9 +55,9 @@ async function postUser(newUser){
             body: JSON.stringify(newUser),
         }).then(function (response) {
             if (response.status == 200) {
-            alert('user is added successfully :)');
+            createAlertModal('user is added successfully :)');
             } else {
-            alert('something went wrong :(');
+            createAlertModal('something went wrong :(');
             console.log(response.status);
             }
             });
@@ -74,6 +74,42 @@ document.getElementById('cancelRegistryButton').addEventListener('click',()=>{
 document.getElementById('userPhotoUrl').addEventListener('input', function() {
     document.getElementById('profileImage').src = this.value;
   });
+
+//função que cria modal de alerta
+  function createAlertModal(message) {
+    var alertModal = document.createElement("div");
+    var alertContent = document.createElement("div");
+    var alertMessage = document.createElement("p");
+    var closeButton = document.createElement("button");
+  
+    alertModal.id = "alertModal";
+    alertModal.className = "modal";
+    alertModal.style.display = "none";
+    alertContent.className = "modal-content";
+    alertContent.style.padding = "10px";
+    alertContent.style.width = "30%";
+    alertContent.style.height = "30%";
+    alertContent.style.margin = "0 auto";
+    alertContent.style.display = "flex";
+    alertContent.style.flexDirection = "column";
+    alertContent.style.justifyContent = "space-between";
+    alertMessage.textContent = message;
+    alertMessage.style.textAlign = "center";
+    alertMessage.style.marginTop = "70px";
+    closeButton.textContent = "Close";
+    closeButton.style.marginRight = "100px";
+  
+    closeButton.addEventListener("click", function () {
+      alertModal.style.display = "none";
+    });
+  
+    alertContent.appendChild(alertMessage);
+    alertContent.appendChild(closeButton);
+    alertModal.appendChild(alertContent);
+    document.body.appendChild(alertModal);
+  
+    alertModal.style.display = "block";
+  }
 
 
 
