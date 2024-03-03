@@ -4,8 +4,7 @@ window.onload = async function () {
     sessionStorage.getItem("role") === "ScrumMaster"
   ) {
     document.getElementById("addUser").remove();
-    document.getElementById("viewDeletedUsers").remove();
-    document.getElementById("viewDeletedUsersLabel").remove();
+    document.getElementById("deleted").remove();
   }
   const user = await getUserDTO();
   let names = user.name.split(" ");
@@ -125,14 +124,15 @@ function createUserElement(user) {
 //função para adicionar botão de delete
 function attachDeletebutton(div, username) {
   const deleteButton = document.createElement("button");
-  const checkbox = document.getElementById("viewDeletedUsers");
+  const checkbox = document.getElementById("deleted");
   const modal = document.getElementById("myModalView");
   deleteButton.textContent = "Delete User";
   deleteButton.classList.add("delete");
   deleteButton.id = "delete-button";
   deleteButton.addEventListener("click", async () => {
     createAcceptModalDeleteUser(username);
-    checkbox.checked = false;
+    checkbox.classList.remove("selected");
+    modal.style.display = "none";
     
   });
   div.appendChild(deleteButton);
@@ -179,7 +179,7 @@ function createAcceptModalDeleteUser(username) {
 function attachRestorebutton(div, username) {
   const restoreButton = document.createElement("button");
   const modal = document.getElementById("myModalView");
-  const checkbox = document.getElementById("viewDeletedUsers");
+  const checkbox = document.getElementById("deleted");
   restoreButton.textContent = "Restore User";
   restoreButton.classList.add("restore");
   restoreButton.id = "restore-button";
@@ -188,7 +188,7 @@ function attachRestorebutton(div, username) {
     await restoreUser(username);
     clearUsers();
     displayUsers();
-    checkbox.checked = false;
+    checkbox.classList.remove("selected");
     restoreButton.remove();
     modal.style.display = "none";
   });
