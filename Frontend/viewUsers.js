@@ -818,13 +818,13 @@ async function deleteUser(username) {
     );
 
     if (response.status === 200) {
-      createAcceptModal("User deleted successfully");
+      createAlertModal("User deleted successfully");
       clearUsers();
       displayUsers();
     } else if (response.status === 404) {
-      createAcceptModal("User not found");
+      createAlertModal("User not found");
     } else if (response.status === 405) {
-      createAcceptModal("Forbidden due to header params");
+      createAlertModal("Forbidden due to header params");
     }
   } catch (error) {
     console.error("Something went wrong:", error);
